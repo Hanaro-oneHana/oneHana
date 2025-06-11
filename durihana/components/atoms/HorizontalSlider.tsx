@@ -9,7 +9,7 @@ type Props = {
 export default function HorizontalSlider({
   children,
   className,
-  gap = 'gap-2',
+  gap = 'gap-[10px]',
 }: PropsWithChildren<Props>) {
   return (
     <div
