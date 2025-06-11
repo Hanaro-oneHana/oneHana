@@ -1,3 +1,4 @@
+import Button from '@/components/atoms/Button';
 import Image from 'next/image';
 
 export default function Home() {
@@ -97,6 +98,7 @@ export default function Home() {
           />
           Go to nextjs.org →
         </a>
+        <Button>버튼</Button>
       </footer>
     </div>
   );

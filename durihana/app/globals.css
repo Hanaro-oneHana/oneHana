@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -47,25 +47,49 @@
 /* 디자인 시스템 */
 @layer styles {
   :root {
-  --black: #333333;
-  --white: #FBFCFC;
-  --background: #F6F7F9;
-  --navy: #3B4156;
-  --textgray: #666666;
-  --buttongray: #9CA7B3;
-  --primary: #489896;
-  --secondary: #5E68BD;
-  --icon: #7A8DA0;
-  --iconselect: #5BC0A4;
-  --mint: #D2E8E4;
-  --lightmint: #E5F5F1;
-  --purple: #D7DBF0;
-  --purple2: #E4E8F5;
-  --pink: #F1E7F6;
-  --skyblue: #E0F0F5;
-  --lime: #E1F4E2;
+    --mainblack: #333333;
+    --mainwhite: #fbfcfc;
+    --background: #f6f7f9;
+    --navy: #3b4156;
+    --textgray: #666666;
+    --buttongray: #9ca7b3;
+    --primary: #489896;
+    --secondary: #5e68bd;
+    --icon: #7a8da0;
+    --iconselect: #5bc0a4;
+    --mint: #d2e8e4;
+    --lightmint: #e5f5f1;
+    --purple: #d7dbf0;
+    --purple2: #e4e8f5;
+    --pink: #f1e7f6;
+    --skyblue: #e0f0f5;
+    --lime: #e1f4e2;
   }
-  
+
+  @theme inline {
+    --font-hana: 'Hana', sans-serif;
+    --color-mainblack: var(--mainblack);
+    --color-mainwhite: var(--mainwhite);
+    --color-primary: var(--primary);
+    --color-secondary: var(--secondary);
+    --color-background: var(--background);
+    --color-navy: var(--navy);
+    --color-textgray: var(--textgray);
+    --color-buttongray: var(--buttongray);
+    --color-icon: var(--icon);
+    --color-iconselect: var(--iconselect);
+    --color-mint: var(--mint);
+    --color-lightmint: var(--lightmint);
+    --color-purple: var(--purple);
+    --color-purple2: var(--purple2);
+    --color-pink: var(--pink);
+    --color-skyblue: var(--skyblue);
+    --color-lime: var(--lime);
+  }
+
+  .primary-button {
+    @apply bg-primary text-mainwhite justify-center items-center font-hana font-medium rounded-[10px] cursor-pointer w-full py-[14px];
+  }
 }
 
 @theme inline {
@@ -110,15 +134,12 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
