@@ -99,7 +99,7 @@ export default function Home() {
           Go to nextjs.org →
         </a>
         <Button>버튼</Button>
-        <Button bgColor='mint' textColor='mainblack'>
+        <Button bgColor='mint' textColor='mainblack' className='w-[200px]'>
           Custom Button
         </Button>
       </footer>
