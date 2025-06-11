@@ -200,5 +200,28 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    margin: 0 auto;
+    max-width: 960px;
+    width: 100vw;
+    min-height: -webkit-fill-available;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: var(--font-hana);
+    -webkit-overflow-scrolling: touch !important;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
