@@ -5,6 +5,7 @@ import {
   DrawerTrigger,
   DrawerContent,
   DrawerHeader,
+  DrawerDescription,
   DrawerTitle,
   DrawerFooter,
   DrawerClose,
@@ -22,6 +23,7 @@ export default function DrawerComponent() {
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle />
+          <DrawerDescription />
         </DrawerHeader>
 
         <div className='mx-auto w-full max-w-sm'>
