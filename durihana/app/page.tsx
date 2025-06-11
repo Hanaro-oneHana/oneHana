@@ -99,6 +99,9 @@ export default function Home() {
           Go to nextjs.org →
         </a>
         <Button>버튼</Button>
+        <Button bgColor='mint' textColor='mainblack'>
+          Custom Button
+        </Button>
       </footer>
     </div>
   );

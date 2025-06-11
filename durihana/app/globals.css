@@ -49,15 +49,15 @@
   :root {
     --mainblack: #333333;
     --mainwhite: #fbfcfc;
+    --mint: #d2e8e4;
     --background: #f6f7f9;
     --navy: #3b4156;
     --textgray: #666666;
     --buttongray: #9ca7b3;
-    --primary: #489896;
-    --secondary: #5e68bd;
+    --primarycolor: #489896;
+    --secondarycolor: #5e68bd;
     --icon: #7a8da0;
     --iconselect: #5bc0a4;
-    --mint: #d2e8e4;
     --lightmint: #e5f5f1;
     --purple: #d7dbf0;
     --purple2: #e4e8f5;
@@ -70,8 +70,8 @@
     --font-hana: 'Hana', sans-serif;
     --color-mainblack: var(--mainblack);
     --color-mainwhite: var(--mainwhite);
-    --color-primary: var(--primary);
-    --color-secondary: var(--secondary);
+    --color-primarycolor: var(--primarycolor);
+    --color-secondarycolor: var(--secondary);
     --color-background: var(--background);
     --color-navy: var(--navy);
     --color-textgray: var(--textgray);
@@ -85,10 +85,6 @@
     --color-pink: var(--pink);
     --color-skyblue: var(--skyblue);
     --color-lime: var(--lime);
-  }
-
-  .primary-button {
-    @apply bg-primary text-mainwhite justify-center items-center font-hana font-medium rounded-[10px] cursor-pointer w-full py-[14px];
   }
 }
 
