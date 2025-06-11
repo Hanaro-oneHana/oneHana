@@ -60,7 +60,7 @@
     --iconselect: #5bc0a4;
     --lightmint: #e5f5f1;
     --purple: #d7dbf0;
-    --purple2: #e4e8f5;
+    --lightpurple: #e4e8f5;
     --pink: #f1e7f6;
     --skyblue: #e0f0f5;
     --lime: #e1f4e2;
@@ -68,6 +68,11 @@
 
   @theme inline {
     --font-hana: 'Hana', sans-serif;
+    --font-heavy: 800;
+    --font-bold: 600;
+    --font-medium: 500;
+    --font-regular: 400;
+    --font-light: 300;
     --color-mainblack: var(--mainblack);
     --color-mainwhite: var(--mainwhite);
     --color-primarycolor: var(--primarycolor);
@@ -81,7 +86,7 @@
     --color-mint: var(--mint);
     --color-lightmint: var(--lightmint);
     --color-purple: var(--purple);
-    --color-purple2: var(--purple2);
+    --color-lightpurple: var(--purple2);
     --color-pink: var(--pink);
     --color-skyblue: var(--skyblue);
     --color-lime: var(--lime);
