@@ -214,7 +214,7 @@ function CalendarDayButton({
         'dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70',
 
         // 선택 상태별 배경색
-        'data-[selected-single=true]:bg-green-500/40 data-[selected-single=true]:text-primary-foreground',
+        'data-[selected-single=true]:bg-iconselect data-[selected-single=true]:text-black',
         'data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground',
         'data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground',
         'data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground',
