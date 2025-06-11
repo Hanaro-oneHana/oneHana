@@ -16,7 +16,7 @@ export type InputComponentProps = {
 export default function InputComponent({
   label,
   text,
-  width = 'w-375',
+  width = 'w-full',
 }: InputComponentProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, '');
