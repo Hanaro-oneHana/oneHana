@@ -46,7 +46,7 @@ export default function ReservationComponent() {
             <Button
               key={t}
               onClick={() => setSelectedTime(t)}
-              className={`text-black p-[8px] ${selectedTime === t ? 'bg-iconselect' : 'bg-white'}`}
+              className={`text-mainblack p-[8px] ${selectedTime === t ? 'bg-iconselect' : 'bg-white'}`}
             >
               {t}
             </Button>
