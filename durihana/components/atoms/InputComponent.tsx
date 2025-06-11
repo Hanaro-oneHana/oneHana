@@ -2,7 +2,6 @@
 
 import { Input } from '@/components/ui/input';
 import { ChangeEvent, HTMLInputTypeAttribute } from 'react';
-import React from 'react';
 
 //사용하는 곳에서 return <InputComponent label='name' text='이름' />
 export type InputComponentProps = {
