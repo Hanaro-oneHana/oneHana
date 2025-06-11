@@ -1,17 +1,18 @@
 'use client';
 
-import clsx from 'clsx';
 import { PropsWithChildren } from 'react';
+import { cn } from '@/lib/utils';
 
 type Props = {
   className?: string;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
-  bgColor?: 'primarycolor' | 'mint' | 'mainblack' | 'mainwhite';
+  bgColor?: 'primarycolor' | 'mint' | 'icon' | 'purple';
   textColor?: 'mainwhite' | 'mainblack';
 };
 
 export default function Button({
+  className,
   bgColor = 'primarycolor',
   textColor = 'mainwhite',
   onClick,
@@ -20,8 +21,11 @@ export default function Button({
 }: PropsWithChildren<Props>) {
   return (
     <button
-      className={clsx(`bg-${bgColor} text-${textColor} justify-center items-center font-hana font-medium rounded-[10px] cursor-pointer w-full py-[14px] 
-         `)}
+      className={cn(
+        `bg-${bgColor} text-${textColor} justify-center items-center font-hana font-medium rounded-[10px] cursor-pointer w-full py-[15px] 
+         `,
+        className
+      )}
       onClick={onClick}
       type={type}
     >
