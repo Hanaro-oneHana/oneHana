@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { ChangeEvent, HTMLAttributes, HTMLInputTypeAttribute } from 'react';
+import { ChangeEvent, HTMLInputTypeAttribute } from 'react';
 import React from 'react';
 
 //사용하는 곳에서 return <InputComponent label='name' text='이름' />
@@ -10,14 +10,13 @@ export type InputComponentProps = {
   label: 'name' | 'tel' | 'birth' | 'marry_date' | 'password';
   // placeholder 용
   text?: string;
-  // 너비 기본값 w-[325px]
   width?: string;
 };
 
 export default function InputComponent({
   label,
   text,
-  width = 'w-[325px]',
+  width = 'w-full',
 }: InputComponentProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, '');
