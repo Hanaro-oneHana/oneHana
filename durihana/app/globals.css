@@ -3,6 +3,71 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* font */
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Bold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Heavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 디자인 시스템 */
+@layer styles {
+  :root {
+  --black: #333333;
+  --white: #FBFCFC;
+  --background: #F6F7F9;
+  --navy: #3B4156;
+  --textgray: #666666;
+  --buttongray: #9CA7B3;
+  --primary: #489896;
+  --secondary: #5E68BD;
+  --icon: #7A8DA0;
+  --iconselect: #5BC0A4;
+  --mint: #D2E8E4;
+  --lightmint: #E5F5F1;
+  --purple: #D7DBF0;
+  --purple2: #E4E8F5;
+  --pink: #F1E7F6;
+  --skyblue: #E0F0F5;
+  --lime: #E1F4E2;
+  }
+  
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
