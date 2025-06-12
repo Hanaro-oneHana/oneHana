@@ -6,37 +6,38 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuChe
 import { Button } from '@/components/ui/button';
 
 export default function Dropdown() {
-    const defaultTitle = '옵션 선택';
-    const [content, setContent] = useState<string>(defaultTitle);
-    const [isOpen, toggleOpen] = useReducer((prev) => !prev, false);
+    const defaultTitle = '선택지 이름';
+    // 데이터
+    const folders2: [string, string][] = [
+        ['a', '100'], ['b', '1000'], ['c', '100'] ];
 
-    const folders = ['a', 'b', 'c'];
+    const [selected, setSelected] = useState<[string, string] | null>(null);
+    const [isOpen, toggleOpen] = useReducer(prev => !prev, false);
+    const content = selected ? `${selected[0]}  ${selected[1]}` : defaultTitle;
 
     return <>
         <DropdownMenu onOpenChange={toggleOpen}>
             <DropdownMenuTrigger asChild>
-                <Button variant='outline'>
-                    {content} {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                <Button variant="outline" className={`w-[325px] h-[40px] flex items-center justify-between px-4
+                ${isOpen ? 'rounded-b-none' : ''}`}>
+                    <span className="truncate">{content}</span>
+                    {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
                 </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align='end'>
-                {folders.map((title, i) => (
-                <Fragment key={title}>
-                    <DropdownMenuCheckboxItem
-                    checked={content === title}
-                    onClick={(e) => {
-                        // 클릭된 메뉴의 innerText(= 아이템 텍스트)를 읽어서 상태에 저장
-                        const txt = e.currentTarget.textContent?.trim() ?? defaultTitle;
-                        setContent(txt);
-                    }}
-                    >
-                    {title}
-                    </DropdownMenuCheckboxItem>
-
-                    {i < folders.length - 1 && <DropdownMenuSeparator />}
-                </Fragment>
-                ))}
+            <DropdownMenuContent align="end" sideOffset={0} className="mt-0 border-t-0 rounded-t-none w-[325px] max-h-[200px] overflow-auto">
+                {folders2.map(([name, price], i) => (
+                    <Fragment key={name}>
+                        <DropdownMenuCheckboxItem className="px-4"
+                        checked={selected?.[0] === name}
+                        onClick={() => setSelected([name, price])}>
+                            <div className="w-full flex justify-between items-center pl-8">
+                                <span>{name}</span>
+                                <span>{price}</span>
+                            </div>
+                        </DropdownMenuCheckboxItem>
+                    {i < folders2.length - 1 && <DropdownMenuSeparator />}
+                </Fragment>))}
             </DropdownMenuContent>
         </DropdownMenu>
     </>;
