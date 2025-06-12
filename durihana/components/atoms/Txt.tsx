@@ -7,7 +7,7 @@ type Props = {
   size?: `text-[${number}px]`;
   color?: `text-${Color}`;
   weight?: `font-[${number}]`;
-  height?: `${number}px`;
+  height?: `leading-${number}px`;
   align?: 'align-left' | 'align-center' | 'align-right';
 };
 
@@ -23,7 +23,7 @@ export default function Txt({
   return (
     <span
       className={cn(
-        `${size} ${color} ${weight} ${align} font-hana,
+        `${size} ${color} ${weight} ${align} font-hana
         ${height}
         ${className}`
       )}
