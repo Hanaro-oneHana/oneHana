@@ -9,6 +9,7 @@ import {
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import Button from './Button';
 import Txt from './Txt';
 
 type CustomCalendarProps = {
@@ -28,9 +29,9 @@ export default function CustomCalendar({
   const [calendarDays, setCalendarDays] = useState<
     Array<{ date: Date; isCurrentMonth: boolean }>
   >([]);
-  const [internalSelectedDate, setInternalSelectedDate] = useState<
-    Date | undefined
-  >(selectedDate);
+  const [internalSelectedDate, setInternalSelectedDate] = useState<Date>(
+    selectedDate || new Date()
+  );
 
   // 요일 라벨
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -84,7 +85,7 @@ export default function CustomCalendar({
     }
 
     // 다음 달의 날짜 추가 (6주 채우기)
-    const remainingDays = 42 - days.length;
+    const remainingDays = 42 - days.length; // 6주 x 7일 = 42
     for (let i = 1; i <= remainingDays; i++) {
       const day = new Date(currentYear, currentMonth + 1, i);
       days.push({ date: day, isCurrentMonth: false });
@@ -129,6 +130,7 @@ export default function CustomCalendar({
     (_, i) => currentYear - 10 + i
   );
 
+  // 날짜 비교 함수 (년, 월, 일이 같은지)
   const isSameDay = (date1: Date, date2: Date) => {
     return (
       date1.getFullYear() === date2.getFullYear() &&
@@ -137,6 +139,7 @@ export default function CustomCalendar({
     );
   };
 
+  // 오늘 날짜인지 확인
   const isToday = (date: Date) => {
     const today = new Date();
     return isSameDay(date, today);
@@ -144,18 +147,19 @@ export default function CustomCalendar({
 
   return (
     <div className={cn('w-full max-w-sm mx-auto', className)}>
+      {/* 헤더 - 년월 선택 */}
       <div className='flex justify-between items-center mb-4 px-2'>
-        <button
+        <Button
           onClick={goToPreviousMonth}
-          className='p-2  rounded-full '
-          aria-label='이전 달'
+          className='p-2 w-auto h-auto rounded-full bg-mainwhite text-mainblack'
         >
-          <ChevronLeft size={20} className='text-mainblack' />
-        </button>
+          <ChevronLeft size={20} />
+        </Button>
 
         <div className='flex items-center gap-2'>
+          {/* 월 선택 드롭다운 */}
           <DropdownMenu>
-            <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 hover:bg-lightmint rounded-lg transition-colors'>
+            <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
               <Txt size={16} weight='medium'>
                 {monthNames[currentMonth]}
               </Txt>
@@ -166,10 +170,7 @@ export default function CustomCalendar({
                 <DropdownMenuItem
                   key={month}
                   onClick={() => setCurrentMonth(index)}
-                  className={cn(
-                    'cursor-pointer',
-                    currentMonth === index ? 'bg-lightmint' : ''
-                  )}
+                  className={cn('cursor-pointer')}
                 >
                   {month}
                 </DropdownMenuItem>
@@ -177,8 +178,9 @@ export default function CustomCalendar({
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* 년도 선택 드롭다운 */}
           <DropdownMenu>
-            <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 hover:bg-lightmint rounded-lg transition-colors'>
+            <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1  rounded-lg'>
               <Txt size={16} weight='medium'>
                 {currentYear}년
               </Txt>
@@ -189,10 +191,7 @@ export default function CustomCalendar({
                 <DropdownMenuItem
                   key={year}
                   onClick={() => setCurrentYear(year)}
-                  className={cn(
-                    'cursor-pointer',
-                    currentYear === year ? 'bg-lightmint' : ''
-                  )}
+                  className={cn('cursor-pointer')}
                 >
                   {year}년
                 </DropdownMenuItem>
@@ -201,54 +200,43 @@ export default function CustomCalendar({
           </DropdownMenu>
         </div>
 
-        <button
+        <Button
           onClick={goToNextMonth}
-          className='p-2 rounded-full '
-          aria-label='다음 달'
+          className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-mainwhite'
         >
-          <ChevronRight size={20} className='text-mainblack' />
-        </button>
+          <ChevronRight size={20} />
+        </Button>
       </div>
+
       <div className='grid grid-cols-7 mb-2'>
         {weekDays.map((day) => (
-          <div
-            key={day}
-            className={cn(
-              'text-center text-sm py-2',
-              day === '일' ? 'text-red-500' : 'text-textgray'
-            )}
-          >
+          <div key={day} className={cn('text-center text-sm py-2')}>
             {day}
           </div>
         ))}
       </div>
 
+      {/* 달력 그리드 */}
       <div className='grid grid-cols-7 gap-1'>
         {calendarDays.map((dayObj, index) => {
           const { date, isCurrentMonth } = dayObj;
           const isSelected =
             internalSelectedDate && isSameDay(date, internalSelectedDate);
-          const isTodayDate = isToday(date);
-          const isSunday = date.getDay() === 0;
 
           return (
-            <button
+            <Button
               key={index}
               onClick={() => handleDateSelect(date)}
               className={cn(
-                'h-10 w-full flex items-center justify-center rounded-full text-sm',
-                !isCurrentMonth && 'text-textgray opacity-50',
-                isSelected && 'bg-iconselect text-mainblack',
-                !isSelected && isTodayDate && 'bg-lightmint',
-                !isSelected && !isTodayDate && 'hover:bg-mint',
-                isSunday && !isSelected && 'text-red-500'
+                'h-10 w-full flex items-center justify-center rounded-full text-sm p-0 size-sm bg-mainwhite text-mainblack',
+                !isCurrentMonth && 'opacity-50',
+                isSelected
+                  ? 'bg-iconselect text-mainblack'
+                  : 'bg-mainwhite text-mainblack'
               )}
-              // disabled={!isCurrentMonth}
-              aria-selected={isSelected}
-              aria-label={`${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`}
             >
               {date.getDate()}
-            </button>
+            </Button>
           );
         })}
       </div>
