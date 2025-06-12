@@ -18,7 +18,7 @@ type CustomCalendarProps = {
   className?: string;
 };
 
-export default function CustomCalendar({
+export default function CalendarComponent({
   selectedDate,
   onDateSelect,
   className,

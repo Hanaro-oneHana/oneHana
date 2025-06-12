@@ -10,7 +10,6 @@ import {
   DrawerFooter,
   DrawerClose,
 } from '@/components/ui/drawer';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import Button from './atoms/Button';
 import CalendarComponent from './atoms/CalendarComponent';
@@ -34,7 +33,6 @@ export default function ReservationComponent() {
   );
   console.log('🚀 ~ ReservationComponent ~ setSelectedDate:', setSelectedDate);
   const [selectedTime, setSelectedTime] = useState<string>();
-  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   return (
     <Drawer>
@@ -51,7 +49,10 @@ export default function ReservationComponent() {
         <div className='px-4 pb-4 space-y-6'>
           <div className='space-y-4'>
             <div className='w-full max-w-sm mx-auto'>
-              <CalendarComponent />
+              <CalendarComponent
+                selectedDate={selectedDate}
+                onDateSelect={setSelectedDate}
+              />
             </div>
           </div>
 
@@ -60,7 +61,7 @@ export default function ReservationComponent() {
               상담 가능 시간
             </Txt>
             <HorizontalSlider className='px-0'>
-              <div className='flex gap-2 px-4'>
+              <div className='flex'>
                 {times.map((time) => (
                   <Button
                     key={time}
