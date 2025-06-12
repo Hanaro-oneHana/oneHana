@@ -32,10 +32,10 @@ export default function Header({
 
   return (
     <>
-      <header className='flex items-center justify-between h-[60px]'>
-        <div className='flex items-center gap-2'>
+      <header className='flex items-center justify-between h-[60px] bg-transparent'>
+        <div className='flex items-center gap-2 bg-transparent'>
           <button
-            className=' ml-4 cursor-pointer'
+            className=' ml-4 cursor-pointer '
             onClick={isLeftBack ? onBackClick : onMyClick}
           >
             <Image
@@ -43,6 +43,7 @@ export default function Header({
               alt={isLeftBack ? '뒤로가기' : '마이'}
               width={isLeftBack ? 10 : 20}
               height={20}
+              className='bg-transparent'
             />
           </button>
           {leftIcon === 'my' && (
@@ -55,7 +56,7 @@ export default function Header({
         <Txt> {title} </Txt>
 
         <button
-          className='w-[24px] h-[24px] mr-2 cursor-pointer'
+          className='w-[24px] h-[24px] mr-2 cursor-pointer bg-transparent'
           onClick={onRightClick}
         >
           {rightIcon && (
@@ -64,7 +65,8 @@ export default function Header({
               alt={isRightClose ? '닫기' : '알림'}
               width={15}
               height={15}
-            ></Image>
+              className='bg-transparent'
+            />
           )}
         </button>
       </header>
