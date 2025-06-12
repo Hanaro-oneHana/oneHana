@@ -151,7 +151,7 @@ export default function CalendarComponent({
       <div className='flex justify-between items-center mb-4 px-2'>
         <Button
           onClick={goToPreviousMonth}
-          className='p-2 w-auto h-auto rounded-full bg-white text-mainblack'
+          className='p-2 w-auto h-auto rounded-full bg-mainwhite text-mainblack'
         >
           <ChevronLeft size={20} />
         </Button>
@@ -160,9 +160,7 @@ export default function CalendarComponent({
           {/* 월 선택 드롭다운 */}
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
-              <Txt size={16} weight='medium'>
-                {monthNames[currentMonth]}
-              </Txt>
+              <Txt weight='font-[500]'>{monthNames[currentMonth]}</Txt>
               <ChevronDown size={14} className='text-mainblack' />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -181,9 +179,7 @@ export default function CalendarComponent({
           {/* 년도 선택 드롭다운 */}
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1  rounded-lg'>
-              <Txt size={16} weight='medium'>
-                {currentYear}년
-              </Txt>
+              <Txt weight='font-[200]'>{currentYear}년</Txt>
               <ChevronDown size={14} className='text-mainblack' />
             </DropdownMenuTrigger>
             <DropdownMenuContent className='max-h-60 overflow-y-auto'>
@@ -202,7 +198,7 @@ export default function CalendarComponent({
 
         <Button
           onClick={goToNextMonth}
-          className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-white'
+          className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-mainwhite'
         >
           <ChevronRight size={20} />
         </Button>
@@ -232,7 +228,7 @@ export default function CalendarComponent({
                 !isCurrentMonth && 'opacity-50',
                 isSelected
                   ? 'bg-iconselect text-mainblack'
-                  : 'bg-white text-mainblack'
+                  : 'bg-mainwhite text-mainblack'
               )}
             >
               {date.getDate()}

@@ -39,7 +39,7 @@ export default function ReservationComponent() {
         <Button>예약하기</Button>
       </DrawerTrigger>
 
-      <DrawerContent className='max-w-md mx-auto bg-white'>
+      <DrawerContent className='max-w-md mx-auto bg-mainwhite'>
         <DrawerHeader className='relative pb-2'>
           <DrawerTitle className='text-center'></DrawerTitle>
           <DrawerDescription />
@@ -56,7 +56,7 @@ export default function ReservationComponent() {
           </div>
 
           <div className='space-y-3'>
-            <Txt size={16} weight='medium' className=' ml-[8px]'>
+            <Txt weight='font-[500]' className=' ml-[8px]'>
               상담 가능 시간
             </Txt>
             <HorizontalSlider className='px-0'>
