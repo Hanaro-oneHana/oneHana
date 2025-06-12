@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import { Progress } from '../ui/progress';
 import Txt from './Txt';
 
@@ -115,12 +114,16 @@ export default function ProgressBar({ total, current }: Props) {
   const ratio = Math.round(Math.min(rawRatio, 100));
   const textRatio = `left-[${ratio}%]`;
 
-  const isOver = rawRatio > 100;
+  const isOver = rawRatio >= 100;
 
   return (
-    <div className='relative w-full max-w-[335px] space-y-1'>
-      <Txt>{isOver ? `예산 초과` : `예산의 ${Math.round(ratio)}% 사용`}</Txt>
-      <div className='relative'>
+    <div className='relative w-full'>
+      <div className='mb-[10px]'>
+        <Txt size='text-[15px]'>
+          {isOver ? `예산 초과` : `예산의 ${ratio}% 사용`}
+        </Txt>
+      </div>
+      <div className='relative max-w-[335px]'>
         <Progress
           value={ratio}
           className={`
@@ -128,30 +131,39 @@ export default function ProgressBar({ total, current }: Props) {
         w-full max-w-[335px]
         rounded-[20px]
         bg-[#E7E9EE]
-        backdrop-blur-sm
         [&>div]:rounded-[20px]
-        ${isOver ? '[&>div]:bg-[#DC231E]' : '[&>div]:bg-primarycolor'}
+        ${isOver ? '[&>div]:bg-[#EC4774]' : '[&>div]:bg-primarycolor'}
       `}
         />
-      </div>
-      <Txt
-        size='text-[12px]'
-        color='text-textgray'
-        weight='font-[400]'
-        className={cn(
-          `absolute bottom-[-20px] translate-x-[-50%] ${textRatio}`
+
+        {isOver ? (
+          <Txt
+            size='text-[10px]'
+            color='text-textgray'
+            className={`absolute bottom-[-20px] left-full whitespace-nowrap ml-0.5`}
+          >
+            {formatKRWUnit(current)}
+          </Txt>
+        ) : (
+          <>
+            <Txt
+              size='text-[10px]'
+              color='text-textgray'
+              className={`absolute bottom-[-20px] translate-x-[-105%] ${textRatio} whitespace-nowrap`}
+            >
+              {formatKRWUnit(current)}
+            </Txt>
+
+            <Txt
+              size='text-[10px]'
+              color='text-textgray'
+              className={`absolute bottom-[-20px] left-full whitespace-nowrap ml-0.5`}
+            >
+              {formatKRWUnit(total)}
+            </Txt>
+          </>
         )}
-      >
-        {formatKRWUnit(current)}
-      </Txt>
-      <Txt
-        size='text-[12px]'
-        color='text-textgray'
-        weight='font-[400]'
-        className={`absolute bottom-[-20px] right-0`}
-      >
-        {formatKRWUnit(total)}
-      </Txt>
+      </div>
     </div>
   );
 }
