@@ -31,7 +31,6 @@ export default function ReservationComponent() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
-  console.log('🚀 ~ ReservationComponent ~ setSelectedDate:', setSelectedDate);
   const [selectedTime, setSelectedTime] = useState<string>();
 
   return (
@@ -90,10 +89,11 @@ export default function ReservationComponent() {
               className='w-full bg-primarycolor text-mainwhite'
               onClick={() => {
                 if (selectedDate && selectedTime) {
-                  console.log('예약 정보:', {
-                    date: selectedDate,
-                    time: selectedTime,
-                  });
+                  // console.log('예약 정보:', {
+                  //   date: selectedDate,
+                  //   time: selectedTime,
+                  // });
+                  // 데이터 처리
                 }
               }}
             >
