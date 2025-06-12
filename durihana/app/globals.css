@@ -1,7 +1,92 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
+
+/* font */
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Bold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Heavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 디자인 시스템 */
+@layer styles {
+  :root {
+    --mainblack: #333333;
+    --mainwhite: #fbfcfc;
+    --mint: #d2e8e4;
+    --background: #f6f7f9;
+    --navy: #3b4156;
+    --textgray: #666666;
+    --buttongray: #9ca7b3;
+    --primarycolor: #489896;
+    --secondarycolor: #5e68bd;
+    --icon: #7a8da0;
+    --iconselect: #5bc0a4;
+    --lightmint: #e5f5f1;
+    --purple: #d7dbf0;
+    --lightpurple: #e4e8f5;
+    --pink: #f1e7f6;
+    --skyblue: #e0f0f5;
+    --lime: #e1f4e2;
+  }
+
+  @theme inline {
+    --font-hana: 'Hana', sans-serif;
+    --color-mainblack: var(--mainblack);
+    --color-mainwhite: var(--mainwhite);
+    --color-primarycolor: var(--primarycolor);
+    --color-secondarycolor: var(--secondary);
+    --color-background: var(--background);
+    --color-navy: var(--navy);
+    --color-textgray: var(--textgray);
+    --color-buttongray: var(--buttongray);
+    --color-icon: var(--icon);
+    --color-iconselect: var(--iconselect);
+    --color-mint: var(--mint);
+    --color-lightmint: var(--lightmint);
+    --color-purple: var(--purple);
+    --color-lightpurple: var(--purple2);
+    --color-pink: var(--pink);
+    --color-skyblue: var(--skyblue);
+    --color-lime: var(--lime);
+  }
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -45,15 +130,12 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -115,8 +197,32 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    background-color: var(--color-mainwhite);
   }
   body {
     @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    margin: 0 auto;
+    max-width: 960px;
+    width: 100vw;
+    min-height: -webkit-fill-available;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: var(--font-hana);
+    -webkit-overflow-scrolling: touch !important;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
