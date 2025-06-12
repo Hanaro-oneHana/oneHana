@@ -1,9 +1,9 @@
 import BottomNavigation from '@/components/atoms/BottomNavigation';
 
-export default function Home() {
+export default function Menu() {
   return (
     <>
-      <BottomNavigation selectedItem='home' />
+      <BottomNavigation selectedItem='menu' />
     </>
   );
 }

@@ -1,9 +1,9 @@
 import BottomNavigation from '@/components/atoms/BottomNavigation';
 
-export default function Home() {
+export default function Calendar() {
   return (
     <>
-      <BottomNavigation selectedItem='home' />
+      <BottomNavigation selectedItem='calendar' />
     </>
   );
 }
