@@ -151,7 +151,7 @@ export default function CalendarComponent({
       <div className='flex justify-between items-center mb-4 px-2'>
         <Button
           onClick={goToPreviousMonth}
-          className='p-2 w-auto h-auto rounded-full bg-mainwhite text-mainblack'
+          className='p-2 w-auto h-auto rounded-full bg-white text-mainblack'
         >
           <ChevronLeft size={20} />
         </Button>
@@ -202,7 +202,7 @@ export default function CalendarComponent({
 
         <Button
           onClick={goToNextMonth}
-          className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-mainwhite'
+          className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-white'
         >
           <ChevronRight size={20} />
         </Button>
@@ -232,7 +232,7 @@ export default function CalendarComponent({
                 !isCurrentMonth && 'opacity-50',
                 isSelected
                   ? 'bg-iconselect text-mainblack'
-                  : 'bg-mainwhite text-mainblack'
+                  : 'bg-white text-mainblack'
               )}
             >
               {date.getDate()}

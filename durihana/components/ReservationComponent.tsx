@@ -39,7 +39,7 @@ export default function ReservationComponent() {
         <Button>예약하기</Button>
       </DrawerTrigger>
 
-      <DrawerContent className='max-w-md mx-auto'>
+      <DrawerContent className='max-w-md mx-auto bg-white'>
         <DrawerHeader className='relative pb-2'>
           <DrawerTitle className='text-center'></DrawerTitle>
           <DrawerDescription />
