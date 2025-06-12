@@ -7,14 +7,14 @@ type Props = {
   className?: string;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
-  bgColor?: 'primarycolor' | 'mint' | 'icon' | 'purple';
-  textColor?: 'mainwhite' | 'mainblack';
+  bgColor?: 'bg-primarycolor' | 'bg-mint' | 'bg-icon' | 'bg-purple';
+  textColor?: 'text-mainwhite' | 'text-mainblack';
 };
 
 export default function Button({
   className,
-  bgColor = 'primarycolor',
-  textColor = 'mainwhite',
+  bgColor = 'bg-primarycolor',
+  textColor = 'text-mainwhite',
   onClick,
   type = 'button',
   children,
@@ -22,7 +22,7 @@ export default function Button({
   return (
     <button
       className={cn(
-        `bg-${bgColor} text-${textColor} justify-center items-center font-hana font-medium rounded-[10px] cursor-pointer w-full py-[15px] 
+        `${bgColor} ${textColor} justify-center items-center font-hana rounded-[10px] cursor-pointer w-full py-[15px] 
          `,
         className
       )}

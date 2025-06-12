@@ -1,30 +1,31 @@
-import { Color, fontWeights } from '@/app/theme';
+import { Color } from '@/app/theme';
 import { PropsWithChildren } from 'react';
 import { cn } from '@/lib/utils';
 
 type Props = {
   className?: string;
-  size?: number;
-  color?: Color;
-  weight?: keyof typeof fontWeights;
-  height?: number;
-  align?: 'left' | 'center' | 'right';
+  size?: `text-[${number}px]`;
+  color?: `text-${Color}`;
+  weight?: `font-[${number}]`;
+  height?: `leading-${number}px`;
+  align?: 'align-left' | 'align-center' | 'align-right';
 };
 
 export default function Txt({
-  size = 16,
+  size = 'text-[16px]',
   className,
   children,
-  color = 'mainBlack',
-  weight = 'regular',
+  color = 'text-mainBlack',
+  weight = 'font-[400]',
   height,
-  align = 'left',
+  align = 'align-left',
 }: PropsWithChildren<Props>) {
   return (
     <span
       className={cn(
-        `text-[${size}px] text-${color} text-${align} font-hana font-[${fontWeights[weight]}] ${height ? `leading-[${height}px]` : ''} `,
-        className
+        `${size} ${color} ${weight} ${align} font-hana
+        ${height}
+        ${className}`
       )}
     >
       {children}
