@@ -36,22 +36,6 @@ export default function ReservationComponent() {
   const [selectedTime, setSelectedTime] = useState<string>();
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const formatMonthYear = (date: Date) => {
-    return `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
-  };
-
-  const goToPreviousMonth = () => {
-    setCurrentMonth(
-      (prev) => new Date(prev.getFullYear(), prev.getMonth() - 1)
-    );
-  };
-
-  const goToNextMonth = () => {
-    setCurrentMonth(
-      (prev) => new Date(prev.getFullYear(), prev.getMonth() + 1)
-    );
-  };
-
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -66,18 +50,6 @@ export default function ReservationComponent() {
 
         <div className='px-4 pb-4 space-y-6'>
           <div className='space-y-4'>
-            <div className='flex justify-between items-center px-2'>
-              <button onClick={goToPreviousMonth} className='p-2'>
-                <ChevronLeft size={20} className='text-mainblack' />
-              </button>
-              <Txt size={18} weight='medium'>
-                {formatMonthYear(currentMonth)}
-              </Txt>
-              <button onClick={goToNextMonth} className='p-2'>
-                <ChevronRight size={20} className='text-mainblack' />
-              </button>
-            </div>
-
             <div className='w-full max-w-sm mx-auto'>
               <CalendarComponent />
             </div>
