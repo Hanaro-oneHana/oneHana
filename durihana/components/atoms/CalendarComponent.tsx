@@ -179,7 +179,7 @@ export default function CalendarComponent({
           {/* 년도 선택 드롭다운 */}
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1  rounded-lg'>
-              <Txt weight='font-[200]'>{currentYear}년</Txt>
+              <Txt weight='font-[500]'>{currentYear}년</Txt>
               <ChevronDown size={14} className='text-mainblack' />
             </DropdownMenuTrigger>
             <DropdownMenuContent className='max-h-60 overflow-y-auto'>
