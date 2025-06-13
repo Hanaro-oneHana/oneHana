@@ -125,7 +125,10 @@ export default function CalendarComponent({
     <div className={cn('w-full max-w-sm mx-auto', className)}>
       {/* 헤더 */}
       <div className='flex justify-between items-center mb-4 px-2'>
-        <Button onClick={goToPreviousMonth} className='p-2 rounded-full'>
+        <Button
+          onClick={goToPreviousMonth}
+          className='p-2 w-auto h-auto rounded-full bg-mainwhite text-mainblack'
+        >
           <ChevronLeft size={20} />
         </Button>
         <div className='flex items-center gap-2'>
@@ -156,7 +159,10 @@ export default function CalendarComponent({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <Button onClick={goToNextMonth} className='p-2 rounded-full'>
+        <Button
+          onClick={goToNextMonth}
+          className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-mainwhite'
+        >
           <ChevronRight size={20} />
         </Button>
       </div>
