@@ -17,16 +17,7 @@ import HorizontalSlider from './atoms/HorizontalSlider';
 import Txt from './atoms/Txt';
 
 export default function PartnerCalendar() {
-  const times = [
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-  ];
+  const times = ['10:00', '10:30', '15:00', '16:00', '16:30', '18:00'];
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
@@ -36,7 +27,7 @@ export default function PartnerCalendar() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button>예약하기</Button>
+        <Button>상담 일정 보기</Button>
       </DrawerTrigger>
 
       <DrawerContent className='max-w-md mx-auto bg-mainwhite'>
@@ -62,21 +53,15 @@ export default function PartnerCalendar() {
             <HorizontalSlider className='px-0'>
               <div className='flex'>
                 {times.map((time) => (
-                  <Button
+                  <Txt
                     key={time}
-                    onClick={() => setSelectedTime(time)}
                     className={`
                       px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
                       transition-colors duration-200
-                      ${
-                        selectedTime === time
-                          ? 'bg-iconselect text-mainblack'
-                          : 'bg-linegray text-mainblack'
-                      }
                     `}
                   >
                     {time}
-                  </Button>
+                  </Txt>
                 ))}
               </div>
             </HorizontalSlider>
@@ -85,19 +70,8 @@ export default function PartnerCalendar() {
 
         <DrawerFooter className='px-4 pt-4 ml-[8px]'>
           <DrawerClose asChild>
-            <Button
-              className='w-full bg-primarycolor text-mainwhite'
-              onClick={() => {
-                if (selectedDate && selectedTime) {
-                  // console.log('예약 정보:', {
-                  //   date: selectedDate,
-                  //   time: selectedTime,
-                  // });
-                  // 데이터 처리
-                }
-              }}
-            >
-              확인
+            <Button className='w-full bg-primarycolor text-mainwhite'>
+              닫기
             </Button>
           </DrawerClose>
         </DrawerFooter>
