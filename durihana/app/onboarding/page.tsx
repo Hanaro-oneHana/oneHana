@@ -1,7 +1,6 @@
 import Onboarding from "@/components/OnBoarding";
 
-export default function Home() {
-
+export default function OnBoarding() {
   return (
     <>
       <Onboarding/>
