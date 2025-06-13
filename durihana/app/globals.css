@@ -66,6 +66,7 @@
     --skyblue: #e0f0f5;
     --lime: #e1f4e2;
     --red: #ec4774;
+    --primaryhalf: #48989680;
   }
 
   @theme inline {
@@ -88,6 +89,7 @@
     --color-pink: var(--pink);
     --color-skyblue: var(--skyblue);
     --color-lime: var(--lime);
+    --color-primaryhalf: var(--primaryhalf);
   }
 }
 
