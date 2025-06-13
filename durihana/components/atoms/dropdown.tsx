@@ -11,11 +11,10 @@ export type Props = {
     className ?: string;
     width ?: 'w-[325px]' | 'w-[80px]';
     height ?: 'h-[40px]' | 'h-[30px]';
-    bgColor ?: 'bg-mainwhite' | 'bg-primarycolor';
-    // bgBorder ?:  'bg-gray';
+    bgColor ?: 'bg-mainwhite' | 'bg-primarycolor' | 'bg-transparent';
     textColor ?:'text-mainwhite' | 'text-mainblack';
-    // iconColor ?: text랑 동일한 컬러셋
-    // border
+    borderStyle ?: 'border-none' | 'border-gray-200';
+    underlineBorder ?: 'border-none' | 'border-gray-200'; 
 };
 
 export default function Dropdown({
@@ -26,6 +25,8 @@ export default function Dropdown({
     height = 'h-[40px]',
     bgColor = 'bg-mainwhite',
     textColor = 'text-mainblack',
+    borderStyle = 'border-none',
+    underlineBorder = 'border-gray-200',
 }: Props) {
     const [isOpen, toggleOpen] = useReducer((prev) => !prev, false);
     const [selected, setSelected] = useState<string | null>(null);
@@ -46,14 +47,14 @@ export default function Dropdown({
         <div className="relative inline-block" ref={dropdownRef}>
             <Button
             onClick={toggleOpen}
-            className={ `${width} ${height} ${bgColor} ${textColor} px-4 flex items-center justify-between 
+            className={ `${width} ${height} ${bgColor} ${textColor} ${borderStyle} px-4 flex items-center justify-between 
             ${isOpen ? 'rounded-b-none' : ''}`}>
                 <span className="truncate">{content}</span>
                 {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
             </Button>
 
             {isOpen && ( <div
-                className={`${width} ${bgColor} absolute right-0 mt-0 border border-gray-200 border-t-0 rounded-b-[10px] rounded-t-none shadow-lg max-h-[200px] overflow-auto z-10`}
+                className={`${width} ${bgColor} ${borderStyle} absolute right-0 mt-0 border border-gray-200 border-t-0 rounded-b-[10px] rounded-t-none shadow-lg max-h-[200px] overflow-auto z-10`}
                 >
                 <ul className="p-0 m-0 list-none">
                     {items.map((input, i) => (
@@ -65,7 +66,7 @@ export default function Dropdown({
                         }}>
                             <span>{input}</span>
                         </li>
-                        {i < items.length - 1 && <hr className="border-gray-200 m-0" />}
+                        {i < items.length - 1 && <hr className= {`${underlineBorder}`} />}
                     </Fragment>))}
                 </ul>
             </div>)}
