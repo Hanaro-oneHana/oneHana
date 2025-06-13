@@ -9,6 +9,7 @@ type Props = {
   type?: 'button' | 'submit' | 'reset';
   bgColor?: 'bg-primarycolor' | 'bg-mint' | 'bg-icon' | 'bg-purple';
   textColor?: 'text-mainwhite' | 'text-mainblack';
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -18,6 +19,7 @@ export default function Button({
   onClick,
   type = 'button',
   children,
+  disabled = false,
 }: PropsWithChildren<Props>) {
   return (
     <button
@@ -28,6 +30,7 @@ export default function Button({
       )}
       onClick={onClick}
       type={type}
+      disabled={disabled}
     >
       {children}
     </button>
