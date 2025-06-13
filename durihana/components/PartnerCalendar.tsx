@@ -42,6 +42,7 @@ export default function PartnerCalendar() {
               <CalendarComponent
                 selectedDate={selectedDate}
                 onDateSelect={setSelectedDate}
+                blockedDates={[new Date(2025, 5, 12), new Date(2025, 5, 26)]}
               />
             </div>
           </div>

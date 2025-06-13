@@ -16,7 +16,6 @@ type CustomCalendarProps = {
   selectedDate?: Date;
   onDateSelect?: (date: Date) => void;
   className?: string;
-  /** 일정이 있는 날짜나 사용할 수 없는 날짜를 회색으로 표시하고 비활성화합니다 */
   blockedDates?: Date[];
 };
 
@@ -192,7 +191,7 @@ export default function CalendarComponent({
                 'h-10 w-full flex items-center justify-center rounded-full text-sm p-0',
                 !isCurrentMonth && 'opacity-50',
                 isBlocked
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  ? 'bg-mainwhite text-mainblack opacity-50 cursor-not-allowed'
                   : isSelected
                     ? 'bg-iconselect text-mainblack'
                     : 'bg-mainwhite text-mainblack'
