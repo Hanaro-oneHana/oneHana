@@ -4,17 +4,31 @@ import React, { useReducer, useState, useRef, useEffect, Fragment } from 'react'
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import Button from './Button';
 
-export type DropdownProps = {
-    items: [string, string][]; // [[name, price], ...]
-    defaultTitle?: string;
+export type Props = {
+    items ?: string[];
+    defaultTitle ?: string;
+
+    className ?: string;
+    width ?: 'w-[325px]' | 'w-[80px]';
+    height ?: 'h-[40px]' | 'h-[30px]';
+    bgColor ?: 'bg-mainwhite' | 'bg-primarycolor';
+    // bgBorder ?:  'bg-gray';
+    textColor ?:'text-mainwhite' | 'text-mainblack';
+    // iconColor ?: text랑 동일한 컬러셋
+    // border
 };
 
 export default function Dropdown({
-    items,
-    defaultTitle = '선택지',
-}: DropdownProps) {
+    items = ['select1', 'select2', 'select3'],
+    defaultTitle = 'option',
+
+    width = 'w-[80px]',
+    height = 'h-[40px]',
+    bgColor = 'bg-mainwhite',
+    textColor = 'text-mainblack',
+}: Props) {
     const [isOpen, toggleOpen] = useReducer((prev) => !prev, false);
-    const [selected, setSelected] = useState<[string, string] | null>(null);
+    const [selected, setSelected] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -26,31 +40,30 @@ export default function Dropdown({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen]);
 
-    const content = selected ? `${selected[0]}  ${selected[1]}` : defaultTitle;
+    const content = selected ?? defaultTitle;
 
     return <>
         <div className="relative inline-block" ref={dropdownRef}>
             <Button
             onClick={toggleOpen}
-            className={ `w-[325px] h-[40px] px-4 flex items-center justify-between
+            className={ `${width} ${height} ${bgColor} ${textColor} px-4 flex items-center justify-between 
             ${isOpen ? 'rounded-b-none' : ''}`}>
                 <span className="truncate">{content}</span>
                 {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
             </Button>
 
             {isOpen && ( <div
-                className="absolute right-0 mt-0 w-[325px] bg-white border border-gray-200 border-t-0 rounded-b-[10px] rounded-t-none shadow-lg max-h-[200px] overflow-auto z-10"
+                className={`${width} ${bgColor} absolute right-0 mt-0 border border-gray-200 border-t-0 rounded-b-[10px] rounded-t-none shadow-lg max-h-[200px] overflow-auto z-10`}
                 >
                 <ul className="p-0 m-0 list-none">
-                    {items.map(([name, price], i) => (
-                    <Fragment key={name}>
+                    {items.map((input, i) => (
+                    <Fragment key={input}>
                         <li className="px-4 py-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
-                            setSelected([name, price]);
+                            setSelected(input);
                             toggleOpen();
                         }}>
-                            <span>{name}</span>
-                            <span>{price}</span>
+                            <span>{input}</span>
                         </li>
                         {i < items.length - 1 && <hr className="border-gray-200 m-0" />}
                     </Fragment>))}
