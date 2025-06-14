@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import Button from './Button';
 import Txt from './Txt';
 
@@ -25,29 +26,37 @@ export default function Header({
   onRightClick,
   onClick,
 }: Props) {
-  const isLeftBack = leftIcon === 'back';
-  const isRightClose = rightIcon === 'close';
+  const [isLeftBack, setLeftBack] = useState(leftIcon === 'back');
+  const [isRightClose, setRightClose] = useState(rightIcon === 'close');
   const imageLeftUrl = `/asset/icons/${leftIcon}.svg`;
   const imageRightUrl = `/asset/icons/${rightIcon}.svg`;
 
+  useEffect(() => {
+    setLeftBack(leftIcon === 'back');
+    setRightClose(rightIcon === 'close');
+  }, [leftIcon, rightIcon]);
+
   return (
     <>
-      <header className='flex items-center justify-between h-[60px] bg-transparent'>
-        <div className='flex items-center gap-2 bg-transparent'>
+      <header className='flex items-center justify-between h-[60px] bg-transparent px-[20px]'>
+        <div className='flex items-center justify-center  gap-[10px] bg-transparent '>
           <button
-            className=' ml-4 cursor-pointer '
+            className='flex items-center justify-center w-[24px] h-[24px] shrink-0 cursor-pointer'
             onClick={isLeftBack ? onBackClick : onMyClick}
           >
             <Image
               src={imageLeftUrl}
               alt={isLeftBack ? '뒤로가기' : '마이'}
-              width={isLeftBack ? 10 : 20}
-              height={20}
+              width={isLeftBack ? 20 : 24}
+              height={isLeftBack ? 20 : 24}
               className='bg-transparent'
             />
           </button>
           {leftIcon === 'my' && (
-            <Button className='flex h-[20px] text-xs p-2' onClick={onClick}>
+            <Button
+              className='flex text-[11px] py-[4px] px-[8px] rounded-[8px]'
+              onClick={onClick}
+            >
               {buttonTxt}
             </Button>
           )}
@@ -56,15 +65,15 @@ export default function Header({
         <Txt> {title} </Txt>
 
         <button
-          className='w-[24px] h-[24px] mr-2 cursor-pointer bg-transparent'
+          className='w-[24px] h-[24px]cursor-pointer bg-transparent'
           onClick={onRightClick}
         >
           {rightIcon && (
             <Image
               src={imageRightUrl}
               alt={isRightClose ? '닫기' : '알림'}
-              width={15}
-              height={15}
+              width={24}
+              height={24}
               className='bg-transparent'
             />
           )}
