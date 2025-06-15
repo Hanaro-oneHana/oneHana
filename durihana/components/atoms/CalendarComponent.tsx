@@ -21,6 +21,8 @@ type CustomCalendarProps = {
   currentYear?: number;
   onMonthChange?: (month: number) => void;
   onYearChange?: (year: number) => void;
+  scheduleDates?: Date[]; // 일정이 있는 날짜들
+  showScheduleDots?: boolean; // 일정 점 표시 여부
 };
 
 export default function CalendarComponent({
@@ -32,6 +34,8 @@ export default function CalendarComponent({
   currentYear: propCurrentYear,
   onMonthChange,
   onYearChange,
+  scheduleDates = [],
+  showScheduleDots = false,
 }: CustomCalendarProps) {
   const [currentDate, setCurrentDate] = useState(selectedDate || new Date());
   const [currentMonth, setCurrentMonth] = useState(
@@ -155,6 +159,10 @@ export default function CalendarComponent({
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 
+  const hasSchedule = (date: Date) => {
+    return scheduleDates.some((scheduleDate) => isSameDay(scheduleDate, date));
+  };
+
   return (
     <div className={cn('w-full max-w-sm mx-auto', className)}>
       {/* 헤더 */}
@@ -214,24 +222,32 @@ export default function CalendarComponent({
           const { date, isCurrentMonth } = dayObj;
           const isSelected = isSameDay(date, internalSelectedDate);
           const isBlocked = blockedDates.some((bd) => isSameDay(bd, date));
+          const hasScheduleOnDate = showScheduleDots && hasSchedule(date);
 
           return (
-            <Button
-              key={idx}
-              disabled={isBlocked}
-              onClick={() => handleDateSelect(date)}
-              className={cn(
-                'h-10 w-full flex items-center justify-center rounded-full text-sm p-0',
-                !isCurrentMonth && 'opacity-50',
-                isBlocked
-                  ? 'bg-mainwhite text-mainblack opacity-50 cursor-not-allowed'
-                  : isSelected
-                    ? 'bg-primaryhalf text-mainblack'
-                    : 'bg-mainwhite text-mainblack'
+            <div key={idx} className='relative'>
+              <Button
+                disabled={isBlocked}
+                onClick={() => handleDateSelect(date)}
+                className={cn(
+                  'h-10 w-full flex items-center justify-center rounded-full text-sm p-0 relative',
+                  !isCurrentMonth && 'opacity-50',
+                  isBlocked
+                    ? 'bg-mainwhite text-mainblack opacity-50 cursor-not-allowed'
+                    : isSelected
+                      ? 'bg-primaryhalf text-mainblack'
+                      : 'bg-mainwhite text-mainblack'
+                )}
+              >
+                {date.getDate()}
+              </Button>
+              {/* 일정 점 표시 */}
+              {hasScheduleOnDate && (
+                <div className='absolute bottom-1 left-1/2 transform -translate-x-1/2'>
+                  <div className='w-1 h-1 bg-primarycolor rounded-full'></div>
+                </div>
               )}
-            >
-              {date.getDate()}
-            </Button>
+            </div>
           );
         })}
       </div>
