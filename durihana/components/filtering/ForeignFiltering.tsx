@@ -1,33 +1,37 @@
 'use client';
 
-import { useState } from 'react';
-import Button from './atoms/Button';
-import HorizontalSlider from './atoms/HorizontalSlider';
+import { useEffect, useState } from 'react';
+import Button from '../atoms/Button';
+import HorizontalSlider from '../atoms/HorizontalSlider';
 
-export default function DomesticFiltering() {
+type Props = {
+  onChange: (regions: string[]) => void;
+};
+
+export default function ForeignFiltering({ onChange }: Props) {
   const regions = [
-    '서울',
-    '경기도',
-    '인천',
-    '강원',
-    '대전',
-    '세종',
-    '충북',
-    '충남',
-    '광주',
-    '전북',
-    '전남',
-    '대구',
-    '부산',
-    '울산',
-    '경북',
-    '경남',
-    '제주',
+    '추천 여행지',
+    '국내',
+    '아시아',
+    '유럽',
+    '미주',
+    '오세아니아',
+    '기타',
   ];
 
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  console.log('선택된 지역:', selectedRegions);
 
+  useEffect(() => {
+    onChange(selectedRegions);
+  }, [selectedRegions, onChange]);
+
+  const toggleRegion = (region: string) => {
+    setSelectedRegions((prev) =>
+      prev.includes(region)
+        ? prev.filter((r) => r !== region)
+        : [...prev, region]
+    );
+  };
   return (
     <>
       <HorizontalSlider>
@@ -35,13 +39,7 @@ export default function DomesticFiltering() {
           {regions.map((region) => (
             <Button
               key={region}
-              onClick={() =>
-                setSelectedRegions((prev) =>
-                  prev.includes(region)
-                    ? prev.filter((r) => r !== region)
-                    : [...prev, region]
-                )
-              }
+              onClick={() => toggleRegion(region)}
               className={`rounded-10px px-[12px] py-[7px] text-[12px] whitespace-nowrap
                       transition-colors duration-200
                       ${

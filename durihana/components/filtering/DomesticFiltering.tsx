@@ -1,22 +1,39 @@
 'use client';
 
-import { useState } from 'react';
-import Button from './atoms/Button';
-import HorizontalSlider from './atoms/HorizontalSlider';
+import { useEffect, useState } from 'react';
+import Button from '../atoms/Button';
+import HorizontalSlider from '../atoms/HorizontalSlider';
 
-export default function ForeignFiltering() {
+type Props = {
+  onChange: (regions: string[]) => void;
+};
+
+export default function DomesticFiltering({ onChange }: Props) {
   const regions = [
-    '추천 여행지',
-    '국내',
-    '아시아',
-    '유럽',
-    '미주',
-    '오세아니아',
-    '기타',
+    '서울',
+    '경기도',
+    '인천',
+    '강원',
+    '대전',
+    '세종',
+    '충북',
+    '충남',
+    '광주',
+    '전북',
+    '전남',
+    '대구',
+    '부산',
+    '울산',
+    '경북',
+    '경남',
+    '제주',
   ];
 
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  console.log(selectedRegions);
+
+  useEffect(() => {
+    onChange(selectedRegions);
+  }, [selectedRegions, onChange]);
 
   const toggleRegion = (region: string) => {
     setSelectedRegions((prev) =>
@@ -25,6 +42,7 @@ export default function ForeignFiltering() {
         : [...prev, region]
     );
   };
+
   return (
     <>
       <HorizontalSlider>
