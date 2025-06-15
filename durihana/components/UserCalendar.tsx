@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import {
   getUserSchedulesForDate,
@@ -14,7 +15,7 @@ type Schedule = {
   title: string;
   date: Date;
   time: string;
-  type: 'reservation' | 'personal';
+  type: 'reservation' | 'finance';
   partnerName?: string;
 };
 
@@ -54,7 +55,7 @@ export default function UserCalendar({ userId }: Props) {
 
       const formattedSchedules: Schedule[] = [];
 
-      // 개인 일정 변환
+      // 금융 일정 변환 (기존 개인 일정)
       personalSchedules.forEach((schedule) => {
         console.log('🚀 ~ personalSchedule:', schedule);
         const timePart = schedule.user_date.includes(' ')
@@ -73,7 +74,7 @@ export default function UserCalendar({ userId }: Props) {
           title: schedule.partnerservice.name,
           date: localDate,
           time: timePart,
-          type: 'personal',
+          type: 'finance',
           partnerName: schedule.partnerservice.partner.name,
         });
       });
@@ -127,12 +128,12 @@ export default function UserCalendar({ userId }: Props) {
   const reservationSchedules = schedules.filter(
     (s) => s.type === 'reservation'
   );
-  const personalSchedules = schedules.filter((s) => s.type === 'personal');
+  const financeSchedules = schedules.filter((s) => s.type === 'finance');
 
   return (
-    <div className='w-full max-w-md mx-auto bg-mainwhite p-4 space-y-6'>
-      {/* 달력 */}
-      <div className='w-full'>
+    <div className='w-full max-w-md mx-auto bg-mainwhite flex flex-col h-screen'>
+      {/* 달력 - 고정 영역 */}
+      <div className='flex-shrink-0 p-4'>
         <CalendarComponent
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
@@ -145,106 +146,135 @@ export default function UserCalendar({ userId }: Props) {
         />
       </div>
 
-      {loading && (
-        <div className='text-center py-4'>
-          <Txt size='text-[14px]' className='text-gray-500'>
-            일정을 불러오는 중...
-          </Txt>
-        </div>
-      )}
+      {/* 일정 리스트 - 스크롤 영역 */}
+      <div className='flex-1 overflow-y-auto px-4 pb-4'>
+        {loading && (
+          <div className='text-center py-8'>
+            <Txt size='text-[14px]' className='text-gray-500'>
+              일정을 불러오는 중...
+            </Txt>
+          </div>
+        )}
 
-      {!loading && (
-        <>
-          {/* 예약내역 */}
-          {reservationSchedules.length > 0 && (
-            <div className='space-y-3'>
-              <Txt
-                size='text-[16px]'
-                weight='font-[600]'
-                className='text-mainblack'
-              >
-                예약내역
-              </Txt>
-              <div className='space-y-2'>
-                {reservationSchedules.map((schedule) => (
-                  <div
-                    key={`reservation-${schedule.id}`}
-                    className='bg-gray-50 p-3 rounded-lg'
-                  >
-                    <Txt
-                      size='text-[14px]'
-                      weight='font-[500]'
-                      className='text-mainblack'
+        {!loading && (
+          <div className='space-y-6'>
+            {/* 예약일정 */}
+            {reservationSchedules.length > 0 && (
+              <div className='space-y-4'>
+                <Txt
+                  size='text-[18px]'
+                  weight='font-[600]'
+                  className='text-mainblack'
+                >
+                  예약일정
+                </Txt>
+                <div className='space-y-3'>
+                  {reservationSchedules.map((schedule) => (
+                    <div
+                      key={`reservation-${schedule.id}`}
+                      className='bg-white rounded-lg p-4 shadow-sm border border-gray-100'
                     >
-                      {schedule.title}
-                    </Txt>
-                    <div className='flex items-center gap-2 mt-1'>
-                      <Txt size='text-[12px]' className='text-gray-600'>
-                        📅 {formatDisplayDate(schedule.date)}
+                      <Txt
+                        size='text-[16px]'
+                        weight='font-[500]'
+                        className='text-mainblack mb-3'
+                      >
+                        {schedule.title}
                       </Txt>
-                      <Txt size='text-[12px]' className='text-gray-600'>
-                        🕐 {schedule.time}
-                      </Txt>
+                      <div className='space-y-2'>
+                        <div className='flex items-center gap-3'>
+                          <Image
+                            src='/asset/icons/calendar-line.svg'
+                            alt='calendar'
+                            width={16}
+                            height={16}
+                          />
+                          <Txt size='text-[14px]' className='text-gray-600'>
+                            {formatDisplayDate(schedule.date)} {schedule.time}
+                          </Txt>
+                        </div>
+                        <div className='flex items-center gap-3'>
+                          <Image
+                            src='/asset/icons/map.svg'
+                            alt='location'
+                            width={16}
+                            height={16}
+                          />
+                          <Txt size='text-[14px]' className='text-gray-600'>
+                            {schedule.partnerName}
+                          </Txt>
+                        </div>
+                      </div>
                     </div>
-                    <Txt size='text-[12px]' className='text-gray-500 mt-1'>
-                      📍 {schedule.partnerName}
-                    </Txt>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* 개인 일정 */}
-          {personalSchedules.length > 0 && (
-            <div className='space-y-3'>
-              <Txt
-                size='text-[16px]'
-                weight='font-[600]'
-                className='text-mainblack'
-              >
-                개인 일정
-              </Txt>
-              <div className='space-y-2'>
-                {personalSchedules.map((schedule) => (
-                  <div
-                    key={`personal-${schedule.id}`}
-                    className='bg-gray-50 p-3 rounded-lg'
-                  >
-                    <Txt
-                      size='text-[14px]'
-                      weight='font-[500]'
-                      className='text-mainblack'
+            {/* 금융 */}
+            {financeSchedules.length > 0 && (
+              <div className='space-y-4'>
+                <Txt
+                  size='text-[18px]'
+                  weight='font-[600]'
+                  className='text-mainblack'
+                >
+                  금융
+                </Txt>
+                <div className='space-y-3'>
+                  {financeSchedules.map((schedule) => (
+                    <div
+                      key={`finance-${schedule.id}`}
+                      className='bg-white rounded-lg p-4 shadow-sm border border-gray-100'
                     >
-                      {schedule.title}
-                    </Txt>
-                    <div className='flex items-center gap-2 mt-1'>
-                      <Txt size='text-[12px]' className='text-gray-600'>
-                        📅 {formatDisplayDate(schedule.date)}
+                      <Txt
+                        size='text-[16px]'
+                        weight='font-[500]'
+                        className='text-mainblack mb-3'
+                      >
+                        {schedule.title}
                       </Txt>
-                      <Txt size='text-[12px]' className='text-gray-600'>
-                        🕐 {schedule.time}
-                      </Txt>
+                      <div className='space-y-2'>
+                        <div className='flex items-center gap-3'>
+                          <Image
+                            src='/asset/icons/calendar-line.svg'
+                            alt='calendar'
+                            width={16}
+                            height={16}
+                          />
+                          <Txt size='text-[14px]' className='text-gray-600'>
+                            {formatDisplayDate(schedule.date)} {schedule.time}
+                          </Txt>
+                        </div>
+                        <div className='flex items-center gap-3'>
+                          <Image
+                            src='/asset/icons/map.svg'
+                            alt='location'
+                            width={16}
+                            height={16}
+                          />
+                          <Txt size='text-[14px]' className='text-gray-600'>
+                            {schedule.partnerName}
+                          </Txt>
+                        </div>
+                      </div>
                     </div>
-                    <Txt size='text-[12px]' className='text-gray-500 mt-1'>
-                      📍 {schedule.partnerName}
-                    </Txt>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* 선택된 날짜에 일정이 없을 때 */}
-          {schedules.length === 0 && (
-            <div className='text-center py-8'>
-              <Txt size='text-[14px]' className='text-gray-500'>
-                {formatDisplayDate(selectedDate)}에 일정이 없습니다.
-              </Txt>
-            </div>
-          )}
-        </>
-      )}
+            {/* 선택된 날짜에 일정이 없을 때 */}
+            {schedules.length === 0 && (
+              <div className='text-center py-12'>
+                <Txt size='text-[14px]' className='text-gray-500'>
+                  {formatDisplayDate(selectedDate)}에 일정이 없습니다.
+                </Txt>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
