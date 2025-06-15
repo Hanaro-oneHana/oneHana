@@ -11,3 +11,10 @@ export function formatDate(date: Date): string {
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
+
+export const formatDisplayDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}년 ${month}월 ${day}일`;
+};
