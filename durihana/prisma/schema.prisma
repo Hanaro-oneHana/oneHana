@@ -9,7 +9,7 @@ datasource db {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model account {
+model Account {
   id           Int     @id @default(autoincrement()) @db.UnsignedInt
   account      String  @db.VarChar(31)
   balance      BigInt  @default(0)
@@ -17,35 +17,35 @@ model account {
   withdraw_cnt Int     @default(0) @db.TinyInt
   expire_date  String? @db.VarChar(31)
   user_id      Int     @db.UnsignedInt
-  user         user    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
+  User         User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
 
   @@index([user_id], map: "fk_account_user")
 }
 
-model budgetplan {
+model BudgetPlan {
   id                 Int            @id @default(autoincrement()) @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   partner_service_id Int            @db.UnsignedInt
-  partnerservice     partnerservice @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_service")
-  user               user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_user")
+  PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_service")
+  User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_user")
 
   @@index([partner_service_id], map: "fk_budget_service")
   @@index([user_id], map: "fk_budget_user")
 }
 
-model depositinterest {
+model DepositInterest {
   id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
 }
 
-model loaninterest {
+model LoanInterest {
   id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
 }
 
-model partner {
+model Partner {
   id                  Int              @id @default(autoincrement()) @db.UnsignedInt
   name                String           @db.VarChar(30)
   partner_category_id Int              @db.UnsignedInt
@@ -55,45 +55,45 @@ model partner {
   discount_rate       Decimal          @default(0.00) @db.Decimal(5, 2)
   service_detail      String           @db.Text
   is_active           Boolean          @default(true)
-  partnercategory     partnercategory  @relation(fields: [partner_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partner_category")
-  partnerservice      partnerservice[]
+  PartnerCategory     PartnerCategory  @relation(fields: [partner_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partner_category")
+  PartnerService      PartnerService[]
 
   @@index([partner_category_id], map: "fk_partner_category")
 }
 
-model partnercalendar {
+model PartnerCalendar {
   id                 Int            @id @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   reservation_date   String         @db.VarChar(31)
   partner_service_id Int            @db.UnsignedInt
-  partnerservice     partnerservice @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partnercalender_service")
-  user               user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partnercalender_user")
+  PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partnercalender_service")
+  User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partnercalender_user")
 
   @@index([partner_service_id], map: "fk_partnercalender_service")
   @@index([user_id], map: "fk_partnercalender_user")
 }
 
-model partnercategory {
+model PartnerCategory {
   id      Int       @id @db.UnsignedInt
   type    String    @db.VarChar(30)
-  partner partner[]
+  Partner Partner[]
 }
 
-model partnerservice {
+model PartnerService {
   id              Int               @id @db.UnsignedInt
   partner_id      Int               @db.UnsignedInt
   name            String            @db.VarChar(20)
   content         Json
-  budgetplan      budgetplan[]
-  partnercalendar partnercalendar[]
-  partner         partner           @relation(fields: [partner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_service_partner")
-  usercalendar    usercalendar[]
+  BudgetPlan      BudgetPlan[]
+  PartnerCalendar PartnerCalendar[]
+  Partner         Partner           @relation(fields: [partner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_service_partner")
+  UserCalendar    UserCalendar[]
 
   @@index([partner_id], map: "fk_service_partner")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model user {
+model User {
   id              Int               @id @default(autoincrement()) @db.UnsignedInt
   name            String            @db.VarChar(20)
   password        String            @db.VarChar(255)
@@ -103,19 +103,19 @@ model user {
   code            String?           @db.VarChar(15)
   mate_code       String?           @db.VarChar(15)
   type            Int               @default(0) @db.TinyInt
-  account         account[]
-  budgetplan      budgetplan[]
-  partnercalendar partnercalendar[]
-  usercalendar    usercalendar[]
+  Account         Account[]
+  BudgetPlan      BudgetPlan[]
+  PartnerCalendar PartnerCalendar[]
+  UserCalendar    UserCalendar[]
 }
 
-model usercalendar {
+model UserCalendar {
   id                 Int            @id @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   user_date          String         @db.VarChar(31)
   partner_service_id Int            @db.UnsignedInt
-  partnerservice     partnerservice @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_service")
-  user               user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_user")
+  PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_service")
+  User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_user")
 
   @@index([partner_service_id], map: "fk_usercalender_service")
   @@index([user_id], map: "fk_usercalender_user")
