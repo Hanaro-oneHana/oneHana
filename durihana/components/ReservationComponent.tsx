@@ -11,22 +11,14 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { useState } from 'react';
+import { TIMES } from '@/lib/times';
 import Button from './atoms/Button';
 import CalendarComponent from './atoms/CalendarComponent';
 import HorizontalSlider from './atoms/HorizontalSlider';
 import Txt from './atoms/Txt';
 
 export default function ReservationComponent() {
-  const times = [
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-  ];
+  const times = TIMES;
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
