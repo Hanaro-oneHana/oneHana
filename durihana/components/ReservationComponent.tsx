@@ -45,6 +45,7 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
         year,
         month
       );
+      console.log('🚀 ~ loadBlockedDates ~ fullyBooked:', fullyBooked);
       setBlockedDates(fullyBooked);
     } catch (error) {
       console.error('Failed to load blocked dates:', error);
