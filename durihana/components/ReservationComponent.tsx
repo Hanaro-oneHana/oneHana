@@ -56,7 +56,7 @@ export default function ReservationComponent() {
           </div>
 
           <div className='space-y-3'>
-            <Txt weight='font-[500]' className=' ml-[8px]'>
+            <Txt weight='font-[400]' size='text-[15px]' className=' ml-[8px]'>
               상담 가능 시간
             </Txt>
             <HorizontalSlider className='px-0'>
@@ -70,7 +70,7 @@ export default function ReservationComponent() {
                       transition-colors duration-200
                       ${
                         selectedTime === time
-                          ? 'bg-iconselect text-mainblack'
+                          ? 'bg-primaryhalf text-mainblack'
                           : 'bg-linegray text-mainblack'
                       }
                     `}

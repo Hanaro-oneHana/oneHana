@@ -128,13 +128,12 @@ export default function CalendarComponent({
           onClick={goToPreviousMonth}
           className='p-2 w-auto h-auto rounded-full bg-mainwhite text-mainblack'
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={24} />
         </Button>
         <div className='flex items-center gap-2'>
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
-              <Txt weight='font-[500]'>{monthNames[currentMonth]}</Txt>
-              <ChevronDown size={14} />
+              <Txt size='text-[20px]'>{monthNames[currentMonth]}</Txt>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {monthNames.map((m, i) => (
@@ -146,8 +145,7 @@ export default function CalendarComponent({
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
-              <Txt weight='font-[500]'>{currentYear}년</Txt>
-              <ChevronDown size={14} />
+              <Txt size='text-[20px]'>{currentYear}년</Txt>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='max-h-60 overflow-y-auto'>
               {yearOptions.map((y) => (
@@ -162,14 +160,14 @@ export default function CalendarComponent({
           onClick={goToNextMonth}
           className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-mainwhite'
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={24} />
         </Button>
       </div>
 
       {/* 요일 */}
       <div className='grid grid-cols-7 mb-2'>
         {weekDays.map((wd) => (
-          <div key={wd} className='text-center text-sm py-2'>
+          <div key={wd} className='text-center text-[12px] weight-[500] py-2'>
             {wd}
           </div>
         ))}
@@ -193,7 +191,7 @@ export default function CalendarComponent({
                 isBlocked
                   ? 'bg-mainwhite text-mainblack opacity-50 cursor-not-allowed'
                   : isSelected
-                    ? 'bg-iconselect text-mainblack'
+                    ? 'bg-primaryhalf text-mainblack'
                     : 'bg-mainwhite text-mainblack'
               )}
             >
