@@ -1,0 +1,68 @@
+import CalendarDay from './CalendarDay';
+
+type CalendarGridProps = {
+  calendarDays: Array<{ date: Date; isCurrentMonth: boolean }>;
+  selectedDate: Date;
+  blockedDates: Date[];
+  scheduleDates: Date[];
+  showScheduleDots: boolean;
+  onDateSelect: (date: Date) => void;
+  isSameDay: (d1: Date, d2: Date) => boolean;
+};
+
+const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+
+export default function CalendarGrid({
+  calendarDays,
+  selectedDate,
+  blockedDates,
+  scheduleDates,
+  showScheduleDots,
+  onDateSelect,
+  isSameDay,
+}: CalendarGridProps) {
+  const hasSchedule = (date: Date) => {
+    return scheduleDates.some((scheduleDate) => isSameDay(scheduleDate, date));
+  };
+
+  const handleDateSelect = (date: Date) => {
+    if (blockedDates.some((bd) => isSameDay(bd, date))) return;
+    onDateSelect(date);
+  };
+
+  return (
+    <>
+      {/* 요일 */}
+      <div className='grid grid-cols-7 mb-2'>
+        {weekDays.map((wd) => (
+          <div key={wd} className='text-center text-[12px] weight-[500] py-2'>
+            {wd}
+          </div>
+        ))}
+      </div>
+
+      {/* 날짜 그리드 */}
+      <div className='grid grid-cols-7 gap-1'>
+        {calendarDays.map((dayObj, idx) => {
+          const { date, isCurrentMonth } = dayObj;
+          const isSelected = isSameDay(date, selectedDate);
+          const isBlocked = blockedDates.some((bd) => isSameDay(bd, date));
+          const hasScheduleOnDate = hasSchedule(date);
+
+          return (
+            <CalendarDay
+              key={idx}
+              date={date}
+              isCurrentMonth={isCurrentMonth}
+              isSelected={isSelected}
+              isBlocked={isBlocked}
+              hasSchedule={hasScheduleOnDate}
+              showScheduleDots={showScheduleDots}
+              onDateSelect={handleDateSelect}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+}

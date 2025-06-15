@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { formatDisplayDate } from '@/lib/utils';
-import { CalendarDrawer } from './CalendarDrawer';
-import AlertModal from './alert/AlertModal';
-import Button from './atoms/Button';
-import Txt from './atoms/Txt';
+import AlertModal from '../alert/AlertModal';
+import Button from '../atoms/Button';
+import Txt from '../atoms/Txt';
+import { CalendarDrawer } from '../calendar/CalendarDrawer';
 
 type Props = {
   partnerServiceId: number;

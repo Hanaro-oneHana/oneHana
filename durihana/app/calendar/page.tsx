@@ -1,5 +1,5 @@
-import UserCalendar from '@/components/UserCalendar';
 import BottomNavigation from '@/components/atoms/BottomNavigation';
+import UserCalendar from '@/components/schedule/UserCalendar';
 
 export default function Calendar() {
   return (
