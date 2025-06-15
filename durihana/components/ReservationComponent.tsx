@@ -38,6 +38,12 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
   const [reservedTimes, setReservedTimes] = useState<string[]>([]);
   const [availableTimes, setAvailableTimes] = useState<string[]>(times);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [currentCalendarMonth, setCurrentCalendarMonth] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth(),
+  });
+  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
   // 전체 예약된 날짜들을 가져오는 함수
   const loadBlockedDates = async (year: number, month: number) => {
@@ -74,11 +80,20 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
     }
   };
 
+  // 달력 월 변경 핸들러
+  const handleMonthChange = (year: number, month: number) => {
+    setCurrentCalendarMonth({ year, month });
+  };
+
   // 컴포넌트 마운트 시 현재 월의 블록된 날짜들 로드
   useEffect(() => {
-    const now = new Date();
-    loadBlockedDates(now.getFullYear(), now.getMonth());
-  }, [partnerServiceId]);
+    loadBlockedDates(calendarYear, calendarMonth);
+  }, [partnerServiceId, calendarMonth, calendarYear]);
+
+  // 달력 월이 변경될 때마다 해당 월의 블록된 날짜들 로드
+  useEffect(() => {
+    loadBlockedDates(currentCalendarMonth.year, currentCalendarMonth.month);
+  }, [currentCalendarMonth, partnerServiceId]);
 
   // 선택된 날짜가 변경될 때 해당 날짜의 예약된 시간들 로드
   useEffect(() => {
@@ -124,6 +139,10 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
                   selectedDate={selectedDate}
                   onDateSelect={handleDateSelect}
                   blockedDates={blockedDates}
+                  currentMonth={calendarMonth}
+                  currentYear={calendarYear}
+                  onMonthChange={setCalendarMonth}
+                  onYearChange={setCalendarYear}
                 />
               </div>
             </div>
