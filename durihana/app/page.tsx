@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <Header leftIcon='my' rightIcon='bell' />
-      <ReservationComponent />
+      <ReservationComponent partnerServiceId={1} />
       <BottomNavigation selectedItem='home' />
     </>
   );
