@@ -36,80 +36,74 @@ export default function TestComponentsPage() {
   return (
     <div className='w-full max-w-md mx-auto bg-mainwhite h-screen flex flex-col'>
       {/* 헤더 - 컴포넌트 선택 */}
-      <div className='p-4 border-b border-gray-100'>
-        <Txt
-          size='text-[18px]'
-          weight='font-[600]'
-          className='text-mainblack mb-4 text-center'
-        >
-          컴포넌트 테스트
-        </Txt>
-        <div className='flex flex-wrap gap-2'>
-          {components.map((comp) => (
-            <Button
-              key={comp.key}
-              onClick={() => setCurrentComponent(comp.key)}
-              className={`px-3 py-1 text-sm rounded-full ${
-                currentComponent === comp.key
-                  ? 'bg-primarycolor text-white'
-                  : 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {comp.label}
-            </Button>
-          ))}
+      <div className='flex-1 px-6 py-8 bg-gray-50'>
+        <div className='p-4 border-b border-gray-100'>
+          <Txt
+            size='text-[18px]'
+            weight='font-[600]'
+            className='text-mainblack mb-4 text-center'
+          >
+            컴포넌트 테스트
+          </Txt>
+          <div className='flex flex-wrap gap-2'>
+            {components.map((comp) => (
+              <Button
+                key={comp.key}
+                onClick={() => setCurrentComponent(comp.key)}
+                className={`px-3 py-1 text-sm rounded-full ${
+                  currentComponent === comp.key
+                    ? 'bg-primarycolor text-white'
+                    : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {comp.label}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* 컴포넌트 렌더링 */}
-      <div className='flex-1 overflow-y-auto'>
-        {currentComponent === 'deposit' && (
-          <DepositForm
-            amount={formData.amount}
-            period={formData.period}
-            userAccount={userAccount}
-            onAmountChange={handleAmountChange}
-            onPeriodChange={(period) => setFormData({ ...formData, period })}
-          />
-        )}
+        {/* 컴포넌트 렌더링 */}
+        <div className='flex-1 overflow-y-auto'>
+          {currentComponent === 'deposit' && (
+            <DepositForm
+              amount={formData.amount}
+              period={formData.period}
+              userAccount={userAccount}
+              onAmountChange={handleAmountChange}
+              onPeriodChange={(period) => setFormData({ ...formData, period })}
+            />
+          )}
 
-        {currentComponent === 'savings' && (
-          <SavingsForm
-            amount={formData.amount}
-            period={formData.period}
-            transferDay={formData.transferDay}
-            userAccount={userAccount}
-            onAmountChange={handleAmountChange}
-            onPeriodChange={(period) => setFormData({ ...formData, period })}
-            onTransferDayChange={(transferDay) =>
-              setFormData({ ...formData, transferDay })
-            }
-          />
-        )}
+          {currentComponent === 'savings' && (
+            <SavingsForm
+              amount={formData.amount}
+              period={formData.period}
+              transferDay={formData.transferDay}
+              userAccount={userAccount}
+              onAmountChange={handleAmountChange}
+              onPeriodChange={(period) => setFormData({ ...formData, period })}
+              onTransferDayChange={(transferDay) =>
+                setFormData({ ...formData, transferDay })
+              }
+            />
+          )}
 
-        {currentComponent === 'loan' && (
-          <LoanForm
-            amount={formData.amount}
-            period={formData.period}
-            userAccount={userAccount}
-            onAmountChange={handleAmountChange}
-            onPeriodChange={(period) => setFormData({ ...formData, period })}
-          />
-        )}
+          {currentComponent === 'loan' && (
+            <LoanForm
+              amount={formData.amount}
+              period={formData.period}
+              userAccount={userAccount}
+              onAmountChange={handleAmountChange}
+              onPeriodChange={(period) => setFormData({ ...formData, period })}
+            />
+          )}
 
-        {currentComponent === 'loanReview' && <LoanReviewStep />}
+          {currentComponent === 'loanReview' && <LoanReviewStep />}
 
-        {currentComponent === 'complete' && (
-          <CompleteStep accountType={1} isLastAccount={false} />
-        )}
-      </div>
-
-      {/* 하단 정보 */}
-      <div className='p-4 bg-gray-50 border-t border-gray-100'>
-        <Txt size='text-[12px]' className='text-gray-500 text-center'>
-          현재 폼 데이터: 금액 {formData.amount}원, 기간 {formData.period}개월,
-          이체일 {formData.transferDay}일
-        </Txt>
+          {currentComponent === 'complete' && (
+            <CompleteStep accountType={1} isLastAccount={false} />
+          )}
+        </div>
       </div>
     </div>
   );
