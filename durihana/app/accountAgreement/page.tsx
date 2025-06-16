@@ -71,8 +71,8 @@ export default function Accountagreement() {
               <AccordionTrigger className='border-b border-primarycolor'>
                 <Txt className='text-[14px]'>입출금 상품 약관 동의서</Txt>
               </AccordionTrigger>
-              <AccordionContent className='flex flex-col gap-4 text-balance pt-[16px]'>
-                <div className='text-[8px] leading-relaxed text-gray-700 space-y-2 px-1'>
+              <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
+                <div className='text-[8px] text-gray-700 space-y-2 px-1'>
                   <p>
                     본인은 아래 정기예금 약관의 주요 내용을 확인하고 이에
                     동의합니다.
