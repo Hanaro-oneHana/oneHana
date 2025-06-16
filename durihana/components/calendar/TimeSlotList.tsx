@@ -42,7 +42,7 @@ export default function TimeSlotList({
                 <Txt
                   key={time}
                   className={`
-                    px-4 py-2 rounded-10px text-sm font-medium whitespace-nowrap
+                    px-[11px] py-[8px] rounded-10px text-[12px] font-normal whitespace-nowrap
                     transition-colors duration-200
                     ${isReserved ? 'opacity-50 cursor-not-allowed' : ''}
                   `}
