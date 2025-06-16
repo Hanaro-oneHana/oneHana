@@ -12,11 +12,11 @@ datasource db {
 model Account {
   id            Int           @id @default(autoincrement()) @db.UnsignedInt
   account       String        @db.VarChar(31)
-  balance       BigInt        @default(0)
+  balance       Int           @default(0)
   type          Int           @db.TinyInt
   expire_date   String?       @db.VarChar(31)
   transfer_date String?       @db.VarChar(31)
-  payment       BigInt?
+  payment       Int?
   user_id       Int           @db.UnsignedInt
   User          User          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
   Transaction   Transaction[]
@@ -104,6 +104,18 @@ model PartnerService {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Transaction {
+  id               Int     @id @default(autoincrement()) @db.UnsignedInt
+  account_id       Int     @db.UnsignedInt
+  transaction_date String  @db.VarChar(31)
+  amount           Int
+  balance          Int
+  Account          Account @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_account")
+
+  @@index([account_id], map: "fk_transaction_account")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model User {
   id              Int               @id @default(autoincrement()) @db.UnsignedInt
   name            String            @db.VarChar(20)
@@ -121,6 +133,7 @@ model User {
   UserCalendar    UserCalendar[]
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model UserCalendar {
   id        Int    @id @default(autoincrement()) @db.UnsignedInt
   user_id   Int    @db.UnsignedInt
@@ -129,16 +142,4 @@ model UserCalendar {
   User      User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_user")
 
   @@index([user_id], map: "fk_usercalender_user")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Transaction {
-  id               Int     @id @default(autoincrement()) @db.UnsignedInt
-  account_id       Int     @db.UnsignedInt
-  transaction_date String  @db.VarChar(31)
-  amount           BigInt
-  balance          BigInt
-  Account          Account @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_account")
-
-  @@index([account_id], map: "fk_transaction_account")
 }

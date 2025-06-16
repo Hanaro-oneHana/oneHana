@@ -11,7 +11,7 @@ import { ChangeEvent, useState } from "react";
 export default function signup() {
     const title = "text-[16px] mt-[11px] ml-[25px] font-[500]";
     const inpuSet = "mt-[10px] ml-[25px] w-[325px] text-[14px] font-[600] block mx-auto text-primarycolor";
-    const errMasseage = "text-red-500 text-[8px] mt-[3px] ml-[25px]";
+    const errMasseage = "text-red text-[8px] mt-[3px] ml-[25px]";
     
     const [userInfo, getUserInfo] = useState({
         name: '',

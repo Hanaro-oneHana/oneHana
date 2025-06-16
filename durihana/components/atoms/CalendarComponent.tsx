@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import Button from './Button';
@@ -17,6 +17,10 @@ type CustomCalendarProps = {
   onDateSelect?: (date: Date) => void;
   className?: string;
   blockedDates?: Date[];
+  currentMonth?: number;
+  currentYear?: number;
+  onMonthChange?: (month: number) => void;
+  onYearChange?: (year: number) => void;
 };
 
 export default function CalendarComponent({
@@ -24,10 +28,18 @@ export default function CalendarComponent({
   onDateSelect,
   className,
   blockedDates = [],
+  currentMonth: propCurrentMonth,
+  currentYear: propCurrentYear,
+  onMonthChange,
+  onYearChange,
 }: CustomCalendarProps) {
   const [currentDate, setCurrentDate] = useState(selectedDate || new Date());
-  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
-  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(
+    propCurrentMonth ?? currentDate.getMonth()
+  );
+  const [currentYear, setCurrentYear] = useState(
+    propCurrentYear ?? currentDate.getFullYear()
+  );
   const [calendarDays, setCalendarDays] = useState<
     Array<{ date: Date; isCurrentMonth: boolean }>
   >([]);
@@ -50,6 +62,19 @@ export default function CalendarComponent({
     '11월',
     '12월',
   ];
+
+  // prop으로 받은 월/년이 변경되면 내부 상태 업데이트
+  useEffect(() => {
+    if (propCurrentMonth !== undefined) {
+      setCurrentMonth(propCurrentMonth);
+    }
+  }, [propCurrentMonth]);
+
+  useEffect(() => {
+    if (propCurrentYear !== undefined) {
+      setCurrentYear(propCurrentYear);
+    }
+  }, [propCurrentYear]);
 
   useEffect(() => {
     const days: Array<{ date: Date; isCurrentMonth: boolean }> = [];
@@ -86,28 +111,39 @@ export default function CalendarComponent({
   }, [currentMonth, currentYear]);
 
   const goToPreviousMonth = () => {
-    setCurrentMonth((prev) => {
-      if (prev === 0) {
-        setCurrentYear((y) => y - 1);
-        return 11;
-      }
-      return prev - 1;
-    });
+    const newMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const newYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+    onMonthChange?.(newMonth);
+    onYearChange?.(newYear);
   };
+
   const goToNextMonth = () => {
-    setCurrentMonth((prev) => {
-      if (prev === 11) {
-        setCurrentYear((y) => y + 1);
-        return 0;
-      }
-      return prev + 1;
-    });
+    const newMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+    const newYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+    onMonthChange?.(newMonth);
+    onYearChange?.(newYear);
   };
 
   const handleDateSelect = (day: Date) => {
     if (blockedDates.some((bd) => isSameDay(bd, day))) return;
     setInternalSelectedDate(day);
     onDateSelect?.(day);
+  };
+
+  const handleMonthSelect = (monthIndex: number) => {
+    setCurrentMonth(monthIndex);
+    onMonthChange?.(monthIndex);
+  };
+
+  const handleYearSelect = (year: number) => {
+    setCurrentYear(year);
+    onYearChange?.(year);
   };
 
   const yearOptions = Array.from(
@@ -118,7 +154,6 @@ export default function CalendarComponent({
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
-  const isToday = (date: Date) => isSameDay(date, new Date());
 
   return (
     <div className={cn('w-full max-w-sm mx-auto', className)}>
@@ -128,17 +163,16 @@ export default function CalendarComponent({
           onClick={goToPreviousMonth}
           className='p-2 w-auto h-auto rounded-full bg-mainwhite text-mainblack'
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={24} />
         </Button>
         <div className='flex items-center gap-2'>
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
-              <Txt weight='font-[500]'>{monthNames[currentMonth]}</Txt>
-              <ChevronDown size={14} />
+              <Txt size='text-[20px]'>{monthNames[currentMonth]}</Txt>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {monthNames.map((m, i) => (
-                <DropdownMenuItem key={m} onClick={() => setCurrentMonth(i)}>
+                <DropdownMenuItem key={m} onClick={() => handleMonthSelect(i)}>
                   {m}
                 </DropdownMenuItem>
               ))}
@@ -146,12 +180,11 @@ export default function CalendarComponent({
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
-              <Txt weight='font-[500]'>{currentYear}년</Txt>
-              <ChevronDown size={14} />
+              <Txt size='text-[20px]'>{currentYear}년</Txt>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='max-h-60 overflow-y-auto'>
               {yearOptions.map((y) => (
-                <DropdownMenuItem key={y} onClick={() => setCurrentYear(y)}>
+                <DropdownMenuItem key={y} onClick={() => handleYearSelect(y)}>
                   {y}년
                 </DropdownMenuItem>
               ))}
@@ -162,14 +195,14 @@ export default function CalendarComponent({
           onClick={goToNextMonth}
           className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-mainwhite'
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={24} />
         </Button>
       </div>
 
       {/* 요일 */}
       <div className='grid grid-cols-7 mb-2'>
         {weekDays.map((wd) => (
-          <div key={wd} className='text-center text-sm py-2'>
+          <div key={wd} className='text-center text-[12px] weight-[500] py-2'>
             {wd}
           </div>
         ))}
@@ -193,7 +226,7 @@ export default function CalendarComponent({
                 isBlocked
                   ? 'bg-mainwhite text-mainblack opacity-50 cursor-not-allowed'
                   : isSelected
-                    ? 'bg-iconselect text-mainblack'
+                    ? 'bg-primaryhalf text-mainblack'
                     : 'bg-mainwhite text-mainblack'
               )}
             >
