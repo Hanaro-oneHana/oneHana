@@ -17,7 +17,13 @@ type PieLabelProps = {
   index: number;
 };
 
-const COLORS = ['#489896', '#5e68bd', '#7a8da0', '#d7dbf0', '#e1f4e2'];
+const COLORS = [
+  'var(--primarycolor)',
+  'var(--secondarycolor)',
+  'var(--icon)',
+  'var(--purple)',
+  'var(--lime)',
+];
 
 const RADIAN = Math.PI / 180;
 
