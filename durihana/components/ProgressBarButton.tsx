@@ -27,7 +27,7 @@ export default function ProgressBarButton({
   const [selected, setSelected] = useState(selectedItem);
 
   return (
-    <div className='flex items-center justify-center w-full px-[20px] pt-[25px] gap-[8px]'>
+    <div className='flex items-center justify-center w-full  gap-[8px]'>
       {items.map((item) => (
         <div
           key={item.id}
