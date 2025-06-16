@@ -1,7 +1,7 @@
 'use client';
 
 import { PieChart, Pie, Cell } from 'recharts';
-import Txt from './atoms/Txt';
+import Txt from '../atoms/Txt';
 
 type Props = {
   data: { name: string; value: number }[];
