@@ -1,9 +1,12 @@
 import prisma from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { compare, hash } from 'bcryptjs';
 
 
 export async function POST(request: Request) {
     const { name, email, password, phone, marriageDate } = await request.json()
+    const encodePassword = await hash(password, 10);
+    const isValid =  await compare(password, encodePassword);
 
     if (!email || !password || !phone) {
         return NextResponse.json(
@@ -13,8 +16,11 @@ export async function POST(request: Request) {
     }
 
     try {
+        const encodePassword = await hash(password, 10);
+
         const user = await prisma.user.create({
-        data: { name, email, password, phone, marriage_date: marriageDate },
+        data: { name, email, password: encodePassword
+            , phone, marriage_date: marriageDate },
     })
     return NextResponse.json({ success: true, userId: user.id })
     } 

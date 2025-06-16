@@ -1,4 +1,3 @@
-// /Users/kun/workspace/oneHana/durihana/app/auth/signup/page.tsx
 'use client'
 
 import Button from "@/components/atoms/Button";
@@ -8,7 +7,6 @@ import Txt from "@/components/atoms/Txt";
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
-
 
 
 export default function signup() {
@@ -47,7 +45,7 @@ export default function signup() {
         formData.append('marriageDate', userInfo.marriageDate);
 
         try {
-            const res = await fetch("/api/CreateUser", {
+            const res = await fetch("/api/createuser", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -68,7 +66,6 @@ export default function signup() {
         }
     };    
 
-     
     
     // check input form
     // const formCheck = userInfo.password === userInfo.passwordCheck;
