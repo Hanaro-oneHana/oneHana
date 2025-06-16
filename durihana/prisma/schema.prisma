@@ -38,6 +38,8 @@ model DepositInterest {
   id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
+
+  @@ignore
 }
 
 model LoanInterest {
@@ -45,6 +47,8 @@ model LoanInterest {
   id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
+
+  @@ignore
 }
 
 model Partner {
@@ -75,6 +79,7 @@ model PartnerCalendar {
 
   @@index([partner_service_id], map: "fk_partnercalender_service")
   @@index([user_id], map: "fk_partnercalender_user")
+  @@ignore
 }
 
 model PartnerCategory {
@@ -125,4 +130,5 @@ model UserCalendar {
 
   @@index([partner_service_id], map: "fk_usercalender_service")
   @@index([user_id], map: "fk_usercalender_user")
+  @@ignore
 }
