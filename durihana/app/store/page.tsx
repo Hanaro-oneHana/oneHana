@@ -1,5 +1,3 @@
-'use client';
-
 import BottomNavigation from '@/components/atoms/BottomNavigation';
 
 export default function Store() {
