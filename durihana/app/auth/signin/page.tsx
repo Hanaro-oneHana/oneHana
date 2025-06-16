@@ -78,8 +78,8 @@ export default function SignInPage() {
           <Button type='submit'>로그인</Button>
         </div>
 
-        <div className='pt-4'>
-          <Button bgColor='bg-purple' onClick={goToSignUp}>
+        <div>
+          <Button className='bg-transparent text-gray' onClick={goToSignUp}>
             회원가입
           </Button>
         </div>
@@ -87,23 +87,3 @@ export default function SignInPage() {
     </div>
   );
 }
-
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     const res = await fetch('/api/auth/signin', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ email, password }),
-//     });
-
-//     if (res.ok) {
-//       router.push('/');
-//     } else {
-//       const data = await res.json();
-//       alert(data.message);
-//     }
-//   };
