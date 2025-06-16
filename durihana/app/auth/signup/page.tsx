@@ -11,7 +11,7 @@ import { ChangeEvent, useState } from "react";
 export default function signup() {
     const title = "text-[16px] mt-[11px] ml-[25px] font-[500]";
     const inpuSet = "mt-[10px] ml-[25px] w-[325px] text-[14px] font-[600] block mx-auto text-primarycolor";
-    const errMasseage = "text-[8px] text-secondaycolor mt-[3px] ml-[25px] ";
+    const errMasseage = "text-red-500 text-[8px] mt-[3px] ml-[25px]";
     
     const [userInfo, getUserInfo] = useState({
         name: '',
@@ -71,7 +71,7 @@ export default function signup() {
         <br/><Txt className={title}>이메일</Txt>
         <InputComponent className={inpuSet} placeholder="abc@durihana.com"
             type="email" name="email" value={userInfo.email} onChange={handleChange}/>
-        <Txt className={errMasseage}>{emailValidator.success ? " " : "*이메일형식이 올바르지 않습니다"}</Txt>
+        <Txt className="text-red text-[8px] mt-[3px] ml-[25px]" >{emailValidator.success ? " " : "*이메일형식이 올바르지 않습니다"}</Txt>
 
         <br/><Txt className={title}>비밀번호</Txt>
         <InputComponent className={inpuSet} placeholder="8자 이상 입력해 주세요"
