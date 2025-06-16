@@ -35,20 +35,16 @@ model budgetplan {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model depositinterest {
-  id     Int     @db.UnsignedInt
+  id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
-
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model loaninterest {
-  id     Int     @db.UnsignedInt
+  id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
-
-  @@ignore
 }
 
 model partner {
@@ -69,7 +65,7 @@ model partner {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model partnercalendar {
-  id                 Int            @db.UnsignedInt
+  id                 Int            @id @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   reservation_date   String         @db.VarChar(31)
   partner_service_id Int            @db.UnsignedInt
@@ -78,7 +74,6 @@ model partnercalendar {
 
   @@index([partner_service_id], map: "fk_partnercalender_service")
   @@index([user_id], map: "fk_partnercalender_user")
-  @@ignore
 }
 
 model partnercategory {
@@ -93,9 +88,9 @@ model partnerservice {
   name            String            @db.VarChar(20)
   content         Json
   budgetplan      budgetplan[]
-  partnercalendar partnercalendar[] @ignore
+  partnercalendar partnercalendar[]
   partner         partner           @relation(fields: [partner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_service_partner")
-  usercalendar    usercalendar[]    @ignore
+  usercalendar    usercalendar[]
 
   @@index([partner_id], map: "fk_service_partner")
 }
@@ -113,13 +108,13 @@ model user {
   type            Int               @default(0) @db.TinyInt
   account         account[]
   budgetplan      budgetplan[]
-  partnercalendar partnercalendar[] @ignore
-  usercalendar    usercalendar[]    @ignore
+  partnercalendar partnercalendar[]
+  usercalendar    usercalendar[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model usercalendar {
-  id                 Int            @db.UnsignedInt
+  id                 Int            @id @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   user_date          String         @db.VarChar(31)
   partner_service_id Int            @db.UnsignedInt
@@ -128,5 +123,4 @@ model usercalendar {
 
   @@index([partner_service_id], map: "fk_usercalender_service")
   @@index([user_id], map: "fk_usercalender_user")
-  @@ignore
 }
