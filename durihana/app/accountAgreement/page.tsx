@@ -30,8 +30,8 @@ export default function Accountagreement() {
               <AccordionTrigger className='border-b border-primarycolor'>
                 <Txt className='text-[14px]'>비대면 계좌 개설 약관 동의서</Txt>
               </AccordionTrigger>
-              <AccordionContent className='flex flex-col gap-4 text-balance pt-[16px]'>
-                <div className='text-[8px] leading-relaxed text-gray-700 space-y-2 px-1'>
+              <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
+                <div className='text-[8px] text-gray-700 space-y-2 px-1'>
                   <p>
                     본인은 아래 내용을 충분히 이해하였으며, 비대면으로 계좌
                     개설을 진행하는 데 동의합니다.
