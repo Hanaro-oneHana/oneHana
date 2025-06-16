@@ -16,7 +16,7 @@ export default function Txt({
   size = 'text-[16px]',
   className,
   children,
-  color = 'text-mainBlack',
+  color = 'text-mainblack',
   weight = 'font-[400]',
   height,
   align = 'align-left',
