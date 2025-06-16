@@ -34,12 +34,14 @@ model BudgetPlan {
 }
 
 model DepositInterest {
+
   id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
 }
 
 model LoanInterest {
+
   id     Int     @id @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
@@ -61,7 +63,9 @@ model Partner {
   @@index([partner_category_id], map: "fk_partner_category")
 }
 
+
 model PartnerCalendar {
+
   id                 Int            @id @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   reservation_date   String         @db.VarChar(31)
@@ -89,6 +93,7 @@ model PartnerService {
   Partner         Partner           @relation(fields: [partner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_service_partner")
   UserCalendar    UserCalendar[]
 
+
   @@index([partner_id], map: "fk_service_partner")
 }
 
@@ -110,6 +115,7 @@ model User {
 }
 
 model UserCalendar {
+
   id                 Int            @id @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   user_date          String         @db.VarChar(31)
