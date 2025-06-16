@@ -1,23 +1,13 @@
+import AccountCard, { SubAccount, MainAccount } from '@/components/AccountCard';
 import BottomNavigation from '@/components/atoms/BottomNavigation';
 import Header from '@/components/atoms/Header';
-import AccountCard, { SubAccount, MainAccount } from '@/components/AccountCard';
+import { getAccountsByUserId } from '@/lib/actions/AccountActions';
 import { auth } from '@/lib/auth';
-import prisma from '@/lib/db';
 
 export default async function Home() {
-
   const session = await auth();
   const userId = Number(session?.user?.id);
-
-  const accounts = (await prisma.account.findMany({
-    where: { user_id: userId },
-    orderBy: { type: 'asc' }, // type 0(입출금)이 가장 먼저
-  })) as {
-    type: number;
-    account: string;
-    balance: number;
-  }[];
-
+  const accounts = await getAccountsByUserId(userId);
   const main = accounts.find((acc) => acc.type === 0);
   const subs = accounts.filter((acc) => acc.type !== 0);
 
@@ -32,16 +22,15 @@ export default async function Home() {
     balance: acc.balance,
   }));
 
-
   return (
     <>
       <Header leftIcon='my' rightIcon='bell' />
       <BottomNavigation selectedItem='home' />
       <AccountCard
-      userId={userId}
-      mainAccount={mainAccount}
-      subAccounts={subAccounts}
-    />
+        userId={userId}
+        mainAccount={mainAccount}
+        subAccounts={subAccounts}
+      />
     </>
   );
 }
