@@ -9,17 +9,17 @@ type Props = {
   color?: `text-${Color}`;
   weight?: `font-[${number}]`;
   height?: `leading-${number}px`;
-  align?: 'align-left' | 'align-center' | 'align-right';
+  align?: 'text-left' | 'text-center' | 'text-right';
 };
 
 export default function Txt({
   size = 'text-[16px]',
   className,
   children,
-  color = 'text-mainBlack',
+  color = 'text-mainblack',
   weight = 'font-[400]',
   height,
-  align = 'align-left',
+  align = 'text-left',
 }: PropsWithChildren<Props>) {
   return (
     <span
