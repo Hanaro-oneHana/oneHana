@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 // import bcrypt from "bcryptjs"
-import { findUserByEmail } from './actions/AuthActions';
+import prisma from '@/lib/db';
 
 export const {
   handlers: { GET, POST },
@@ -21,7 +21,11 @@ export const {
         }
 
         try {
-          const user = await findUserByEmail(credentials.email as string);
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email as string,
+            },
+          });
 
           if (!user) {
             return null;

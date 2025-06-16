@@ -24,7 +24,7 @@ export default function Button({
   return (
     <button
       className={cn(
-        `${bgColor} ${textColor} justify-center items-center font-hana rounded-[10px] cursor-pointer w-full py-[15px] 
+        `${bgColor} ${textColor} justify-center items-center font-hana rounded-[10px] cursor-pointer w-full py-[12px] 
          `,
         className
       )}
