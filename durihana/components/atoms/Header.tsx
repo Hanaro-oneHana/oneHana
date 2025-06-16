@@ -38,7 +38,7 @@ export default function Header({
 
   return (
     <>
-      <header className='flex items-center justify-between h-[60px] bg-transparent px-[20px]'>
+      <header className='flex w-full items-center justify-between h-[60px] bg-transparent px-[20px]'>
         <div className='flex items-center justify-center  gap-[10px] bg-transparent '>
           <button
             className='flex items-center justify-center w-[24px] h-[24px] shrink-0 cursor-pointer'
