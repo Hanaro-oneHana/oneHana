@@ -132,15 +132,3 @@ model UserCalendar {
 
   @@index([user_id], map: "fk_usercalender_user")
 }
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Transaction {
-  id               Int     @id @default(autoincrement()) @db.UnsignedInt
-  account_id       Int     @db.UnsignedInt
-  transaction_date String  @db.VarChar(31)
-  amount           Int
-  balance          Int
-  Account          Account @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_account")
-
-  @@index([account_id], map: "fk_transaction_account")
-}
