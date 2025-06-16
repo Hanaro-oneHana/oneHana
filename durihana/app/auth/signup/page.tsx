@@ -4,8 +4,7 @@ import Button from "@/components/atoms/Button";
 import Header from "@/components/atoms/Header";
 import InputComponent from "@/components/atoms/InputComponent";
 import Txt from "@/components/atoms/Txt";
-
-import { useRouter } from "next/navigation";
+import { credentialValidator } from "@/lib/validator";
 import { ChangeEvent, useState } from "react";
 
 
@@ -22,6 +21,7 @@ export default function signup() {
         phone: '',
         marriageDate: '',
     });
+    const emailValidator = credentialValidator.safeParse({email: userInfo.email});
 
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -29,14 +29,7 @@ export default function signup() {
         getUserInfo(prev => ({ ...prev, [name]: value }));
     };
 
-    const router = useRouter();
     const handleSubmit = async () => {
-
-        if (userInfo.password !== userInfo.passwordCheck) {
-            alert('비밀번호가 일치하지 않습니다.');
-            return;
-        }
-
         const formData = new FormData();
         formData.append('name', userInfo.name);
         formData.append('email', userInfo.email);
@@ -55,6 +48,7 @@ export default function signup() {
                     phone: userInfo.phone,
                     marriageDate: userInfo.marriageDate,
                 }),
+                
             });
             const data = await res.json();
             if (!res.ok || !data.success) throw new Error(data.error || "회원가입 실패")
@@ -65,15 +59,6 @@ export default function signup() {
             setStatus("error");
         }
     };    
-
-    
-    // check input form
-    // const formCheck = userInfo.password === userInfo.passwordCheck;
-    // const [rightWritten, wrongWritten] = useReducer((check) => !check, false);  // show message for each input
-    // if( userInfo.password === userInfo.passwordCheck ) wrongWritten();  
-    /// disabled = {!formCheck} onClick = {}
-
-    // app/signup/page.tsx
     
     return <>
         <Header leftIcon = "back" title="회원가입" />
@@ -85,18 +70,18 @@ export default function signup() {
         
         <br/><Txt className={title}>이메일</Txt>
         <InputComponent className={inpuSet} placeholder="abc@durihana.com"
-            name="email" value={userInfo.email} onChange={handleChange}/>
-        <Txt className={errMasseage}>*이메일형식이 올바르지 않습니다</Txt>
+            type="email" name="email" value={userInfo.email} onChange={handleChange}/>
+        <Txt className={errMasseage}>{emailValidator.success ? " " : "*이메일형식이 올바르지 않습니다"}</Txt>
 
         <br/><Txt className={title}>비밀번호</Txt>
         <InputComponent className={inpuSet} placeholder="8자 이상 입력해 주세요"
-            name="password" value={userInfo.password} onChange={handleChange}/>
-        <Txt className={errMasseage}>*8자 이상 입력해주세요</Txt>
+            type="password" name="password" value={userInfo.password} onChange={handleChange}/>
+        <Txt className={errMasseage}>{userInfo.password.length >= 8 ? ' ' : ' *8자 이상 입력해주세요 '}</Txt>
 
         <br/><Txt className={title}>비밀번호 확인</Txt>
         <InputComponent className={inpuSet} placeholder="8자 이상 입력해 주세요"
-            name="passwordCheck" value={userInfo.passwordCheck} onChange={handleChange}/>
-        <Txt className={errMasseage}>*비밀번호가 일치하지 않습니다</Txt>
+            type="password" name="passwordCheck" value={userInfo.passwordCheck} onChange={handleChange}/>
+        <Txt className={errMasseage}>{userInfo.password === userInfo.passwordCheck ? ' ' : '*비밀번호가 일치하지 않습니다'}</Txt>
 
         <br/><Txt className={title}>전화번호</Txt>
         <InputComponent className={inpuSet} placeholder="010-12324-1234"
@@ -107,7 +92,7 @@ export default function signup() {
         <InputComponent className={inpuSet} placeholder="2026-01-01"
             type="date" name="marriageDate" value={userInfo.marriageDate} onChange={handleChange}/>
         
-        <Button  type="submit" onClick={handleSubmit} className="w-[335px] h-[48px] block mx-auto mt-[76px] font-[500]" >완료</Button>
+        <Button type="submit" onClick={handleSubmit} className="w-[335px] h-[48px] block mx-auto mt-[76px] font-[500]" >완료</Button>
 
         {status === 'success' && (
             <p>성공</p>
