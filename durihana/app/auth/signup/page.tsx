@@ -6,7 +6,9 @@ import InputComponent from "@/components/atoms/InputComponent";
 import Txt from "@/components/atoms/Txt";
 import { createAction } from "@/lib/actions/CreateActions";
 import { credentialValidator } from "@/lib/validator";
-import { ChangeEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, useState } from "react";
+import type React from 'react';
 
 
 export default function signup() {
@@ -23,13 +25,53 @@ export default function signup() {
         marriageDate: '',
     });
     const emailValidator = credentialValidator.safeParse({email: userInfo.email});
-
+    const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+    
+    const router = useRouter()
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         getUserInfo((prev) => ({ ...prev, [name]: value }));
     };
-    
-    // <div className='flex flex-col gap-[30px]'>
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    // 간단 검증
+    if (userInfo.password !== userInfo.passwordCheck) {
+        alert('비밀번호가 일치하지 않습니다.')
+        return
+    }
+
+    try {
+      // route.ts 에 매핑된 POST 엔드포인트 호출
+        const res = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+            name: userInfo.name,
+            email: userInfo.email,
+            password: userInfo.password,
+            phone: userInfo.phone,
+            marriageDate: userInfo.marriageDate,
+            }),
+        })
+        const data = await res.json()
+
+        if (!res.ok) {
+            alert(data.error || '회원가입에 실패했습니다.')
+            setStatus('error')
+            return
+        }
+
+        setStatus('success')
+        router.push('/auth/signin')
+    } 
+    catch (err) {
+        console.error(err)
+        alert('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.')
+        setStatus('error')
+    }
+}
+
     return <>
         <Header leftIcon = "back" title="회원가입" />
         <form action={createAction}>
@@ -85,4 +127,3 @@ export default function signup() {
         </form>
     </>;
 }
-// pp/auth/signup/page.tsx
