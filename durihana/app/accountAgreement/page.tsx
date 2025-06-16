@@ -1,5 +1,6 @@
 'use client';
 
+import AlertModal from '@/components/alert/AlertModal';
 import Button from '@/components/atoms/Button';
 import Header from '@/components/atoms/Header';
 import Txt from '@/components/atoms/Txt';
@@ -14,6 +15,8 @@ import { useState } from 'react';
 
 export default function Accountagreement() {
   const [agree, setAgree] = useState(false);
+  const [modal, showModal] = useState(false);
+
   return (
     <div className='relative flex flex-col items-center min-h-dvh'>
       <Header leftIcon='back' title='계좌개설' />
@@ -111,20 +114,37 @@ export default function Accountagreement() {
           <Checkbox
             id='agree'
             className='data-[state=checked]:bg-mainwhite'
-            onCheckedChange={(checked) => setAgree(!!checked)}
+            onCheckedChange={(checked) => {
+              setAgree(!!checked);
+            }}
           />
         </div>
       </div>
 
       <Button
         onClick={() => {
-          if (agree) alert('약관 동의됨');
-          else alert('약관에 동의 안함');
+          if (!agree) {
+            showModal(true);
+          } else {
+            // 여기에 다음 페이지로 넘어가는거 추가
+          }
         }}
         className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
       >
         다음
       </Button>
+
+      {modal && (
+        <AlertModal onClose={() => showModal(false)}>
+          <Txt align='text-center'>
+            약관에 동의해야 <br />
+            서비스를 이용하실 수 있습니다
+          </Txt>
+          <Button className='mt-5' onClick={() => showModal(false)}>
+            확인
+          </Button>
+        </AlertModal>
+      )}
     </div>
   );
 }
