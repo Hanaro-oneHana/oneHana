@@ -1,5 +1,6 @@
 import Txt from '@/components/atoms/Txt';
 import { ACCOUNT_TYPES } from '@/types/Schedule';
+import Image from 'next/image';
 
 type CompleteStepProps = {
   accountType: number;
@@ -16,12 +17,6 @@ export default function CompleteStep({
   return (
     <div className='flex-1 px-6 py-8 flex flex-col items-center justify-center'>
       <div className='flex-1 flex flex-col items-center justify-center'>
-        <img
-          src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-tlXM0o07r883qH4ZgMBzuy5W6OSCrX.png'
-          alt='완료'
-          className='w-32 h-32 mb-8 object-contain'
-        />
-
         <Txt
           size='text-[18px]'
           weight='font-[600]'
