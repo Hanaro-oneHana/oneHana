@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { PropsWithChildren, useState } from 'react';
 import { cn } from '@/lib/utils';
+import Txt from './atoms/Txt';
 
 type Props = {
   selectedItem: number;
@@ -28,28 +29,37 @@ export default function ProgressBarButton({
   return (
     <div className='flex items-center justify-center w-full px-[20px] pt-[25px] gap-[8px]'>
       {items.map((item) => (
-        <div key={item.id} className='flex items-center gap-[8px]'>
-          <ButtonBox
-            selected={item.id === selected}
-            onClick={() => {
-              setSelected(item.id);
-              if (onClick) {
-                onClick();
-              }
-            }}
-            disabled={progress}
-          >
-            <Image
-              src={item.icon}
-              alt={`${item.name} Icon`}
-              width={35}
-              height={35}
-            />
-          </ButtonBox>
+        <div
+          key={item.id}
+          className='flex items-start justify-center gap-[8px]'
+        >
+          <div className='flex flex-col items-center gap-[10px]'>
+            <ButtonBox
+              selected={item.id === selected}
+              onClick={() => {
+                setSelected(item.id);
+                if (onClick) {
+                  onClick();
+                }
+              }}
+              disabled={progress}
+            >
+              <Image
+                src={item.icon}
+                alt={`${item.name} Icon`}
+                width={35}
+                height={35}
+              />
+            </ButtonBox>
+            <Txt size='text-[10px]' weight='font-[500]'>
+              {item.name}
+            </Txt>
+          </div>
+
           {item.id !== 5 && (
             <div
               className={cn(
-                'flex items-center justify-center gap-[2px]',
+                'flex items-center justify-center gap-[2px] mt-[20px]',
                 !progress && 'invisible'
               )}
             >
