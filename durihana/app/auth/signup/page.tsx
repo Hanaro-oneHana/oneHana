@@ -15,13 +15,6 @@ export default function signup() {
     const title = "text-[16px] mt-[11px] ml-[25px] font-[500]";
     const inpuSet = "mt-[10px] ml-[25px] w-[325px] text-[14px] font-[600] block mx-auto text-primarycolor";
     const errMasseage = "text-[8px] text-secondaycolor mt-[3px] ml-[25px] ";
-    // name, email, password, password confrim, phoneN, Mdate
-    // start txt position 40,25
-    // 10 txt-input group
-    // 30 input - txt
-    // input -> other txt 30px
-    // input font size -> 14px, hana 2.0 B-title 500,  button, C-input 600
-    //weight='font-[600]' -> 
     
     const [userInfo, getUserInfo] = useState({
         name: '',
@@ -74,6 +67,8 @@ export default function signup() {
             setStatus("error");
         }
     };    
+
+     
     
     // check input form
     // const formCheck = userInfo.password === userInfo.passwordCheck;
@@ -85,7 +80,6 @@ export default function signup() {
     
     return <>
         <Header leftIcon = "back" title="회원가입" />
-
         
         <Txt weight = 'font-[500]' className="text-[16px] mt-[40px] ml-[25px]">이름</Txt>
         <InputComponent width="w-[325px]" className={inpuSet} placeholder="이름을 입력해 주세요"
@@ -114,7 +108,7 @@ export default function signup() {
 
         <br/><Txt className={title}>결혼예정일</Txt>
         <InputComponent className={inpuSet} placeholder="2026-01-01"
-            name="marriageDate" value={userInfo.marriageDate} onChange={handleChange}/>
+            type="date" name="marriageDate" value={userInfo.marriageDate} onChange={handleChange}/>
         
         <Button  type="submit" onClick={handleSubmit} className="w-[335px] h-[48px] block mx-auto mt-[76px] font-[500]" >완료</Button>
 

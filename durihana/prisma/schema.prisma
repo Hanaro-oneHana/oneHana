@@ -10,14 +10,16 @@ datasource db {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Account {
-  id           Int     @id @default(autoincrement()) @db.UnsignedInt
-  account      String  @db.VarChar(31)
-  balance      BigInt  @default(0)
-  type         Int     @db.TinyInt
-  withdraw_cnt Int     @default(0) @db.TinyInt
-  expire_date  String? @db.VarChar(31)
-  user_id      Int     @db.UnsignedInt
-  User         User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
+  id            Int           @id @default(autoincrement()) @db.UnsignedInt
+  account       String        @db.VarChar(31)
+  balance       BigInt        @default(0)
+  type          Int           @db.TinyInt
+  expire_date   String?       @db.VarChar(31)
+  transfer_date String?       @db.VarChar(31)
+  payment       BigInt?
+  user_id       Int           @db.UnsignedInt
+  User          User          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
+  Transaction   Transaction[]
 
   @@index([user_id], map: "fk_account_user")
 }
@@ -34,13 +36,13 @@ model BudgetPlan {
 }
 
 model DepositInterest {
-  id     Int     @id @db.UnsignedInt
+  id     Int     @id @default(autoincrement()) @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
 }
 
 model LoanInterest {
-  id     Int     @id @db.UnsignedInt
+  id     Int     @id @default(autoincrement()) @db.UnsignedInt
   period Int     @db.TinyInt
   rate   Decimal @db.Decimal(5, 2)
 }
@@ -72,7 +74,7 @@ model Partner {
 }
 
 model PartnerCalendar {
-  id                 Int            @id @db.UnsignedInt
+  id                 Int            @id @default(autoincrement()) @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   reservation_date   String         @db.VarChar(31)
   partner_service_id Int            @db.UnsignedInt
@@ -84,20 +86,19 @@ model PartnerCalendar {
 }
 
 model PartnerCategory {
-  id      Int       @id @db.UnsignedInt
+  id      Int       @id @default(autoincrement()) @db.UnsignedInt
   type    String    @db.VarChar(30)
   Partner Partner[]
 }
 
 model PartnerService {
-  id              Int               @id @db.UnsignedInt
+  id              Int               @id @default(autoincrement()) @db.UnsignedInt
   partner_id      Int               @db.UnsignedInt
   name            String            @db.VarChar(20)
   content         Json
   BudgetPlan      BudgetPlan[]
   PartnerCalendar PartnerCalendar[]
   Partner         Partner           @relation(fields: [partner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_service_partner")
-  UserCalendar    UserCalendar[]
 
   @@index([partner_id], map: "fk_service_partner")
 }
@@ -108,8 +109,8 @@ model User {
   name            String            @db.VarChar(20)
   password        String            @db.VarChar(255)
   phone           String            @db.VarChar(20)
-  birth           DateTime          @db.Date
-  email           String            @db.VarChar(31)
+  email           String            @unique(map: "email") @db.VarChar(31)
+  marriage_date   String?           @db.VarChar(31)
   code            String?           @db.VarChar(15)
   mate_code       String?           @db.VarChar(15)
   type            Int               @default(0) @db.TinyInt
@@ -121,13 +122,23 @@ model User {
 }
 
 model UserCalendar {
-  id                 Int            @id @db.UnsignedInt
-  user_id            Int            @db.UnsignedInt
-  user_date          String         @db.VarChar(31)
-  partner_service_id Int            @db.UnsignedInt
-  PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_service")
-  User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_user")
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id   Int    @db.UnsignedInt
+  user_date String @db.VarChar(31)
+  type      Int    @db.TinyInt
+  User      User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_user")
 
-  @@index([partner_service_id], map: "fk_usercalender_service")
   @@index([user_id], map: "fk_usercalender_user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Transaction {
+  id               Int     @id @default(autoincrement()) @db.UnsignedInt
+  account_id       Int     @db.UnsignedInt
+  transaction_date String  @db.VarChar(31)
+  amount           BigInt
+  balance          BigInt
+  Account          Account @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_account")
+
+  @@index([account_id], map: "fk_transaction_account")
 }
