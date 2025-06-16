@@ -25,12 +25,12 @@ export default function CalendarDay({
   onDateSelect,
 }: CalendarDayProps) {
   return (
-    <div className='relative'>
+    <div className='relative flex justify-center'>
       <Button
         disabled={isBlocked}
         onClick={() => onDateSelect(date)}
         className={cn(
-          'h-10 w-full flex items-center justify-center rounded-full text-sm p-0 relative',
+          'h-[37px] w-[37px] flex items-center justify-center rounded-full text-[18px] font-[400] p-0',
           !isCurrentMonth && 'opacity-50',
           isBlocked
             ? 'bg-mainwhite text-mainblack opacity-50 cursor-not-allowed'

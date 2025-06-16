@@ -58,7 +58,9 @@ export default function CalendarHeader({
       <div className='flex items-center gap-2'>
         <DropdownMenu>
           <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
-            <Txt size='text-[20px]'>{monthNames[currentMonth]}</Txt>
+            <Txt size='text-[20px]' weight='font-[400]'>
+              {monthNames[currentMonth]}
+            </Txt>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {monthNames.map((m, i) => (
@@ -70,7 +72,9 @@ export default function CalendarHeader({
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger className='flex items-center gap-1 px-2 py-1 rounded-lg'>
-            <Txt size='text-[20px]'>{currentYear}년</Txt>
+            <Txt size='text-[20px]' weight='font-[400]'>
+              {currentYear}년
+            </Txt>
           </DropdownMenuTrigger>
           <DropdownMenuContent className='max-h-60 overflow-y-auto'>
             {yearOptions.map((y) => (

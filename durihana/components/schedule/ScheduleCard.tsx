@@ -31,13 +31,13 @@ export default function ScheduleCard({
     >
       {/* 제목과 금액 (금융 일정인 경우) */}
       <div className='flex justify-between items-start mb-3'>
-        <Txt size='text-[16px]' weight='font-[500]' className='text-mainblack'>
+        <Txt size='text-[12px]' weight='font-[400]' className='text-mainblack'>
           {schedule.title}
         </Txt>
         {schedule.type === 'finance' && schedule.amount !== undefined && (
           <Txt
-            size='text-[14px]'
-            weight='font-[500]'
+            size='text-[12px]'
+            weight='font-[400]'
             className='text-mainblack'
           >
             {formatAmount(schedule.amount, isExpiry)}
@@ -53,9 +53,23 @@ export default function ScheduleCard({
             width={16}
             height={16}
           />
-          <Txt size='text-[14px]' className='text-textgray'>
-            {formatDisplayDate(schedule.date)} {schedule.time}
-          </Txt>
+          {schedule.type === 'reservation' ? (
+            <Txt
+              size='text-[10px]'
+              weight='font-[400]'
+              className='text-textgray'
+            >
+              {formatDisplayDate(schedule.date)} {schedule.time}
+            </Txt>
+          ) : (
+            <Txt
+              size='text-[10px]'
+              weight='font-[400]'
+              className='text-textgray'
+            >
+              {formatDisplayDate(schedule.date)}
+            </Txt>
+          )}
         </div>
 
         {/* 예약일정인 경우만 파트너 정보 표시 */}
@@ -67,7 +81,11 @@ export default function ScheduleCard({
               width={16}
               height={16}
             />
-            <Txt size='text-[14px]' className='text-textgray'>
+            <Txt
+              size='text-[10px]'
+              weight='font-[400]'
+              className='text-textgray'
+            >
               {schedule.partnerName}
             </Txt>
           </div>

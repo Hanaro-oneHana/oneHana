@@ -44,8 +44,8 @@ export default function ScheduleList({
       {reservationSchedules.length > 0 && (
         <div className='space-y-4'>
           <Txt
-            size='text-[18px]'
-            weight='font-[600]'
+            size='text-[14px]'
+            weight='font-[400]'
             className='text-mainblack'
           >
             예약일정
@@ -65,8 +65,8 @@ export default function ScheduleList({
       {financeSchedules.length > 0 && (
         <div className='space-y-4'>
           <Txt
-            size='text-[18px]'
-            weight='font-[600]'
+            size='text-[14px]'
+            weight='font-[400]'
             className='text-mainblack'
           >
             금융
