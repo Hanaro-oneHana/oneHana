@@ -5,7 +5,8 @@ export type Schedule = {
   time: string;
   type: 'reservation' | 'finance';
   partnerName?: string;
-  accountType?: number; // 계좌 타입 추가
+  accountType?: number;
+  amount?: number; // Account의 payment 필드에서 가져올 금액
 };
 
 export type ScheduleProps = {

@@ -9,7 +9,6 @@ export default function UserCalendar({ userId }: ScheduleProps) {
   const {
     selectedDate,
     setSelectedDate,
-    // scheduleDates,
     calendarMonth,
     setCalendarMonth,
     calendarYear,
@@ -21,8 +20,14 @@ export default function UserCalendar({ userId }: ScheduleProps) {
     reservationScheduleDates,
   } = useUserCalendar(userId);
 
+  // 계좌 생성 후 달력 새로고침을 위한 함수
+  const handleAccountCreated = () => {
+    // 현재 월의 일정 다시 로드하기 위해 상태를 강제로 업데이트
+    setCalendarMonth(calendarMonth);
+  };
+
   return (
-    <div className='w-full max-w-md mx-auto bg-mainwhite flex flex-col h-screen'>
+    <div className='w-full max-w-md mx-auto bg-mainwhite h-screen flex flex-col'>
       {/* 달력 - 고정 영역 */}
       <div className='flex-shrink-0 p-4'>
         <CalendarComponent

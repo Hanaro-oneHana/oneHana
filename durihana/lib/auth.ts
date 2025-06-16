@@ -1,7 +1,7 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import bcrypt from "bcryptjs"
-import prisma from "@/lib/db"
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+// import bcrypt from "bcryptjs"
+import prisma from '@/lib/db';
 
 export const {
   handlers: { GET, POST },
@@ -10,14 +10,14 @@ export const {
 } = NextAuth({
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          return null;
         }
 
         try {
@@ -25,10 +25,10 @@ export const {
             where: {
               email: credentials.email as string,
             },
-          })
+          });
 
           if (!user) {
-            return null
+            return null;
           }
 
           // bcrypt 암호화 코드
@@ -37,39 +37,39 @@ export const {
           const isPasswordValid = credentials.password === user.password;
 
           if (!isPasswordValid) {
-            return null
+            return null;
           }
 
           return {
             id: user.id.toString(),
             email: user.email,
             name: user.name,
-          }
+          };
         } catch (error) {
-          console.error("Auth error:", error)
-          return null
+          console.error('Auth error:', error);
+          return null;
         }
       },
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: '/auth/signin',
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
+        token.id = user.id;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string
+        session.user.id = token.id as string;
       }
-      return session
+      return session;
     },
   },
-})
+});

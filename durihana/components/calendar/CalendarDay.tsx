@@ -41,7 +41,6 @@ export default function CalendarDay({
       >
         {date.getDate()}
       </Button>
-      {/* 일정 점 표시 */}
       {showScheduleDots && (hasFinanceSchedule || hasReservationSchedule) && (
         <div className='absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-0.5'>
           {hasReservationSchedule && (

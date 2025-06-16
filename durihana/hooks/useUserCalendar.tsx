@@ -41,14 +41,12 @@ export function useUserCalendar(userId: number) {
       const dateStr = formatDate(date);
       console.log('🚀 ~ loadSchedulesForDate ~ dateStr:', dateStr);
 
-      const { financePlans, reservations } = await getUserSchedulesForDate(
-        userId,
-        dateStr
-      );
+      const { financePlans, userAccounts, reservations } =
+        await getUserSchedulesForDate(userId, dateStr);
 
       const formattedSchedules: Schedule[] = [];
 
-      // 금융 계획 변환
+      // 금융 계획 변환 (Account 정보 포함)
       financePlans.forEach((plan) => {
         console.log('🚀 ~ financePlan:', plan);
         const timePart = plan.user_date.includes(' ')
@@ -65,6 +63,25 @@ export function useUserCalendar(userId: number) {
         // 만료일인지 확인 (시간이 10:00인 경우 만료일로 간주)
         const isExpiry = timePart === '10:00';
 
+        // 해당 plan의 type과 일치하는 계좌 찾기
+        const matchingAccount = userAccounts.find(
+          (account) => account.type === plan.type
+        );
+
+        // Account의 payment 또는 balance 정보 사용
+        let amount: number | undefined;
+        if (matchingAccount) {
+          if (isExpiry) {
+            // 만료일인 경우 잔액 반환
+            amount = Number(matchingAccount.balance);
+          } else {
+            // 납입/상환일인 경우 payment 금액
+            amount = matchingAccount.payment
+              ? Number(matchingAccount.payment)
+              : undefined;
+          }
+        }
+
         formattedSchedules.push({
           id: plan.id,
           title: getScheduleTitle(plan.type, isExpiry),
@@ -72,6 +89,7 @@ export function useUserCalendar(userId: number) {
           time: timePart,
           type: 'finance',
           accountType: plan.type,
+          amount: amount,
         });
       });
 

@@ -1,4 +1,4 @@
-import { ACCOUNT_TYPES, Schedule } from '@/types/Schedule';
+import { Schedule } from '@/types/Schedule';
 import Image from 'next/image';
 import { formatDisplayDate } from '@/lib/utils';
 import Txt from '../atoms/Txt';
@@ -12,18 +12,39 @@ export default function ScheduleCard({
   schedule,
   keyPrefix,
 }: ScheduleCardProps) {
+  // 금액 포맷팅 함수
+  const formatAmount = (amount: number, isExpiry: boolean) => {
+    const formattedAmount = amount.toLocaleString('ko-KR');
+    if (isExpiry) {
+      return `+${formattedAmount} 원`;
+    } else {
+      return `-${formattedAmount} 원`;
+    }
+  };
+
+  const isExpiry = schedule.title.includes('만료');
+
   return (
     <div
       key={`${keyPrefix}-${schedule.id}`}
-      className='bg-white rounded-lg p-4 shadow-sm border border-gray-100'
+      className='bg-white rounded-[10px] p-4 shadow-sm border border-gray-100'
     >
-      <Txt
-        size='text-[16px]'
-        weight='font-[500]'
-        className='text-mainblack mb-3'
-      >
-        {schedule.title}
-      </Txt>
+      {/* 제목과 금액 (금융 일정인 경우) */}
+      <div className='flex justify-between items-start mb-3'>
+        <Txt size='text-[16px]' weight='font-[500]' className='text-mainblack'>
+          {schedule.title}
+        </Txt>
+        {schedule.type === 'finance' && schedule.amount !== undefined && (
+          <Txt
+            size='text-[14px]'
+            weight='font-[500]'
+            className='text-mainblack'
+          >
+            {formatAmount(schedule.amount, isExpiry)}
+          </Txt>
+        )}
+      </div>
+
       <div className='space-y-2'>
         <div className='flex items-center gap-3'>
           <Image
@@ -32,26 +53,25 @@ export default function ScheduleCard({
             width={16}
             height={16}
           />
-          <Txt size='text-[14px]' className='text-gray-600'>
+          <Txt size='text-[14px]' className='text-textgray'>
             {formatDisplayDate(schedule.date)} {schedule.time}
           </Txt>
         </div>
-        {/* 예약일정인 경우 파트너 정보 표시, 금융일정인 경우 계좌 타입 정보 표시 */}
-        <div className='flex items-center gap-3'>
-          <Image
-            src='/asset/icons/map.svg'
-            alt='location'
-            width={16}
-            height={16}
-          />
-          <Txt size='text-[14px]' className='text-gray-600'>
-            {schedule.type === 'reservation'
-              ? schedule.partnerName
-              : schedule.accountType !== undefined
-                ? `${ACCOUNT_TYPES[schedule.accountType as keyof typeof ACCOUNT_TYPES]} 관련`
-                : '금융 일정'}
-          </Txt>
-        </div>
+
+        {/* 예약일정인 경우만 파트너 정보 표시 */}
+        {schedule.type === 'reservation' && schedule.partnerName && (
+          <div className='flex items-center gap-3'>
+            <Image
+              src='/asset/icons/map.svg'
+              alt='location'
+              width={16}
+              height={16}
+            />
+            <Txt size='text-[14px]' className='text-textgray'>
+              {schedule.partnerName}
+            </Txt>
+          </div>
+        )}
       </div>
     </div>
   );

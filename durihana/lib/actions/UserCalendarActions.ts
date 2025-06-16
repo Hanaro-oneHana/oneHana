@@ -2,7 +2,77 @@
 
 import prisma from '../db';
 
-// 사용자의 개인 금융 계획 가져오기 (usercalendar)
+// 특정 날짜의 사용자 일정들 가져오기
+export const getUserSchedulesForDate = async (userId: number, date: string) => {
+  console.log('🚀 ~ getUserSchedulesForDate ~ userId:', userId);
+  console.log('🚀 ~ getUserSchedulesForDate ~ date:', date);
+
+  const [financePlans, reservations, userAccounts] = await Promise.all([
+    // 개인 금융 계획
+    prisma.usercalendar.findMany({
+      where: {
+        user_id: userId,
+        user_date: {
+          startsWith: date, // '2025-01-15'
+        },
+      },
+    }),
+    // 예약 일정
+    prisma.partnercalendar.findMany({
+      where: {
+        user_id: userId,
+        reservation_date: {
+          startsWith: date, // '2025-01-15'
+        },
+      },
+      include: {
+        partnerservice: {
+          select: {
+            id: true,
+            name: true,
+            partner: {
+              select: {
+                id: true,
+                name: true,
+                phone: true,
+                email: true,
+                address: true,
+                service_detail: true,
+                is_active: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+    // 해당 사용자의 모든 계좌 정보 (타입별로 매칭하기 위해)
+    prisma.account.findMany({
+      where: {
+        user_id: userId,
+      },
+      select: {
+        id: true,
+        type: true,
+        payment: true,
+        balance: true,
+        expire_date: true,
+        transfer_date: true,
+      },
+    }),
+  ]);
+
+  console.log('🚀 ~ financePlans:', financePlans);
+  console.log('🚀 ~ userAccounts:', userAccounts);
+  console.log('🚀 ~ reservations:', reservations);
+
+  return {
+    financePlans,
+    userAccounts,
+    reservations,
+  };
+};
+
+// 나머지 함수들은 동일...
 export const getUserFinancePlans = async (
   userId: number,
   year: number,
@@ -25,7 +95,6 @@ export const getUserFinancePlans = async (
   });
 };
 
-// 사용자의 예약 일정 가져오기 (partnercalendar)
 export const getUserReservations = async (
   userId: number,
   year: number,
@@ -67,61 +136,6 @@ export const getUserReservations = async (
   });
 };
 
-// 특정 날짜의 사용자 일정들 가져오기
-export const getUserSchedulesForDate = async (userId: number, date: string) => {
-  console.log('🚀 ~ getUserSchedulesForDate ~ userId:', userId);
-  console.log('🚀 ~ getUserSchedulesForDate ~ date:', date);
-
-  const [financePlans, reservations] = await Promise.all([
-    // 개인 금융 계획
-    prisma.usercalendar.findMany({
-      where: {
-        user_id: userId,
-        user_date: {
-          startsWith: date, // '2025-01-15'
-        },
-      },
-    }),
-    // 예약 일정
-    prisma.partnercalendar.findMany({
-      where: {
-        user_id: userId,
-        reservation_date: {
-          startsWith: date, // '2025-01-15'
-        },
-      },
-      include: {
-        partnerservice: {
-          select: {
-            id: true,
-            name: true,
-            partner: {
-              select: {
-                id: true,
-                name: true,
-                phone: true,
-                email: true,
-                address: true,
-                service_detail: true,
-                is_active: true,
-              },
-            },
-          },
-        },
-      },
-    }),
-  ]);
-
-  console.log('🚀 ~ financePlans:', financePlans);
-  console.log('🚀 ~ reservations:', reservations);
-
-  return {
-    financePlans,
-    reservations,
-  };
-};
-
-// 금융 일정이 있는 날짜들 가져오기
 export const getFinanceScheduleDates = async (
   userId: number,
   year: number,
@@ -161,7 +175,6 @@ export const getFinanceScheduleDates = async (
   });
 };
 
-// 예약 일정이 있는 날짜들 가져오기
 export const getReservationScheduleDates = async (
   userId: number,
   year: number,

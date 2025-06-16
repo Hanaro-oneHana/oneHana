@@ -131,7 +131,7 @@ export const deleteAccountSchedules = async (accountId: number) => {
       throw new Error('Account not found');
     }
 
-    // 해당 계좌 타입의 모든 일정 삭제
+    // 해당 계좌와 관련된 모든 일정 삭제 (user_id와 type으로 매칭)
     const result = await prisma.usercalendar.deleteMany({
       where: {
         user_id: account.user_id,
