@@ -31,7 +31,7 @@ export default function TimeSlotList({
         상담 가능 시간
       </Txt>
       <HorizontalSlider className='px-0'>
-        <div className='flex'>
+        <div className='flex gap-[9px]'>
           {times.map((time) => {
             const isReserved = reservedTimes.includes(time);
             const isAvailable = availableTimes.includes(time);
@@ -42,7 +42,7 @@ export default function TimeSlotList({
                 <Txt
                   key={time}
                   className={`
-                    px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
+                    px-4 py-2 rounded-10px text-sm font-medium whitespace-nowrap
                     transition-colors duration-200
                     ${isReserved ? 'opacity-50 cursor-not-allowed' : ''}
                   `}
@@ -58,7 +58,7 @@ export default function TimeSlotList({
                   onClick={() => onTimeSelect(time)}
                   disabled={isReserved}
                   className={`
-                    px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
+                    px-[11px] py-[8px] rounded-10px text-[12px] font-normal
                     transition-colors duration-200
                     ${
                       isReserved
