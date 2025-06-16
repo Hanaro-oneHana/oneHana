@@ -121,8 +121,8 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
   };
 };
 
-// 일정이 있는 날짜들 가져오기 (달력에 점 표시용)
-export const getScheduleDates = async (
+// 금융 일정이 있는 날짜들 가져오기
+export const getFinanceScheduleDates = async (
   userId: number,
   year: number,
   month: number
@@ -130,58 +130,71 @@ export const getScheduleDates = async (
   const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
   const endDate = `${year}-${String(month + 1).padStart(2, '0')}-31`;
 
-  console.log('🚀 ~ getScheduleDates ~ userId:', userId);
-  console.log('🚀 ~ getScheduleDates ~ startDate:', startDate);
-  console.log('🚀 ~ getScheduleDates ~ endDate:', endDate);
+  console.log('🚀 ~ getFinanceScheduleDates ~ userId:', userId);
+  console.log('🚀 ~ getFinanceScheduleDates ~ startDate:', startDate);
+  console.log('🚀 ~ getFinanceScheduleDates ~ endDate:', endDate);
 
-  const [financeDates, reservationDates] = await Promise.all([
-    // 개인 금융 계획 날짜들
-    prisma.usercalendar.findMany({
-      where: {
-        user_id: userId,
-        user_date: {
-          gte: startDate,
-          lte: endDate,
-        },
+  const financeDates = await prisma.usercalendar.findMany({
+    where: {
+      user_id: userId,
+      user_date: {
+        gte: startDate,
+        lte: endDate,
       },
-      select: {
-        user_date: true,
-      },
-    }),
-    // 예약 일정 날짜들
-    prisma.partnercalendar.findMany({
-      where: {
-        user_id: userId,
-        reservation_date: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-      select: {
-        reservation_date: true,
-      },
-    }),
-  ]);
+    },
+    select: {
+      user_date: true,
+    },
+  });
 
   console.log('🚀 ~ financeDates:', financeDates);
+
+  const allDates = new Set<string>();
+  financeDates.forEach((item) => {
+    const datePart = item.user_date.split(' ')[0];
+    allDates.add(datePart);
+  });
+
+  return Array.from(allDates).map((dateStr) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  });
+};
+
+// 예약 일정이 있는 날짜들 가져오기
+export const getReservationScheduleDates = async (
+  userId: number,
+  year: number,
+  month: number
+) => {
+  const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+  const endDate = `${year}-${String(month + 1).padStart(2, '0')}-31`;
+
+  console.log('🚀 ~ getReservationScheduleDates ~ userId:', userId);
+  console.log('🚀 ~ getReservationScheduleDates ~ startDate:', startDate);
+  console.log('🚀 ~ getReservationScheduleDates ~ endDate:', endDate);
+
+  const reservationDates = await prisma.partnercalendar.findMany({
+    where: {
+      user_id: userId,
+      reservation_date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    select: {
+      reservation_date: true,
+    },
+  });
+
   console.log('🚀 ~ reservationDates:', reservationDates);
 
-  // 날짜 문자열에서 날짜 부분만 추출하고 중복 제거
   const allDates = new Set<string>();
-
-  financeDates.forEach((item) => {
-    const datePart = item.user_date.split(' ')[0]; // '2025-01-15 10:00' -> '2025-01-15'
-    allDates.add(datePart);
-  });
-
   reservationDates.forEach((item) => {
-    const datePart = item.reservation_date.split(' ')[0]; // '2025-01-15 10:00' -> '2025-01-15'
+    const datePart = item.reservation_date.split(' ')[0];
     allDates.add(datePart);
   });
 
-  console.log('🚀 ~ allDates:', Array.from(allDates));
-
-  // Date 객체 배열로 변환 (시간대 문제 해결)
   return Array.from(allDates).map((dateStr) => {
     const [year, month, day] = dateStr.split('-').map(Number);
     return new Date(year, month - 1, day);

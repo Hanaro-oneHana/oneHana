@@ -14,7 +14,8 @@ type CustomCalendarProps = {
   currentYear?: number;
   onMonthChange?: (month: number) => void;
   onYearChange?: (year: number) => void;
-  scheduleDates?: Date[];
+  financeScheduleDates?: Date[];
+  reservationScheduleDates?: Date[];
   showScheduleDots?: boolean;
 };
 
@@ -27,7 +28,8 @@ export default function CalendarComponent({
   currentYear: propCurrentYear,
   onMonthChange,
   onYearChange,
-  scheduleDates = [],
+  financeScheduleDates = [],
+  reservationScheduleDates = [],
   showScheduleDots = false,
 }: CustomCalendarProps) {
   const {
@@ -64,7 +66,8 @@ export default function CalendarComponent({
         calendarDays={calendarDays}
         selectedDate={internalSelectedDate}
         blockedDates={blockedDates}
-        scheduleDates={scheduleDates}
+        financeScheduleDates={financeScheduleDates}
+        reservationScheduleDates={reservationScheduleDates}
         showScheduleDots={showScheduleDots}
         onDateSelect={handleDateSelect}
         isSameDay={isSameDay}

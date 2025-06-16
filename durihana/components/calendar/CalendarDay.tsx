@@ -8,7 +8,8 @@ type CalendarDayProps = {
   isCurrentMonth: boolean;
   isSelected: boolean;
   isBlocked: boolean;
-  hasSchedule: boolean;
+  hasFinanceSchedule: boolean;
+  hasReservationSchedule: boolean;
   showScheduleDots: boolean;
   onDateSelect: (date: Date) => void;
 };
@@ -18,7 +19,8 @@ export default function CalendarDay({
   isCurrentMonth,
   isSelected,
   isBlocked,
-  hasSchedule,
+  hasFinanceSchedule,
+  hasReservationSchedule,
   showScheduleDots,
   onDateSelect,
 }: CalendarDayProps) {
@@ -40,9 +42,14 @@ export default function CalendarDay({
         {date.getDate()}
       </Button>
       {/* 일정 점 표시 */}
-      {showScheduleDots && hasSchedule && (
-        <div className='absolute bottom-1 left-1/2 transform -translate-x-1/2'>
-          <div className='w-1 h-1 bg-primarycolor rounded-full'></div>
+      {showScheduleDots && (hasFinanceSchedule || hasReservationSchedule) && (
+        <div className='absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-0.5'>
+          {hasReservationSchedule && (
+            <div className='w-1 h-1 bg-primarycolor rounded-full'></div>
+          )}
+          {hasFinanceSchedule && (
+            <div className='w-1 h-1 bg-red rounded-full'></div>
+          )}
         </div>
       )}
     </div>

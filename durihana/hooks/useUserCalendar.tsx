@@ -4,14 +4,18 @@ import { getScheduleTitle, Schedule } from '@/types/Schedule';
 import { useState, useEffect } from 'react';
 import {
   getUserSchedulesForDate,
-  getScheduleDates,
+  getFinanceScheduleDates,
+  getReservationScheduleDates,
 } from '@/lib/actions/UserCalendarActions';
 import { formatDate } from '@/lib/utils';
 
 export function useUserCalendar(userId: number) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [scheduleDates, setScheduleDates] = useState<Date[]>([]);
+  const [financeScheduleDates, setFinanceScheduleDates] = useState<Date[]>([]);
+  const [reservationScheduleDates, setReservationScheduleDates] = useState<
+    Date[]
+  >([]);
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(false);
@@ -19,8 +23,12 @@ export function useUserCalendar(userId: number) {
   // 일정이 있는 날짜들 로드 (달력 점 표시용)
   const loadScheduleDates = async (year: number, month: number) => {
     try {
-      const dates = await getScheduleDates(userId, year, month);
-      setScheduleDates(dates);
+      const [financeDates, reservationDates] = await Promise.all([
+        getFinanceScheduleDates(userId, year, month),
+        getReservationScheduleDates(userId, year, month),
+      ]);
+      setFinanceScheduleDates(financeDates);
+      setReservationScheduleDates(reservationDates);
     } catch (error) {
       console.error('Failed to load schedule dates:', error);
     }
@@ -122,7 +130,8 @@ export function useUserCalendar(userId: number) {
     selectedDate,
     setSelectedDate,
     schedules,
-    scheduleDates,
+    financeScheduleDates,
+    reservationScheduleDates,
     calendarMonth,
     setCalendarMonth,
     calendarYear,

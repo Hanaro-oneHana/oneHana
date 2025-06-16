@@ -4,7 +4,8 @@ type CalendarGridProps = {
   calendarDays: Array<{ date: Date; isCurrentMonth: boolean }>;
   selectedDate: Date;
   blockedDates: Date[];
-  scheduleDates: Date[];
+  financeScheduleDates: Date[];
+  reservationScheduleDates: Date[];
   showScheduleDots: boolean;
   onDateSelect: (date: Date) => void;
   isSameDay: (d1: Date, d2: Date) => boolean;
@@ -16,13 +17,22 @@ export default function CalendarGrid({
   calendarDays,
   selectedDate,
   blockedDates,
-  scheduleDates,
+  financeScheduleDates,
+  reservationScheduleDates,
   showScheduleDots,
   onDateSelect,
   isSameDay,
 }: CalendarGridProps) {
-  const hasSchedule = (date: Date) => {
-    return scheduleDates.some((scheduleDate) => isSameDay(scheduleDate, date));
+  const hasFinanceSchedule = (date: Date) => {
+    return financeScheduleDates.some((scheduleDate) =>
+      isSameDay(scheduleDate, date)
+    );
+  };
+
+  const hasReservationSchedule = (date: Date) => {
+    return reservationScheduleDates.some((scheduleDate) =>
+      isSameDay(scheduleDate, date)
+    );
   };
 
   const handleDateSelect = (date: Date) => {
@@ -47,7 +57,8 @@ export default function CalendarGrid({
           const { date, isCurrentMonth } = dayObj;
           const isSelected = isSameDay(date, selectedDate);
           const isBlocked = blockedDates.some((bd) => isSameDay(bd, date));
-          const hasScheduleOnDate = hasSchedule(date);
+          const hasFinanceScheduleOnDate = hasFinanceSchedule(date);
+          const hasReservationScheduleOnDate = hasReservationSchedule(date);
 
           return (
             <CalendarDay
@@ -56,7 +67,8 @@ export default function CalendarGrid({
               isCurrentMonth={isCurrentMonth}
               isSelected={isSelected}
               isBlocked={isBlocked}
-              hasSchedule={hasScheduleOnDate}
+              hasFinanceSchedule={hasFinanceScheduleOnDate}
+              hasReservationSchedule={hasReservationScheduleOnDate}
               showScheduleDots={showScheduleDots}
               onDateSelect={handleDateSelect}
             />
