@@ -1,4 +1,4 @@
-import { Schedule } from '@/types/Schedule';
+import { ACCOUNT_TYPES, Schedule } from '@/types/Schedule';
 import Image from 'next/image';
 import { formatDisplayDate } from '@/lib/utils';
 import Txt from '../atoms/Txt';
@@ -36,6 +36,7 @@ export default function ScheduleCard({
             {formatDisplayDate(schedule.date)} {schedule.time}
           </Txt>
         </div>
+        {/* 예약일정인 경우 파트너 정보 표시, 금융일정인 경우 계좌 타입 정보 표시 */}
         <div className='flex items-center gap-3'>
           <Image
             src='/asset/icons/map.svg'
@@ -44,7 +45,11 @@ export default function ScheduleCard({
             height={16}
           />
           <Txt size='text-[14px]' className='text-gray-600'>
-            {schedule.partnerName}
+            {schedule.type === 'reservation'
+              ? schedule.partnerName
+              : schedule.accountType !== undefined
+                ? `${ACCOUNT_TYPES[schedule.accountType as keyof typeof ACCOUNT_TYPES]} 관련`
+                : '금융 일정'}
           </Txt>
         </div>
       </div>

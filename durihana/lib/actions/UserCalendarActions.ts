@@ -2,8 +2,8 @@
 
 import prisma from '../db';
 
-// 사용자의 개인 일정 가져오기 (usercalendar)
-export const getUserSchedules = async (
+// 사용자의 개인 금융 계획 가져오기 (usercalendar)
+export const getUserFinancePlans = async (
   userId: number,
   year: number,
   month: number
@@ -17,13 +17,6 @@ export const getUserSchedules = async (
       user_date: {
         gte: startDate,
         lte: endDate,
-      },
-    },
-    include: {
-      partnerservice: {
-        include: {
-          partner: true,
-        },
       },
     },
     orderBy: {
@@ -51,8 +44,20 @@ export const getUserReservations = async (
     },
     include: {
       partnerservice: {
-        include: {
-          partner: true,
+        select: {
+          id: true,
+          name: true,
+          partner: {
+            select: {
+              id: true,
+              name: true,
+              phone: true,
+              email: true,
+              address: true,
+              service_detail: true,
+              is_active: true,
+            },
+          },
         },
       },
     },
@@ -67,33 +72,13 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
   console.log('🚀 ~ getUserSchedulesForDate ~ userId:', userId);
   console.log('🚀 ~ getUserSchedulesForDate ~ date:', date);
 
-  const [personalSchedules, reservations] = await Promise.all([
-    // 개인 일정
+  const [financePlans, reservations] = await Promise.all([
+    // 개인 금융 계획
     prisma.usercalendar.findMany({
       where: {
         user_id: userId,
         user_date: {
           startsWith: date, // '2025-01-15'
-        },
-      },
-      include: {
-        partnerservice: {
-          select: {
-            id: true,
-            name: true,
-            partner: {
-              select: {
-                id: true,
-                name: true,
-                phone: true,
-                email: true,
-                address: true,
-                service_detail: true,
-                is_active: true,
-                // discount_rate는 Decimal이므로 제외하거나 변환 필요
-              },
-            },
-          },
         },
       },
     }),
@@ -119,7 +104,6 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
                 address: true,
                 service_detail: true,
                 is_active: true,
-                // discount_rate는 Decimal이므로 제외하거나 변환 필요
               },
             },
           },
@@ -128,37 +112,12 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
     }),
   ]);
 
-  console.log('🚀 ~ personalSchedules:', personalSchedules);
+  console.log('🚀 ~ financePlans:', financePlans);
   console.log('🚀 ~ reservations:', reservations);
 
-  // Decimal 필드가 있다면 변환
-  const processedPersonalSchedules = personalSchedules.map((schedule) => ({
-    ...schedule,
-    partnerservice: {
-      ...schedule.partnerservice,
-      partner: {
-        ...schedule.partnerservice.partner,
-        // discount_rate가 필요하다면 여기서 변환
-        // discount_rate: schedule.partnerservice.partner.discount_rate?.toNumber() || 0,
-      },
-    },
-  }));
-
-  const processedReservations = reservations.map((reservation) => ({
-    ...reservation,
-    partnerservice: {
-      ...reservation.partnerservice,
-      partner: {
-        ...reservation.partnerservice.partner,
-        // discount_rate가 필요하다면 여기서 변환
-        // discount_rate: reservation.partnerservice.partner.discount_rate?.toNumber() || 0,
-      },
-    },
-  }));
-
   return {
-    personalSchedules: processedPersonalSchedules,
-    reservations: processedReservations,
+    financePlans,
+    reservations,
   };
 };
 
@@ -175,8 +134,8 @@ export const getScheduleDates = async (
   console.log('🚀 ~ getScheduleDates ~ startDate:', startDate);
   console.log('🚀 ~ getScheduleDates ~ endDate:', endDate);
 
-  const [personalDates, reservationDates] = await Promise.all([
-    // 개인 일정 날짜들
+  const [financeDates, reservationDates] = await Promise.all([
+    // 개인 금융 계획 날짜들
     prisma.usercalendar.findMany({
       where: {
         user_id: userId,
@@ -204,13 +163,13 @@ export const getScheduleDates = async (
     }),
   ]);
 
-  console.log('🚀 ~ personalDates:', personalDates);
+  console.log('🚀 ~ financeDates:', financeDates);
   console.log('🚀 ~ reservationDates:', reservationDates);
 
   // 날짜 문자열에서 날짜 부분만 추출하고 중복 제거
   const allDates = new Set<string>();
 
-  personalDates.forEach((item) => {
+  financeDates.forEach((item) => {
     const datePart = item.user_date.split(' ')[0]; // '2025-01-15 10:00' -> '2025-01-15'
     allDates.add(datePart);
   });

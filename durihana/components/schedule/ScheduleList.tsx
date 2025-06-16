@@ -41,7 +41,6 @@ export default function ScheduleList({
 
   return (
     <div className='space-y-6'>
-      {/* 예약일정 */}
       {reservationSchedules.length > 0 && (
         <div className='space-y-4'>
           <Txt
@@ -63,7 +62,6 @@ export default function ScheduleList({
         </div>
       )}
 
-      {/* 금융 */}
       {financeSchedules.length > 0 && (
         <div className='space-y-4'>
           <Txt

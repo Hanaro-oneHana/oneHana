@@ -1,6 +1,6 @@
 'use client';
 
-import { Schedule } from '@/types/Schedule';
+import { getScheduleTitle, Schedule } from '@/types/Schedule';
 import { useState, useEffect } from 'react';
 import {
   getUserSchedulesForDate,
@@ -33,34 +33,37 @@ export function useUserCalendar(userId: number) {
       const dateStr = formatDate(date);
       console.log('🚀 ~ loadSchedulesForDate ~ dateStr:', dateStr);
 
-      const { personalSchedules, reservations } = await getUserSchedulesForDate(
+      const { financePlans, reservations } = await getUserSchedulesForDate(
         userId,
         dateStr
       );
 
       const formattedSchedules: Schedule[] = [];
 
-      // 금융 일정 변환 (기존 개인 일정)
-      personalSchedules.forEach((schedule) => {
-        console.log('🚀 ~ personalSchedule:', schedule);
-        const timePart = schedule.user_date.includes(' ')
-          ? schedule.user_date.split(' ')[1]
+      // 금융 계획 변환
+      financePlans.forEach((plan) => {
+        console.log('🚀 ~ financePlan:', plan);
+        const timePart = plan.user_date.includes(' ')
+          ? plan.user_date.split(' ')[1]
           : '00:00';
-        const datePart = schedule.user_date.includes(' ')
-          ? schedule.user_date.split(' ')[0]
-          : schedule.user_date;
+        const datePart = plan.user_date.includes(' ')
+          ? plan.user_date.split(' ')[0]
+          : plan.user_date;
 
         // 시간대 문제 해결을 위해 로컬 시간대로 Date 생성
         const [year, month, day] = datePart.split('-').map(Number);
         const localDate = new Date(year, month - 1, day);
 
+        // 만료일인지 확인 (시간이 10:00인 경우 만료일로 간주)
+        const isExpiry = timePart === '10:00';
+
         formattedSchedules.push({
-          id: schedule.id,
-          title: schedule.partnerservice.name,
+          id: plan.id,
+          title: getScheduleTitle(plan.type, isExpiry),
           date: localDate,
           time: timePart,
           type: 'finance',
-          partnerName: schedule.partnerservice.partner.name,
+          accountType: plan.type,
         });
       });
 
