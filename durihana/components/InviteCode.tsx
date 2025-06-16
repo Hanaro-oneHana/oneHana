@@ -83,7 +83,9 @@ export default function InviteCode() {
         <Button
           className='w-full py-3 text-[16px]'
           onClick={() => tryConnecting(id, mateCode)}
-        ></Button>
+        >
+          연결하기
+        </Button>
       </div>
     </>
   );
