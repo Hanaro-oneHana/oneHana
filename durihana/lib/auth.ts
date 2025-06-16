@@ -1,7 +1,11 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 // import bcrypt from "bcryptjs"
+<<<<<<< feat/UserCalendar
+import prisma from '@/lib/db';
+=======
 import { findUserByEmail } from './actions/AuthActions';
+>>>>>>> develop
 
 export const {
   handlers: { GET, POST },
@@ -21,7 +25,15 @@ export const {
         }
 
         try {
+<<<<<<< feat/UserCalendar
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email as string,
+            },
+          });
+=======
           const user = await findUserByEmail(credentials.email as string);
+>>>>>>> develop
 
           if (!user) {
             return null;
