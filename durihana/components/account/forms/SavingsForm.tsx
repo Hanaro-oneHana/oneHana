@@ -45,13 +45,10 @@ export default function SavingsForm({
             얼마를 저축할까요?
           </Txt>
           <div className='flex items-baseline gap-2 mb-4'>
-            <Txt size='text-[14px]' className='text-icongray'>
-              최소
-            </Txt>
             <InputComponent
               value={amount}
               onChange={(e) => onAmountChange(e.target.value)}
-              placeholder='100만원'
+              placeholder='최소 100만원'
               className='w-20 text-[14px] font-[400] text-icongray border-b-2 border-gray-300 bg-transparent px-0 pb-1'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
@@ -73,7 +70,7 @@ export default function SavingsForm({
                 {period}개월
                 <ChevronDown
                   className={`
-                    h-4 w-4 transition-transform duration-200
+                    h-4 w-4 transition-transform text-mainblack duration-200
                     ${isPeriodOpen ? 'rotate-180' : ''}
                   `}
                 />
@@ -142,7 +139,7 @@ export default function SavingsForm({
                 매월 {transferDay}일
                 <ChevronDown
                   className={`
-                    h-4 w-4 transition-transform duration-200
+                    h-4 w-4 transition-transform text-mainblack duration-200
                     ${isTransferOpen ? 'rotate-180' : ''}
                   `}
                 />
