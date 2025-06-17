@@ -41,7 +41,9 @@ export default function DepositForm({
           </Txt>
           <div className='flex items-end gap-2 mb-[42px]'>
             <ExpandingInput
-              value={amount}
+              value={
+                amount ? Number(amount.replace(/,/g, '')).toLocaleString() : ''
+              }
               onChange={(e) => onAmountChange(e.target.value)}
               placeholder='최소 100만원'
               className=' text-[14px] font-[400] text-icongray leading-[24px] border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
