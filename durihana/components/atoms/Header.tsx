@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Button from './Button';
 import Txt from './Txt';
@@ -9,25 +10,22 @@ type Props = {
   title?: string;
   leftIcon: 'back' | 'my';
   rightIcon?: 'close' | 'bell';
-  buttonTxt?: '로그인' | '로그아웃'; // 로그인 아니면 로그아웃
   onBackClick?: () => void; // 뒤로가기
   onMyClick?: () => void; // 사람 모양 아이콘
   onRightClick?: () => void; // 종 혹은 닫기
-  onClick?: () => void; // 로그인 혹은 로그아웃의 Click 메소드
 };
 
 export default function Header({
   title,
   leftIcon,
   rightIcon,
-  buttonTxt = '로그인',
   onBackClick,
   onMyClick,
   onRightClick,
-  onClick,
 }: Props) {
   const [isLeftBack, setLeftBack] = useState(leftIcon === 'back');
   const [isRightClose, setRightClose] = useState(rightIcon === 'close');
+  const { data: session } = useSession();
   const imageLeftUrl = `/asset/icons/${leftIcon}.svg`;
   const imageRightUrl = `/asset/icons/${rightIcon}.svg`;
 
@@ -55,9 +53,9 @@ export default function Header({
           {leftIcon === 'my' && (
             <Button
               className='flex text-[11px] py-[4px] px-[8px] rounded-[8px]'
-              onClick={onClick}
+              onClick={session?.user ? () => signOut() : () => signIn()}
             >
-              {buttonTxt}
+              {session?.user ? '로그아웃' : '로그인'}
             </Button>
           )}
         </div>

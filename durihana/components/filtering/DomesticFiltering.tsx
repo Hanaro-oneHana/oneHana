@@ -43,7 +43,7 @@ export default function DomesticFiltering({ onChange }: Props) {
   return (
     <>
       <HorizontalSlider>
-        <div className='flex gap-[7px]'>
+        <div className='flex gap-[7px] px-[20px]'>
           {regions.map((region) => (
             <Button
               key={region}

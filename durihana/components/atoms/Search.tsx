@@ -37,7 +37,7 @@ export default function Search({
           type='text'
           ref={searchRef}
           placeholder={placeholder}
-          className='focus:outline-none w-full'
+          className='focus:outline-none w-full text-sm text-mainblack'
         />
       </form>
     </>
