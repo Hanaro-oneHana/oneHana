@@ -1,5 +1,4 @@
-// app/account/detail/[id]/page.tsx
-import AccountDetail from '@/components/AccountDetail';
+import AccountDetail, { Transaction } from '@/components/AccountDetail';
 import AccountDetailHeader from '@/components/AccountDetailHeader';
 import {
   getAllAccountsByUserId,
@@ -8,16 +7,15 @@ import {
 import { getTransactionsByAccountId } from '@/lib/actions/TransactionActions';
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function AccountDetailPage({ params }: Props) {
-  const userId = Number(params.id);
-  const allAccounts = await getAllAccountsByUserId(userId);
-  const firstAccount = await getFirstAccountByUserId(userId);
-  
+  const userId = await params;
+  const allAccounts = await getAllAccountsByUserId(Number(userId.id));
+  const firstAccount = await getFirstAccountByUserId(Number(userId.id));
 
-  const allTransactions: { [key: number]: any[] } = {};
+  const allTransactions: { [key: number]: Transaction[] } = {};
   for (const acc of allAccounts) {
     allTransactions[acc.id] = await getTransactionsByAccountId(acc.id);
   }
@@ -26,7 +24,7 @@ export default async function AccountDetailPage({ params }: Props) {
 
   return (
     <>
-      <AccountDetailHeader/>
+      <AccountDetailHeader />
       <div className='flex flex-col p-[20px]'>
         <AccountDetail
           account={firstAccount}
