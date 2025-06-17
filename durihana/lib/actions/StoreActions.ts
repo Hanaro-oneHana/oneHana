@@ -41,20 +41,17 @@ export const getStoreList = async (search: string, category: number) => {
     },
   });
 
-  const computePrice = (content: unknown): number => {
-    if (typeof content === 'object' && content !== null) {
-      if ('가격' in content) {
-        return parseInt(content['가격']?.toString() || '0');
-      }
-      return 0;
-    }
-    return 0;
-  };
-
   const result: Store[] = stores.map((store) => ({
     id: store.id,
     name: store.name,
-    price: computePrice(store.content),
+    price:
+      typeof store.content === 'object'
+        ? store.content !== null
+          ? '가격' in store.content
+            ? parseInt(store.content['가격']?.toString() || '0')
+            : 0
+          : 0
+        : 0,
     location:
       typeof store.content === 'object' && store.content !== null
         ? '위치' in store.content
