@@ -8,8 +8,8 @@ import LoanReviewStep from '@/components/account/steps/LoanReviewStep';
 import Button from '@/components/atoms/Button';
 import Header from '@/components/atoms/Header';
 import Txt from '@/components/atoms/Txt';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 // 화면 폼 상태 타입
 type FormState = {
@@ -18,17 +18,67 @@ type FormState = {
   period: number;
   transferDay: number;
   userAccount: string;
+  monthlyPayment?: string; // 대출용 월 상환액 추가
 };
 
-export default function CreateAccount() {
+type StepRendererProps = {
+  data: FormState;
+  onChange: (updates: Partial<FormState>) => void;
+};
+
+function StepRenderer({ data, onChange }: StepRendererProps) {
+  switch (data.type) {
+    case 1:
+      return (
+        <DepositForm
+          amount={data.amount}
+          period={data.period}
+          userAccount={data.userAccount}
+          onAmountChange={(v) => onChange({ amount: v })}
+          onPeriodChange={(p) => onChange({ period: p })}
+        />
+      );
+    case 2:
+      return (
+        <SavingsForm
+          amount={data.amount}
+          period={data.period}
+          transferDay={data.transferDay}
+          userAccount={data.userAccount}
+          onAmountChange={(v) => onChange({ amount: v })}
+          onPeriodChange={(p) => onChange({ period: p })}
+          onTransferDayChange={(d) => onChange({ transferDay: d })}
+        />
+      );
+    case 3:
+      return (
+        <LoanForm
+          amount={data.amount}
+          period={data.period}
+          transferDay={data.transferDay}
+          userAccount={data.userAccount}
+          monthlyPayment={data.monthlyPayment}
+          onAmountChange={(v) => onChange({ amount: v })}
+          onPeriodChange={(p) => onChange({ period: p })}
+          onTransferDayChange={(d) => onChange({ transferDay: d })}
+          onMonthlyPaymentChange={(v) => onChange({ monthlyPayment: v })}
+        />
+      );
+    default:
+      return null;
+  }
+}
+
+export default function TestComponentsPage() {
   const router = useRouter();
   const params = useSearchParams();
-  const types = (params.get('types') || '')
+  const typesParam = params.get('types') || '';
+  const types = typesParam
     .split(',')
-    .map(Number)
+    .map((t) => Number(t))
     .filter(Boolean);
 
-  // 상태 관리
+  // FormState[] 로 화면 상태 관리
   const [formStates, setFormStates] = useState<FormState[]>(
     types.map((type) => ({
       type,
@@ -36,132 +86,151 @@ export default function CreateAccount() {
       period: 12,
       transferDay: 1,
       userAccount: '530-910028-53607',
+      monthlyPayment: '', // 대출용 월 상환액 초기화
     }))
   );
   const [step, setStep] = useState(0);
-  const [stage, setStage] = useState<'form' | 'review' | 'complete'>('form');
+  const [currentStage, setCurrentStage] = useState<
+    'form' | 'review' | 'complete'
+  >('form');
   const [loading, setLoading] = useState(false);
+
   const current = formStates[step];
 
-  // 폼 업데이트 헬퍼
-  const updateCurrent = (updates: Partial<FormState>) =>
+  // 선택된 타입이 없으면 else-account로 리다이렉트
+  useEffect(() => {
+    if (types.length === 0) {
+      router.push('/else-account');
+    }
+  }, [types, router]);
+
+  // 폼 변경 핸들러
+  const handleChange = (updates: Partial<FormState>) => {
     setFormStates((fs) =>
       fs.map((f, i) => (i === step ? { ...f, ...updates } : f))
     );
+  };
 
-  // 이전 단계
+  // 뒤로가기
   const handleBack = () => {
-    if (stage === 'complete') {
-      setStage(current.type === 3 ? 'review' : 'form');
-    } else if (stage === 'review') {
-      setStage('form');
-    } else if (step > 0) {
+    if (currentStage === 'complete') {
+      // 완료에서 뒤로가기 시 마지막 계좌의 상태로
+      const lastType = types[types.length - 1];
+      setCurrentStage(lastType === 3 ? 'review' : 'form');
+    } else if (currentStage === 'review') {
+      setCurrentStage('form');
+    } else if (step === 0) {
+      router.push('/else-account');
+    } else {
       setStep(step - 1);
-    } else {
-      router.push('/account/else-account');
     }
   };
 
-  // 다음 단계
+  // 다음 버튼
   const handleNext = async () => {
-    if (stage === 'form') {
-      if (current.type === 3) return setStage('review');
-      return advanceStep();
-    }
-    if (stage === 'review') return advanceStep();
-
-    // complete
-    setLoading(true);
-    try {
-      // 서버 호출 로직
-      console.log('creating', formStates);
-      await new Promise((r) => setTimeout(r, 1000));
-      alert('모든 계좌 생성이 완료되었습니다!');
-      router.push('/');
-    } catch {
-      alert('계좌 생성 실패');
-    } finally {
-      setLoading(false);
+    if (currentStage === 'form') {
+      if (current.type === 3) {
+        // 대출인 경우 심사 단계로
+        setCurrentStage('review');
+      } else {
+        // 예금/적금인 경우
+        const isLastAccount = step + 1 >= formStates.length;
+        if (isLastAccount) {
+          setCurrentStage('complete');
+        } else {
+          setStep(step + 1);
+        }
+      }
+    } else if (currentStage === 'review') {
+      // 대출 심사에서 다음
+      const isLastAccount = step + 1 >= formStates.length;
+      if (isLastAccount) {
+        setCurrentStage('complete');
+      } else {
+        setStep(step + 1);
+        setCurrentStage('form');
+      }
+    } else if (currentStage === 'complete') {
+      // 최종 완료 - 모든 계좌 생성
+      setLoading(true);
+      try {
+        console.log('Creating all accounts:', formStates);
+        // 실제 계좌 생성 로직
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        alert('모든 계좌 생성이 완료되었습니다!');
+        router.push('/calendar');
+      } catch (error) {
+        console.error('계좌 생성 실패:', error);
+        alert('계좌 생성에 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const advanceStep = () => {
-    if (step + 1 < formStates.length) {
-      setStep(step + 1);
-      setStage('form');
-    } else {
-      setStage('complete');
-    }
-  };
-
-  // 렌더링
-  if (!types.length) return <Txt>약관 동의 페이지로 이동 중...</Txt>;
-
-  const renderContent = () => {
-    if (stage === 'review') return <LoanReviewStep />;
-    if (stage === 'complete')
-      return (
-        <CompleteStep
-          accountType={current.type}
-          isLastAccount={step + 1 >= formStates.length}
-        />
-      );
-    // form 단계
-    switch (current.type) {
+  const getAccountTypeName = (type: number) => {
+    switch (type) {
       case 1:
-        return (
-          <DepositForm
-            amount={current.amount}
-            period={current.period}
-            userAccount={current.userAccount}
-            onAmountChange={(v) => updateCurrent({ amount: v })}
-            onPeriodChange={(p) => updateCurrent({ period: p })}
-          />
-        );
+        return '예금';
       case 2:
-        return (
-          <SavingsForm
-            amount={current.amount}
-            period={current.period}
-            transferDay={current.transferDay}
-            userAccount={current.userAccount}
-            onAmountChange={(v) => updateCurrent({ amount: v })}
-            onPeriodChange={(p) => updateCurrent({ period: p })}
-            onTransferDayChange={(d) => updateCurrent({ transferDay: d })}
-          />
-        );
+        return '적금';
       case 3:
-        return (
-          <LoanForm
-            amount={current.amount}
-            period={current.period}
-            transferDay={current.transferDay}
-            userAccount={current.userAccount}
-            onAmountChange={(v) => updateCurrent({ amount: v })}
-            onPeriodChange={(p) => updateCurrent({ period: p })}
-            onTransferDayChange={(d) => updateCurrent({ transferDay: d })}
-          />
-        );
+        return '대출';
       default:
-        return null;
+        return '';
     }
   };
+
+  const getProgressText = () => {
+    return `${step + 1}/${formStates.length}`;
+  };
+
+  // 선택된 타입이 없으면 로딩 표시
+  if (types.length === 0) {
+    return (
+      <div className='w-full max-w-md mx-auto bg-mainwhite h-screen flex items-center justify-center'>
+        <Txt>약관 동의 페이지로 이동 중...</Txt>
+      </div>
+    );
+  }
 
   return (
     <div className='w-full max-w-md mx-auto bg-mainwhite h-screen flex flex-col'>
+      {/* Header */}
       <Header
         leftIcon='back'
-        title={`상품 가입 (${step + 1}/${formStates.length})`}
+        title={`상품 가입 (${getProgressText()})`}
         onBackClick={handleBack}
       />
-      <div className='flex-1 overflow-y-auto'>{renderContent()}</div>
+
+      {/* 콘텐츠 */}
+      <div className='flex-1 overflow-y-auto'>
+        {currentStage === 'form' && (
+          <StepRenderer data={current} onChange={handleChange} />
+        )}
+        {currentStage === 'review' && <LoanReviewStep />}
+        {currentStage === 'complete' && (
+          <CompleteStep
+            accountType={current.type}
+            isLastAccount={step + 1 >= formStates.length}
+          />
+        )}
+      </div>
+
+      {/* 하단 버튼 */}
       <div className='p-6'>
         <Button
           onClick={handleNext}
-          disabled={stage === 'form' && !current.amount}
+          disabled={(!current?.amount && currentStage === 'form') || loading}
           className='w-full bg-primarycolor text-white py-4 rounded-lg'
         >
-          {loading ? '처리 중...' : stage === 'complete' ? '완료' : '다음'}
+          {loading
+            ? '처리 중...'
+            : currentStage === 'complete'
+              ? '완료'
+              : step + 1 >= formStates.length && currentStage !== 'review'
+                ? '다음'
+                : '다음'}
         </Button>
       </div>
     </div>
