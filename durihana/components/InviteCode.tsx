@@ -81,7 +81,7 @@ export default function InviteCode() {
         </div>
 
         <Button
-          className='w-full py-3 text-[16px]'
+          className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
           onClick={() => tryConnecting(id, mateCode)}
         >
           연결하기
