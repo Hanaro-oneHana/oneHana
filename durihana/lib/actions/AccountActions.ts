@@ -49,18 +49,15 @@ export const createAccount = async (
         // 입출금은 만료일, 이체일 없음
         break;
       case 1: // 예금
-        accountData.expire_date =
-          expireDate.toISOString().split('T')[0] + ' 10:00:00';
+        accountData.expire_date = expireDate.toISOString().split('T')[0];
         break;
       case 2: // 적금
-        accountData.expire_date =
-          expireDate.toISOString().split('T')[0] + ' 10:00:00';
+        accountData.expire_date = expireDate.toISOString().split('T')[0];
         accountData.transfer_date = String(transferDay); // 선택한 날짜
         accountData.payment = BigInt(500000); // 50만원 납입
         break;
       case 3: // 대출
-        accountData.expire_date =
-          expireDate.toISOString().split('T')[0] + ' 10:00:00';
+        accountData.expire_date = expireDate.toISOString().split('T')[0];
         accountData.transfer_date = String(transferDay); // 선택한 날짜
         accountData.payment = BigInt(300000); // 30만원 상환
         break;
@@ -116,18 +113,15 @@ export const createMultipleAccounts = async (
           case 0: // 입출금
             break;
           case 1: // 예금
-            dbAccountData.expire_date =
-              expireDate.toISOString().split('T')[0] + ' 10:00:00';
+            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             break;
           case 2: // 적금
-            dbAccountData.expire_date =
-              expireDate.toISOString().split('T')[0] + ' 10:00:00';
+            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             dbAccountData.transfer_date = String(accountData.transferDay || 15);
             dbAccountData.payment = BigInt(accountData.amount);
             break;
           case 3: // 대출
-            dbAccountData.expire_date =
-              expireDate.toISOString().split('T')[0] + ' 10:00:00';
+            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             dbAccountData.transfer_date = String(accountData.transferDay || 15);
             dbAccountData.payment = BigInt(
               Math.floor(accountData.amount * 0.1)
@@ -190,28 +184,6 @@ export const deleteUserAccounts = async (userId: number) => {
     };
   } catch (error) {
     console.error('Failed to delete user accounts:', error);
-    throw error;
-  }
-};
-
-// 사용자의 계좌 목록 조회
-export const getUserAccounts = async (userId: number) => {
-  try {
-    const accounts = await prisma.account.findMany({
-      where: {
-        user_id: userId,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-    });
-
-    return {
-      success: true,
-      accounts,
-    };
-  } catch (error) {
-    console.error('Failed to get user accounts:', error);
     throw error;
   }
 };
