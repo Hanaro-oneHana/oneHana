@@ -1,26 +1,26 @@
 'use client';
 
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import React, {
-  useReducer,
-  useState,
-  useRef,
-  useEffect,
-  Fragment,
-} from 'react';
+import React, { useReducer, useState, useRef, useEffect, Fragment, PropsWithChildren,} from 'react';
 import Button from './Button';
+import { Color } from '@/app/theme';
+import { cn } from "@/lib/utils"
 
-export type Props = {
+type Props = {
   items?: string[];
   defaultTitle?: string;
 
   className?: string;
-  width?: 'w-[325px]' | 'w-[80px]';
-  height?: 'h-[40px]' | 'h-[30px]';
+  width?: `w-[${number}px]`;
+  height?: `h-[${number}px]`;
   bgColor?: 'bg-mainwhite' | 'bg-primarycolor' | 'bg-transparent';
-  textColor?: 'text-mainwhite' | 'text-mainblack';
-  borderStyle?: 'border-none' | 'border-gray-200';
-  underlineBorder?: 'border-none' | 'border-gray-200';
+  borderStyle?: 'border-none' | `border-${Color}`;
+  underlineBorder?: 'border-none' | `border-${Color}`;
+
+  textSize?: `text-[${number}px]`;
+  textColor?: `text-${Color}`;
+
+  onSelect?: (list:string) => void;
 };
 
 export default function Dropdown({
@@ -29,11 +29,15 @@ export default function Dropdown({
 
   width = 'w-[80px]',
   height = 'h-[40px]',
-  bgColor = 'bg-mainwhite',
+  bgColor = 'bg-primarycolor',
   textColor = 'text-mainblack',
+  
   borderStyle = 'border-none',
-  underlineBorder = 'border-gray-200',
-}: Props) {
+  underlineBorder = 'border-none',
+
+  onSelect,
+  children,
+}: PropsWithChildren<Props>) {
   const [isOpen, toggleOpen] = useReducer((prev) => !prev, false);
   const [selected, setSelected] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -53,8 +57,7 @@ export default function Dropdown({
 
   const content = selected ?? defaultTitle;
 
-  return (
-    <>
+  return <>
       <div className='relative inline-block' ref={dropdownRef}>
         <Button
           onClick={toggleOpen}
@@ -77,6 +80,7 @@ export default function Dropdown({
                     onClick={() => {
                       setSelected(input);
                       toggleOpen();
+                      onSelect?.(input);
                     }}
                   >
                     <span>{input}</span>
@@ -89,7 +93,7 @@ export default function Dropdown({
             </ul>
           </div>
         )}
+        {children}
       </div>
-    </>
-  );
+    </>;
 }
