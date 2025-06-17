@@ -68,6 +68,9 @@
     --red: #ec4774;
     --primaryhalf: #48989680;
     --linegray: #dddee4;
+    --icongray: #8d8f9a;
+    --accountgray: #f1f2f6;
+
   }
 
   @theme inline {
@@ -93,6 +96,9 @@
     --color-primaryhalf: var(--primaryhalf);
     --color-linegray: var(--linegray);
     --color-red: var(--red);
+    --color-icongray: var(--icongray);
+    --color-accountgray: var(--accountgray);
+
   }
 }
 
