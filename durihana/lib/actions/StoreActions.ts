@@ -41,7 +41,7 @@ export const getStoreList = async (search: string, category: number) => {
     },
   });
 
-  const computePrice = (content: any): number => {
+  const computePrice = (content: unknown): number => {
     if (typeof content === 'object' && content !== null) {
       if ('가격' in content) {
         return parseInt(content['가격']?.toString() || '0');
