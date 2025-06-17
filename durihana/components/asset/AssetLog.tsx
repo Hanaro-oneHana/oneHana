@@ -14,7 +14,7 @@ export default function AssetLog({ data }: Props) {
         {data.map((entry, index) => (
           <div
             key={index}
-            className='flex items-center w-[305px] h-[40px] bg-[#FBFCFC] rad rounded-[10px]'
+            className='flex items-center w-[305px] h-[40px] bg-mainwhite rounded-[10px]'
           >
             <Txt size='text-[12px]' className='ml-[10px]'>
               {entry.name}
