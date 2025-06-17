@@ -32,45 +32,6 @@ export default function signup() {
         const { name, value } = e.target;
         getUserInfo((prev) => ({ ...prev, [name]: value }));
     };
-//     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-//     e.preventDefault()
-
-//     // 간단 검증
-//     if (userInfo.password !== userInfo.passwordCheck) {
-//         alert('비밀번호가 일치하지 않습니다.')
-//         return
-//     }
-
-//     try {
-//       // route.ts 에 매핑된 POST 엔드포인트 호출
-//         const res = await fetch('/api/signup', {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({
-//             name: userInfo.name,
-//             email: userInfo.email,
-//             password: userInfo.password,
-//             phone: userInfo.phone,
-//             marriageDate: userInfo.marriageDate,
-//             }),
-//         })
-//         const data = await res.json()
-
-//         if (!res.ok) {
-//             alert(data.error || '회원가입에 실패했습니다.')
-//             setStatus('error')
-//             return
-//         }
-
-//         setStatus('success')
-//         router.push('/auth/signin')
-//     } 
-//     catch (err) {
-//         console.error(err)
-//         alert('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.')
-//         setStatus('error')
-//     }
-// }
 
     return <>
         <Header leftIcon = "back" title="회원가입" />
