@@ -31,7 +31,7 @@ export default function DepositForm({
   return (
     <div className='flex-1 px-6 py-8'>
       <Txt size='text-[22px]' className='text-mainblack mb-8'>
-        두리아나예금통장
+        두리하나예금통장
       </Txt>
 
       <div className='space-y-6'>
@@ -98,7 +98,7 @@ export default function DepositForm({
           </Txt>
           <div className='space-y-1'>
             <Txt size='text-[12px]' className='text-primarycolor'>
-              두리아나입출금통장
+              두리하나입출금통장
             </Txt>
           </div>
           <div>

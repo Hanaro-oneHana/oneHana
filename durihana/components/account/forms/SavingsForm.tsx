@@ -36,11 +36,10 @@ export default function SavingsForm({
   return (
     <div className='flex-1 px-6 py-8'>
       <Txt size='text-[22px]' className='text-mainblack mb-8'>
-        두리아나적금통장
+        두리하나적금통장
       </Txt>
 
       <div className='space-y-6'>
-        {/* 1. 금액 & 기간 */}
         <div>
           <Txt size='text-[16px]' className='text-mainblack mb-4'>
             얼마를 저축할까요?
@@ -105,7 +104,6 @@ export default function SavingsForm({
           </div>
         </div>
 
-        {/* 2. 정기저축일 설정 */}
         <div>
           <Txt size='text-[16px]' className='text-mainblack mb-4'>
             정기적으로 저축합니다
@@ -150,7 +148,7 @@ export default function SavingsForm({
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-[90px]' align='start'>
-                {[13, 15, 20, 25].map((d) => (
+                {[1, 15, 20, 25].map((d) => (
                   <DropdownMenuItem
                     key={d}
                     onSelect={() => {
@@ -170,7 +168,6 @@ export default function SavingsForm({
           </div>
         </div>
 
-        {/* 3. 만기 안내 */}
         <div>
           <Txt size='text-[16px]' className='text-mainblack mb-2'>
             만기 시
@@ -191,14 +188,13 @@ export default function SavingsForm({
           </div>
         </div>
 
-        {/* 4. 출금 계좌 */}
         <div>
           <Txt size='text-[16px]' className='text-mainblack mb-2'>
             아래 계좌에서 출금됩니다
           </Txt>
           <div className='space-y-1'>
             <Txt size='text-[12px]' className='text-primarycolor'>
-              두리아나입출금통장
+              두리하나입출금통장
             </Txt>
           </div>
           <div>

@@ -92,9 +92,13 @@ export default function TestComponentsPage() {
             <LoanForm
               amount={formData.amount}
               period={formData.period}
+              transferDay={formData.transferDay}
               userAccount={userAccount}
               onAmountChange={handleAmountChange}
               onPeriodChange={(period) => setFormData({ ...formData, period })}
+              onTransferDayChange={(transferDay) =>
+                setFormData({ ...formData, transferDay })
+              }
             />
           )}
 
