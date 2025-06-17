@@ -16,6 +16,8 @@ export const colors = [
   'navy',
   'textgray',
   'buttongray',
+  'red',
+  'icongray',
 ] as const;
 
 export type Color = (typeof colors)[number];
