@@ -16,6 +16,7 @@ export const colors = [
   'navy',
   'textgray',
   'buttongray',
+  'red',
   'icongray',
 ] as const;
 
