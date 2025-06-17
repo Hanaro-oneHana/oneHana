@@ -97,7 +97,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
             <DropdownMenuContent className='min-w-auto'>
               <DropdownMenuItem
                 onSelect={() => {
-                  items?.sort((a, b) => a.price - b.price);
+                  setItems([...items].sort((a, b) => a.price - b.price));
                   setSortOption('가격순');
                 }}
               >
