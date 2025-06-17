@@ -114,7 +114,7 @@ export default function WeddingBucket() {
             </div>
           </div>
         ))}
-        <div className='flex items-center justify-between w-full py-[40px]'>
+        <div className='flex items-center justify-between w-full '>
           <Txt className='text-[20px] text-primarycolor font-[500]'>
             총 견적
           </Txt>
@@ -125,9 +125,9 @@ export default function WeddingBucket() {
             원
           </Txt>
         </div>
-        <Button className='w-full h-[50px] bg-primarycolor rounded-[10px]'>
+        <Button>
           <Txt size='text-[16px]' weight='font-[500]' color='text-mainwhite'>
-            견적 요청하기
+            완료
           </Txt>
         </Button>
       </div>
