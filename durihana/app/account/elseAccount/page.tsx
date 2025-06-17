@@ -1,5 +1,6 @@
 'use client';
 
+import { useAgreement } from '@/app/contexts/account/useAgreement';
 import AlertModal from '@/components/alert/AlertModal';
 import AccountAgreement from '@/components/atoms/AccountAgreement';
 import Button from '@/components/atoms/Button';
@@ -18,16 +19,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useState } from 'react';
 
 export default function ElseAccount() {
-  //비대면 계좌 동의
-  const [baseAgree, setBaseAgree] = useState(false);
-  //예금 계좌 동의
-  const [depositAgree, setDepositAgree] = useState(false);
-
-  //적금 계좌 동의
-  const [savingsAgree, setSavingsAgree] = useState(false);
-
-  //대출 계좌 동의
-  const [loanAgree, setLoanAgree] = useState(false);
+  const {
+    baseAgree,
+    setBaseAgree,
+    depositAgree,
+    setDepositAgree,
+    savingsAgree,
+    setSavingsAgree,
+    loanAgree,
+    setLoanAgree,
+  } = useAgreement();
 
   const [modal, showModal] = useState(false);
 
@@ -61,7 +62,9 @@ export default function ElseAccount() {
                       checked={baseAgree}
                       className='data-[state=checked]:bg-mainwhite'
                       onCheckedChange={(checked) => {
-                        setBaseAgree(!!checked);
+                        if (typeof checked === 'boolean') {
+                          setBaseAgree(checked);
+                        }
                       }}
                     />
                   </div>
@@ -155,7 +158,8 @@ export default function ElseAccount() {
       {modal && (
         <AlertModal onClose={() => showModal(false)}>
           <Txt align='text-center'>
-            약관에 동의해야 <br />
+            비대면 계좌 개설 약관에 동의하셔야
+            <br />
             서비스를 이용하실 수 있습니다
           </Txt>
           <Button className='mt-5' onClick={() => showModal(false)}>

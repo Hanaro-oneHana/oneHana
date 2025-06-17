@@ -1,5 +1,6 @@
 'use client';
 
+import { useAgreement } from '@/app/contexts/account/useAgreement';
 import AlertModal from '@/components/alert/AlertModal';
 import AccountAgreement from '@/components/atoms/AccountAgreement';
 import Button from '@/components/atoms/Button';
@@ -17,6 +18,8 @@ import { useState } from 'react';
 export default function CheckingAccount() {
   const [agree, setAgree] = useState(false);
   const [modal, showModal] = useState(false);
+
+  const { baseAgree } = useAgreement();
 
   return (
     <div className='relative flex flex-col items-center min-h-dvh'>
