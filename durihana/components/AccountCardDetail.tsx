@@ -20,36 +20,22 @@ const accountTypeLabelMap = {
   3: '두리함께대출통장',
 };
 
-// 계좌 유형별 버튼 설정
 const renderButtonsByType = (type: AccountType) => {
-  switch (type) {
-    case 0:
-      return (
-        <Button className='py-2'>
-          <Txt size='text-[14px]' weight='font-[600]' color='text-mainwhite'>
-            이체
-          </Txt>
-        </Button>
-      );
-    case 2:
-      return (
-        <Button className='py-2'>
-          <Txt size='text-[14px]' weight='font-[600]' color='text-mainwhite'>
-            입금
-          </Txt>
-        </Button>
-      );
-    case 3:
-      return (
-        <Button className='py-2'>
-          <Txt size='text-[14px]' weight='font-[600]' color='text-mainwhite'>
-            대출 상환
-          </Txt>
-        </Button>
-      );
-    default:
-      return null;
-  }
+  const labelMap: { [key in AccountType]?: string } = {
+    0: '이체',
+    2: '입금',
+    3: '대출 상환',
+  };
+
+  const label = labelMap[type];
+
+  return (
+    <Button className='py-2'>
+      <Txt size='text-[14px]' weight='font-[600]' color='text-mainwhite'>
+        {label}
+      </Txt>
+    </Button>
+  );
 };
 
 export default function AccountCardDetail({ type, account, balance }: Props) {
