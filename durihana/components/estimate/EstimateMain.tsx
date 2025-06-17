@@ -107,8 +107,9 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {
+                  const sortedItems = [...items].sort((a, b) => b.popular - a.popular);
+                  setItems(sortedItems);
                   setSortOption('인기순');
-                  items.sort((a, b) => b.popular - a.popular);
                 }}
               >
                 <Txt size='text-[12px]' color='text-textgray'>
