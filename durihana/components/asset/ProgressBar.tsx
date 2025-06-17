@@ -1,5 +1,5 @@
+import Txt from '../atoms/Txt';
 import { Progress } from '../ui/progress';
-import Txt from './Txt';
 
 type Props = {
   total: number;
