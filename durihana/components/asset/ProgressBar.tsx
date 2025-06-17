@@ -112,35 +112,35 @@ export const lefts = [
 export default function ProgressBar({ total, current }: Props) {
   const rawRatio = total === 0 ? 0 : (current / total) * 100;
   const ratio = Math.round(Math.min(rawRatio, 100));
-  const textRatio = `left-[${ratio}%]`;
 
   const isOver = rawRatio >= 100;
 
   return (
-    <div className='relative w-full'>
-      <div className='mb-[10px]'>
-        <Txt size='text-[15px]'>
-          {isOver ? `예산 초과` : `예산의 ${ratio}% 사용`}
-        </Txt>
-      </div>
-      <div className='relative max-w-[335px]'>
+    <div className='w-full flex flex-col'>
+      {/* 설명 텍스트 */}
+      <Txt size='text-[15px]' className='mb-[10px]'>
+        {isOver ? `예산 초과` : `예산의 ${ratio}% 사용`}
+      </Txt>
+
+      {/* 프로그레스바 + 숫자 레이어 */}
+      <div className='relative w-full'>
         <Progress
           value={ratio}
           className={`
         h-[9px]
-        w-full max-w-[335px]
+        w-full
         rounded-[20px]
         bg-[#E7E9EE]
         [&>div]:rounded-[20px]
-        ${isOver ? '[&>div]:bg-[#EC4774]' : '[&>div]:bg-primarycolor'}
-      `}
+        ${isOver ? '[&>div]:bg-red' : '[&>div]:bg-primarycolor'}`}
         />
 
+        {/* 금액 텍스트 */}
         {isOver ? (
           <Txt
             size='text-[10px]'
             color='text-textgray'
-            className={`absolute bottom-[-20px] left-full whitespace-nowrap ml-0.5`}
+            className={`absolute top-[-20px] right-0 whitespace-nowrap`}
           >
             {formatKRWUnit(current)}
           </Txt>
@@ -149,7 +149,13 @@ export default function ProgressBar({ total, current }: Props) {
             <Txt
               size='text-[10px]'
               color='text-textgray'
-              className={`absolute bottom-[-20px] translate-x-[-105%] ${textRatio} whitespace-nowrap`}
+              className={`absolute bottom-[-20px] whitespace-nowrap
+                  ${
+                    ratio < 15
+                      ? 'left-0 translate-x-0'
+                      : `left-[${ratio}%] translate-x-[-105%]`
+                  }
+                `}
             >
               {formatKRWUnit(current)}
             </Txt>
@@ -157,7 +163,7 @@ export default function ProgressBar({ total, current }: Props) {
             <Txt
               size='text-[10px]'
               color='text-textgray'
-              className={`absolute bottom-[-20px] left-full whitespace-nowrap ml-0.5`}
+              className={`absolute top-[-20px] right-0 whitespace-nowrap`}
             >
               {formatKRWUnit(total)}
             </Txt>
