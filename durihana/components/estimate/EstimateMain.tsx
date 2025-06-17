@@ -11,118 +11,72 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Store } from '@/lib/actions/StoreActions';
 
-export default function EstimateMain() {
+type Props = {
+  storeList?: Store[];
+  categoryId?: number;
+};
+
+export default function EstimateMain({ storeList, categoryId }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const updateSearchParam = (key: string[], value: string[]) => {
+    const params = new URLSearchParams(searchParams);
+    key.forEach((k, index) => {
+      params.set(k, value[index]);
+    });
+    router.push(`?${params.toString()}`);
+    router.refresh();
+  };
+
   const [sortOption, setSortOption] = useState('가격순');
-  const items = [
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-  ];
+  const [items, setItems] = useState<Store[]>(storeList || []);
+  const [category, setCategory] = useState(categoryId || 1);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+
+  useEffect(() => {
+    setItems(storeList || []);
+    setCategory(categoryId || 1);
+  }, [searchParams, storeList, categoryId]);
+
+  useEffect(() => {
+    updateSearchParam(['category', 'search'], [category.toString(), '']);
+  }, [category]);
+
+  useEffect(() => {
+    if (selectedRegions.length > 0) {
+      const filteredItems =
+        storeList?.filter((item) => selectedRegions.includes(item.location)) ||
+        [];
+      setItems(filteredItems);
+    } else {
+      setItems(storeList || []);
+    }
+  }, [selectedRegions]);
+
   return (
     <div className='relative flex flex-col items-center justify-center h-dvh'>
       <div className='flex flex-col items-center justify-start w-full flex-none'>
-        <div className='flex flex-col w-full items-center justify-start gap-[30px] pt-[25px] px-[20px] '>
-          <ProgressBarButton selectedItem={1} progress={true} />
+        <div className='flex flex-col w-full items-center justify-start gap-[30px] pt-[25px] px-[20px]'>
+          <ProgressBarButton
+            selectedItem={category}
+            setSelectedItem={setCategory}
+            progress={true}
+          />
           <Search
             onSearch={(query: string) => {
-              console.log('Search query:', query);
+              updateSearchParam(['search'], [query]);
             }}
           />
         </div>
         <div className='flex mt-[20px] w-full'>
           <DomesticFiltering
-            onChange={(regions: string[]): void => {
-              console.log('Selected regions:', regions);
-            }}
+            selectedRegions={selectedRegions}
+            setSelectedRegions={setSelectedRegions}
           />
         </div>
         <div className='flex flex-row items-center justify-end w-full px-[20px]'>
@@ -141,12 +95,22 @@ export default function EstimateMain() {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='min-w-auto'>
-              <DropdownMenuItem onSelect={() => setSortOption('가격순')}>
+              <DropdownMenuItem
+                onSelect={() => {
+                  items?.sort((a, b) => a.price - b.price);
+                  setSortOption('가격순');
+                }}
+              >
                 <Txt size='text-[12px]' color='text-textgray'>
                   가격순
                 </Txt>
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setSortOption('인기순')}>
+              <DropdownMenuItem
+                onSelect={() => {
+                  setSortOption('인기순');
+                  items.sort((a, b) => b.popular - a.popular);
+                }}
+              >
                 <Txt size='text-[12px]' color='text-textgray'>
                   인기순
                 </Txt>
@@ -157,16 +121,33 @@ export default function EstimateMain() {
       </div>
       <div className='flex flex-col flex-1 items-center justify-start w-full overflow-y-scroll px-[20px] pt-[20px] gap-[10px] '>
         {items.map((item, index) => (
-          <StoreCard key={index} />
+          <StoreCard key={index} store={item} />
         ))}
       </div>
 
-      <div className='flex flex-row flex-none  items-center bg-transparent justify-center w-full px-[20px] mt-[20px] gap-[15px] mb-[40px]'>
-        <Button bgColor='bg-icon'>건너뛰기</Button>
-        <Button onClick={() => console.log('Another button clicked!')}>
-          다음 단계
+      <div className='flex flex-row flex-none items-center bg-transparent justify-center w-full px-[20px] mt-[20px] mb-[40px]'>
+        <Button
+          onClick={() => {
+            updateSearchParam(
+              ['category', 'search'],
+              [(categoryId ? categoryId + 1 : 0).toString(), '']
+            );
+          }}
+        >
+          {categoryId === 5 ? '완료' : '다음'}
         </Button>
       </div>
+      <button className='absolute bottom-[108px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
+        <Image
+          src='/asset/icons/bucket.svg'
+          alt='Bucket'
+          width={30}
+          height={30}
+          onClick={() => {
+            router.push('/wedding-bucket');
+          }}
+        />
+      </button>
     </div>
   );
 }
