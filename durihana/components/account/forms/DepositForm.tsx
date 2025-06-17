@@ -1,6 +1,5 @@
 'use client';
 
-import InputComponent from '@/components/atoms/InputComponent';
 import Txt from '@/components/atoms/Txt';
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import ExpandingInput from './ExpandingInput';
 
 type DepositFormProps = {
   amount: string;
@@ -40,11 +40,11 @@ export default function DepositForm({
             얼마를 저축할까요?
           </Txt>
           <div className='flex items-end gap-2 mb-[42px]'>
-            <InputComponent
+            <ExpandingInput
               value={amount}
               onChange={(e) => onAmountChange(e.target.value)}
               placeholder='최소 100만원'
-              className='w-20 text-[14px] font-[400] text-icongray leading-[24px] border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
+              className=' text-[14px] font-[400] text-icongray leading-[24px] border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
             />
 
             <Txt size='text-[12px]' className='text-mainblack'>
