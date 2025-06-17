@@ -2,11 +2,13 @@
 
 import prisma from '../db';
 
-// 계좌 생성 시 UserCalendar에 관련 일정들을 자동 생성
-export const createAccountSchedules = async (accountId: number) => {
+// 계좌 생성 시 UserCalendar에 관련 일정들을 자동 생성 (트랜잭션 지원)
+export const createAccountSchedules = async (accountId: number, tx?: any) => {
   try {
+    const client = tx || prisma;
+
     // 계좌 정보 조회
-    const account = await prisma.account.findUnique({
+    const account = await client.account.findUnique({
       where: { id: accountId },
     });
 
@@ -34,7 +36,7 @@ export const createAccountSchedules = async (accountId: number) => {
       );
 
       while (currentDate <= expireDate) {
-        const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')} 09:00`;
+        const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
 
         schedules.push({
           user_id: account.user_id,
@@ -47,7 +49,7 @@ export const createAccountSchedules = async (accountId: number) => {
       }
 
       // 만료일 일정 추가
-      const expireDateStr = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')} 10:00`;
+      const expireDateStr = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')}`;
       schedules.push({
         user_id: account.user_id,
         user_date: expireDateStr,
@@ -69,7 +71,7 @@ export const createAccountSchedules = async (accountId: number) => {
       );
 
       while (currentDate <= expireDate) {
-        const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')} 09:00`;
+        const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
 
         schedules.push({
           user_id: account.user_id,
@@ -82,7 +84,7 @@ export const createAccountSchedules = async (accountId: number) => {
       }
 
       // 만료일 일정 추가
-      const expireDateStr = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')} 10:00`;
+      const expireDateStr = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')}`;
       schedules.push({
         user_id: account.user_id,
         user_date: expireDateStr,
@@ -93,7 +95,7 @@ export const createAccountSchedules = async (accountId: number) => {
     // 예금 (type: 1) - 만료일만 생성
     if (account.type === 1 && account.expire_date) {
       const expireDate = new Date(account.expire_date);
-      const expireDateStr = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')} 10:00`;
+      const expireDateStr = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')}`;
 
       schedules.push({
         user_id: account.user_id,
@@ -104,7 +106,7 @@ export const createAccountSchedules = async (accountId: number) => {
 
     // UserCalendar에 일정들 일괄 생성
     if (schedules.length > 0) {
-      await prisma.userCalendar.createMany({
+      await client.userCalendar.createMany({
         data: schedules,
         skipDuplicates: true, // 중복 방지
       });
