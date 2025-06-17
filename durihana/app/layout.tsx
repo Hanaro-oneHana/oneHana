@@ -1,6 +1,7 @@
-import type { Metadata } from 'next';
-import './globals.css';
 import AuthSessionProvider from '@/components/auth/session-provider';
+import type { Metadata } from 'next';
+import { AgreementProvider } from './contexts/account/agreementProvider';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: '두리하나',
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={`relative border-x-[0.5px]`}>
-        <AuthSessionProvider>{children}</AuthSessionProvider>
+        <AuthSessionProvider>
+          <AgreementProvider>{children}</AgreementProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );
