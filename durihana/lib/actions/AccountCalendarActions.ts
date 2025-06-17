@@ -104,7 +104,7 @@ export const createAccountSchedules = async (accountId: number) => {
 
     // UserCalendar에 일정들 일괄 생성
     if (schedules.length > 0) {
-      await prisma.usercalendar.createMany({
+      await prisma.userCalendar.createMany({
         data: schedules,
         skipDuplicates: true, // 중복 방지
       });
@@ -132,7 +132,7 @@ export const deleteAccountSchedules = async (accountId: number) => {
     }
 
     // 해당 계좌와 관련된 모든 일정 삭제 (user_id와 type으로 매칭)
-    const result = await prisma.usercalendar.deleteMany({
+    const result = await prisma.userCalendar.deleteMany({
       where: {
         user_id: account.user_id,
         type: account.type,
