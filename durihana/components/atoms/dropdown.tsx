@@ -62,7 +62,7 @@ export default function Dropdown({
       <div className='relative inline-block' ref={dropdownRef}>
         <Button
           onClick={toggleOpen}
-          className={`${width} ${height} ${bgColor} ${textColor} ${borderStyle} ${textSizep} px-4 flex items-center justify-between 
+          className={`${width} ${height} ${bgColor} ${textColor} ${borderStyle} ${textSize} px-4 flex items-center justify-between 
             ${isOpen ? 'rounded-b-none' : ''}`}
         >
           <span className='truncate'>{content}</span>
