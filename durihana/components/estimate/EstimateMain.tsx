@@ -1,19 +1,17 @@
 'use client';
 
-import Image from 'next/image';
-import { useState } from 'react';
-import ProgressBarButton from '../ProgressBarButton';
-import Button from '../atoms/Button';
-import Search from '../atoms/Search';
-import Txt from '../atoms/Txt';
-import DomesticFiltering from '../filtering/DomesticFiltering';
+import ProgressBarButton from '@/components/ProgressBarButton';
+import { Txt, Search, Button } from '@/components/atoms';
+import StoreCard from '@/components/estimate/StoreCard';
+import DomesticFiltering from '@/components/filtering/DomesticFiltering';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import StoreCard from './StoreCard';
+} from '@/components/ui/dropdown-menu';
+import Image from 'next/image';
+import { useState } from 'react';
 
 export default function EstimateMain() {
   const [sortOption, setSortOption] = useState('가격순');
