@@ -1,19 +1,19 @@
 'use client';
 
 import Button from '@/components/atoms/Button';
+import InputComponent from '@/components/atoms/InputComponent';
 import Txt from '@/components/atoms/Txt';
-import { Input } from '@/components/ui/input';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type React from 'react';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
     try {
@@ -50,25 +50,25 @@ export default function SignInPage() {
       <form onSubmit={handleSubmit}>
         <div className='mb-6'>
           <Txt>이메일</Txt>
-          <Input
+          <InputComponent
             id='email'
             type='email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder='abc@doorihana.com'
-            className='w-full h-12 border-b-2 border-linegray focus:border-gray-500 focus:outline-none'
+            className=' focus:border-gray-500 '
             required
           />
         </div>
         <div>
           <Txt>비밀번호</Txt>
-          <Input
+          <InputComponent
             id='password'
             type='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder='8자 이상 입력해주세요.'
-            className='w-full h-12 border-b-2 border-linegray focus:border-gray-500 focus:outline-none'
+            className=' focus:border-gray-500'
             required
             minLength={8}
           />

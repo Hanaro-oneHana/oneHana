@@ -42,12 +42,12 @@ export default function AccountCard({
 
   return (
     <div
-      className='relative bg-lightmint border border-borderline rounded-[10px] p-6 m-2'
+      className='flex flex-col w-full relative bg-lightmint border border-borderline rounded-[10px] p-6 '
       onClick={onCardClick}
     >
       <div className='absolute right-5 '>
         <Image
-          src='asset/icons/info.svg'
+          src='/asset/icons/info.svg'
           alt='info'
           width={24}
           height={24}
@@ -57,7 +57,12 @@ export default function AccountCard({
 
       <div>
         <Txt weight='font-[600]'>{accountTypeLabelMap[mainAccount.type]}</Txt>
-        <Txt weight='font-[500]' size='text-[13px]' color='text-icon' className='mb-2 block'>
+        <Txt
+          weight='font-[500]'
+          size='text-[13px]'
+          color='text-icon'
+          className='mb-2 block'
+        >
           {mainAccount.account}
         </Txt>
       </div>
