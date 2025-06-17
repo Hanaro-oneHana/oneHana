@@ -35,21 +35,21 @@ export default function SavingsForm({
 
   return (
     <div className='flex-1 px-6 py-8'>
-      <Txt size='text-[22px]' className='text-mainblack mb-8'>
+      <Txt size='text-[22px]' className='block text-mainblack mb-[40px]'>
         두리하나적금통장
       </Txt>
 
       <div className='space-y-6'>
         <div>
-          <Txt size='text-[16px]' className='text-mainblack mb-4'>
+          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
             얼마를 저축할까요?
           </Txt>
-          <div className='flex items-baseline gap-2 mb-4'>
+          <div className='flex items-end gap-2 mb-[40px]'>
             <InputComponent
               value={amount}
               onChange={(e) => onAmountChange(e.target.value)}
               placeholder='최소 100만원'
-              className='w-20 text-[14px] font-[400] text-icongray border-b-2 border-gray-300 bg-transparent px-0 pb-1'
+              className='w-20 text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
               을
@@ -60,10 +60,10 @@ export default function SavingsForm({
                 className='
                   min-w-[60px]
                   flex items-center gap-1
-                  text-[14px] font-[400]
+                  text-[14px] font-[400] leading-[24px]
                   text-primarycolor
                   bg-transparent
-                  border-b-2 border-primarycolor
+                  border-b-[0.5px] border-mainblack
                   outline-none pb-1
                 '
               >
@@ -102,19 +102,19 @@ export default function SavingsForm({
         </div>
 
         <div>
-          <Txt size='text-[16px]' className='text-mainblack mb-4'>
+          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
             정기적으로 저축합니다
           </Txt>
-          <div className='flex items-baseline gap-2 mb-4'>
+          <div className='flex items-end gap-2 mb-[42px]'>
             <InputComponent
               value={amount || '위에서 설정한 금액'}
               readOnly
               className='
                 w-20
-                text-[14px] font-[400]
+                text-[14px] font-[400] leading-[24px]
                 text-primarycolor
-                border-b-2 border-primarycolor
-                bg-transparent px-0 pb-1
+                border-b-[0.5px] border-mainblack
+                bg-transparent px-0 pb-0
               '
             />
             <Txt size='text-[12px]' className='text-mainblack'>
@@ -129,10 +129,10 @@ export default function SavingsForm({
                 className='
                   min-w-[80px]
                   flex items-center gap-1
-                  text-[14px] font-[400]
+                  text-[14px] font-[400] leading-[24px]
                   text-primarycolor
                   bg-transparent
-                  border-b-2 border-primarycolor
+                  border-b-[0.5px] border-mainblack
                   outline-none pb-1
                 '
               >
@@ -166,10 +166,10 @@ export default function SavingsForm({
         </div>
 
         <div>
-          <Txt size='text-[16px]' className='text-mainblack mb-2'>
+          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
             만기 시
           </Txt>
-          <div className='flex items-baseline gap-2 mb-4'>
+          <div className='flex items-baseline gap-2 mb-[43px]'>
             <Txt size='text-[14px]' className='text-primarycolor'>
               자동 해지
             </Txt>
@@ -186,7 +186,7 @@ export default function SavingsForm({
         </div>
 
         <div>
-          <Txt size='text-[16px]' className='text-mainblack mb-2'>
+          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
             아래 계좌에서 출금됩니다
           </Txt>
           <div className='space-y-1'>

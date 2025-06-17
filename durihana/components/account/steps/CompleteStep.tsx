@@ -11,6 +11,7 @@ export default function CompleteStep({ isLastAccount }: CompleteStepProps) {
     <div className='flex-1 px-6 py-8 flex flex-col items-center justify-center'>
       <div className='flex-1 flex flex-col items-center justify-center'>
         <Image
+          className='mb-[84px]'
           src='/asset/icons/create-account-complete.svg'
           alt='location'
           width={200}
