@@ -1,6 +1,5 @@
 'use client';
 
-import InputComponent from '@/components/atoms/InputComponent';
 import Txt from '@/components/atoms/Txt';
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import ExpandingInput from './ExpandingInput';
 
 type LoanFormProps = {
   amount: string;
@@ -53,7 +53,6 @@ export default function LoanForm({
   };
 
   const estimatedPayment = calculateMonthlyPayment(amount, period);
-
   return (
     <div className='flex-1 px-6 py-8'>
       <Txt size='text-[22px]' className='block text-mainblack mb-[40px]'>
@@ -67,11 +66,11 @@ export default function LoanForm({
             얼마를 대출받을까요?
           </Txt>
           <div className='flex items-end gap-2 mb-[40px]'>
-            <InputComponent
+            <ExpandingInput
               value={amount}
               onChange={(e) => onAmountChange(e.target.value)}
               placeholder='최소 100만원'
-              className='w-20 text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
+              className=' text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
               을
@@ -118,11 +117,11 @@ export default function LoanForm({
             매월 얼마씩 상환할까요?
           </Txt>
           <div className='flex items-end gap-2 mb-[20px]'>
-            <InputComponent
+            <ExpandingInput
               value={monthlyPayment}
               onChange={(e) => onMonthlyPaymentChange?.(e.target.value)}
               placeholder={`예상 ${estimatedPayment}원`}
-              className='w-24 text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
+              className='text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
               씩 상환
@@ -147,7 +146,7 @@ export default function LoanForm({
               open={isTransferOpen}
               onOpenChange={setIsTransferOpen}
             >
-              <DropdownMenuTrigger className='min-w-[80px] flex items-center gap-1 text-[14px] font-[400] leading-[24px] text-primarycolor bg-transparent border-b-[0.5px] border-mainblack outline-none pb-1'>
+              <DropdownMenuTrigger className='min-w-[40px] flex items-center gap-1 text-[14px] font-[400] leading-[24px] text-primarycolor bg-transparent border-b-[0.5px] border-mainblack outline-none pb-1'>
                 {transferDay}일
                 <ChevronDown
                   className={`h-4 w-4 transition-transform text-mainblack duration-200 ${
@@ -197,7 +196,7 @@ export default function LoanForm({
         </div>
 
         <div>
-          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
+          <Txt size='text-[16px]' className='block text-mainblack'>
             아래 계좌로 입금됩니다
           </Txt>
           <div className='space-y-1'>

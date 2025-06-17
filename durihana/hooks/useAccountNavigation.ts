@@ -30,7 +30,7 @@ export function useAccountNavigation({
     } else if (currentStage === 'review') {
       setCurrentStage('form');
     } else if (step === 0) {
-      router.push('/else-account');
+      router.push('./else-account');
     } else {
       setStep(step - 1);
     }

@@ -71,7 +71,7 @@ export default function CreateAccount() {
         <Button
           onClick={() => handleNext(current.type)}
           disabled={isButtonDisabled}
-          className='w-full bg-primarycolor text-white py-4 rounded-lg'
+          className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
         >
           {getButtonText()}
         </Button>
