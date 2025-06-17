@@ -47,21 +47,21 @@ export default function SignUp() {
                 <Txt className={title}>이메일</Txt>
                 <InputComponent className={inputSet} placeholder="abc@durihana.com"
                     type="email" name="email" value={userInfo.email} onChange={handleChange}/>
-                <Txt className="text-red text-[8px] mt-[3px] ml-[25px]" >{emailValidator.success ? " " : "*이메일형식이 올바르지 않습니다"}</Txt>
+                <Txt className="text-red text-[8px] mt-[3px] ml-[25px]" >{!emailValidator.success && userInfo.email.length > 0 ? ' *이메일형식이 올바르지 않습니다 ' : ' '}</Txt>
             </div>
             
             <div>
                 <Txt className={title}>비밀번호</Txt>
                 <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
                     type="password" name="password" value={userInfo.password} onChange={handleChange}/>
-                <Txt className={errMasseage}>{userInfo.password.length >= 8 ? ' ' : ' *8자 이상 입력해주세요 '}</Txt>
+                <Txt className={errMasseage}>{userInfo.password.length > 0 && userInfo.password.length < 8 ? ' *8자 이상 입력해주세요 ' : '  '}</Txt>
             </div>
             
             <div>
                 <Txt className={title}>비밀번호 확인</Txt>
                 <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
                     type="password" name="passwordCheck" value={userInfo.passwordCheck} onChange={handleChange}/>
-                <Txt className={errMasseage}>{userInfo.password === userInfo.passwordCheck ? ' ' : '*비밀번호가 일치하지 않습니다'}</Txt>
+                <Txt className={errMasseage}>{userInfo.password !== userInfo.passwordCheck && userInfo.passwordCheck.length > 0  ? ' *비밀번호가 일치하지 않습니다 ' : ''}</Txt>
             </div>
 
             <div>
