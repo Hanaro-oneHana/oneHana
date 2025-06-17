@@ -10,7 +10,9 @@
     "format": "prettier --write .",
     "test": "vitest",
     "db:pull": "dotenv -e .env.local prisma db pull",
-    "db:gen": "dotenv -e .env.local prisma generate"
+    "db:gen": "dotenv -e .env.local prisma generate",
+    "db:studio": "dotenv -e .env.local prisma studio",
+    "db:push": "dotenv -e .env.local prisma db push"
   },
   "dependencies": {
     "@prisma/client": "6.9.0",
