@@ -5,17 +5,19 @@ import { z } from 'zod';
 // 비밀번호 -> 8자 이상, 입력 없는 경우에도 안띄우게 -> 이건 걍 page서 해도 되려나?
 // 비번확인 -> 비밀번호와 비교
 // 결혼일 -> 과거 선택이면 에러나게 해야함 -> 실시간 날짜 어캐 가져오지
+// gpt왈
 // const date = z.iso.date();
-// date.parse("2020-01-01"); // ✅
+// date.parse("2020-01-01");
 
 // 가입 성공시, [이름]님 환영합니다! 떠서 견적짜기 안내창 가볍게 띄우기?
+// nonempty -> "" false
+// nullable -> "" true
 
 export const credentialValidator = z.object({
     name: z.string().nonempty(),
     email: z.string().nonempty().email(),
     password: z.string().nonempty().min(8),
-    // passwordCheck: z.enum(),
-
-
+    passwordCheck: z.string().nonempty(),
+    phone: z.string().nonempty(),
     marriageDate: z.date().min(new Date)
 });
