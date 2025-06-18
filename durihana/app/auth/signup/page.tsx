@@ -49,21 +49,24 @@ export default function SignUp() {
                 <Txt className={title}>이메일</Txt>
                 <InputComponent className={inputSet} placeholder="abc@durihana.com"
                     type="email" name="email" value={userInfo.email} onChange={handleChange}/>
-                <Txt className={errMasseage} >{status === 'inputError' && userInfo.email.trim() === '' ? '*이메일을 입력해 주세요' : !emailValidator.success && userInfo.email.length > 0 ? ' *이메일형식이 올바르지 않습니다 ' : '\u00A0'}</Txt>
+                <Txt className={errMasseage} >{status === 'inputError' && userInfo.email.trim() === '' ? '*이메일을 입력해 주세요' 
+                : !emailValidator.success && userInfo.email.length > 0 ? ' *이메일형식이 올바르지 않습니다 ' : '\u00A0'}</Txt>
             </div>
             
             <div>
                 <Txt className={title}>비밀번호</Txt>
                 <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
                     type="password" name="password" value={userInfo.password} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.password.trim() === '' ? '*비밀번호를 입력해 주세요' :userInfo.password.length > 0 && userInfo.password.length < 8 ? ' *8자 이상 입력해주세요 ' : '\u00A0'}</Txt>
+                <Txt className={errMasseage}>{status === 'inputError' && userInfo.password.trim() === '' ? '*비밀번호를 입력해 주세요' 
+                : userInfo.password.length > 0 && userInfo.password.length < 8 ? ' *8자 이상 입력해주세요 ' : '\u00A0'}</Txt>
             </div>
             
             <div>
                 <Txt className={title}>비밀번호 확인</Txt>
                 <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
                     type="password" name="passwordCheck" value={userInfo.passwordCheck} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.passwordCheck.trim() === '' ? '*비밀번호를 다시 입력해 주세요' :userInfo.password !== userInfo.passwordCheck && userInfo.passwordCheck.length > 0  ? ' *비밀번호가 일치하지 않습니다 ' : '\u00A0'}</Txt>
+                <Txt className={errMasseage}>{status === 'inputError' && userInfo.passwordCheck.trim() === '' ? '*비밀번호를 다시 입력해 주세요' 
+                : userInfo.password !== userInfo.passwordCheck && userInfo.passwordCheck.length > 0  ? ' *비밀번호가 일치하지 않습니다 ' : '\u00A0'}</Txt>
             </div>
 
             <div>
