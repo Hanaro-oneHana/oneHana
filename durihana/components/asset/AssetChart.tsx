@@ -54,8 +54,9 @@ const renderCustomizedLabel = ({
 
 export default function AssetChart({ data }: Props) {
   return (
-    <div className='flex items-center gap-[56.26px]'>
-      <div className='flex items-center justify-center w-[170px] h-[170px]'>
+    <div className='flex items-center w-full'>
+      {/* 파이 차트 */}
+      <div className='flex items-center justify-center w-[170px] h-[170px] shrink-0'>
         <PieChart width={170} height={170}>
           <Pie
             data={data}
@@ -76,7 +77,8 @@ export default function AssetChart({ data }: Props) {
         </PieChart>
       </div>
 
-      <div className='flex flex-col justify-center'>
+      {/* 항목 설명 영역 */}
+      <div className='flex flex-col justify-center ml-auto'>
         {data.map((entry, index) => (
           <div key={index} className='flex items-center mb-[11px] last:mb-0 '>
             <div
