@@ -1,14 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Button from '../atoms/Button';
 import HorizontalSlider from '../atoms/HorizontalSlider';
 
 type Props = {
-  onChange: (regions: string[]) => void;
+  selectedRegions: string[];
+  setSelectedRegions: (regions: string[]) => void;
 };
 
-export default function DomesticFiltering({ onChange }: Props) {
+export default function DomesticFiltering({
+  selectedRegions,
+  setSelectedRegions,
+}: Props) {
   const regions = [
     '서울',
     '경기도',
@@ -26,18 +30,20 @@ export default function DomesticFiltering({ onChange }: Props) {
     '제주도',
   ];
 
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-
   useEffect(() => {
-    onChange(selectedRegions);
-  }, [selectedRegions, onChange]);
+    if (setSelectedRegions) {
+      setSelectedRegions(selectedRegions || []);
+    }
+  }, [selectedRegions, setSelectedRegions]);
 
   const toggleRegion = (region: string) => {
-    setSelectedRegions((prev) =>
-      prev.includes(region)
-        ? prev.filter((r) => r !== region)
-        : [...prev, region]
-    );
+    if (setSelectedRegions) {
+      setSelectedRegions(
+        selectedRegions.includes(region)
+          ? selectedRegions.filter((r) => r !== region)
+          : [...selectedRegions, region]
+      );
+    }
   };
 
   return (
