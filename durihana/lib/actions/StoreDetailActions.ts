@@ -10,6 +10,7 @@ export const getStoreDetail = async (storeId: number) => {
       content: true, // JSON 필드
       partner: {
         select: {
+          address: true,
           partnercategory: {
             select: {
               type: true, // '예식장', '스드메', '여행' 중 하나

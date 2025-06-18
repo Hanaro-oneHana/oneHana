@@ -1,9 +1,9 @@
 export type WeddingHallContent = {
   가격: number;
-  식대: number;
+  식대: string[];
   위치: string;
   스타일: string;
-  식사형태: string;
+  식사형태: string[];
   예식형태: string;
   최대수용인원: number;
   최소보증인원: number;
