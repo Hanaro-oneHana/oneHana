@@ -8,6 +8,7 @@ export const getReservedTimes = async (
   partnerServiceId: number,
   date: string
 ) => {
+
   const reservations = await prisma.partnerCalendar.findMany({
     where: {
       partner_service_id: partnerServiceId,
