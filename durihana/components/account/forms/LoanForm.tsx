@@ -200,7 +200,10 @@ export default function LoanForm({
             <Txt size='text-[12px]' className='text-primarycolor'>
               두리아나입출금통장
             </Txt>
-            <Txt size='text-[14px]' className='text-primarycolor'>
+            <Txt
+              size='text-[14px]'
+              className='block text-primarycolor mb-[10px]'
+            >
               {userAccount}
             </Txt>
           </div>

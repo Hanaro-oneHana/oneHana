@@ -50,14 +50,14 @@ export default function CreateAccount() {
     (!current?.amount && currentStage === 'form') || loading;
 
   return (
-    <div className='w-full max-w-md mx-auto bg-mainwhite h-screen flex flex-col'>
+    <div className='w-full max-w-md mx-auto bg-background h-screen flex flex-col'>
       <Header
         leftIcon='back'
         title={`상품 가입 (${step + 1}/${formStates.length})`}
         onBackClick={handleBack}
       />
 
-      <div className='flex-1 overflow-y-auto'>
+      <div className='flex-1 overflow-y-auto pt-[80px]'>
         <AccountCreationContent
           currentStage={currentStage}
           current={current}
