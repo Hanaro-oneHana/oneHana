@@ -48,7 +48,7 @@ export default function WeddingBucket() {
     },
   ];
   return (
-    <div className='flex flex-col items-center justify-start w-full'>
+    <div className='flex flex-col items-center justify-start w-full pt-[60px]'>
       <Header title='웨딩 버켓' leftIcon='back' rightIcon='close' />
       <div className='flex flex-col items-start justify-start w-full px-[25px] pt-[20px] pb-[40px] gap-[30px]'>
         {categories.map((category, index) => (
