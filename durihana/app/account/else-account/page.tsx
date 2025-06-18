@@ -1,6 +1,5 @@
 'use client';
 
-import { useAgreement } from '@/app/contexts/account/useAgreement';
 import AlertModal from '@/components/alert/AlertModal';
 import AccountAgreement from '@/components/atoms/AccountAgreement';
 import Button from '@/components/atoms/Button';
@@ -16,6 +15,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useAgreement } from '@/contexts/account/useAgreement';
 import { useState } from 'react';
 
 export default function ElseAccount() {
