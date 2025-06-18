@@ -19,10 +19,6 @@ type SavingsFormProps = {
   onAmountChange: (value: string) => void; // 총액 변경
   onPeriodChange: (period: number) => void; // 개월 수 변경
   onTransferDayChange: (day: number) => void; // 납입일 변경
-
-  // ↓ 추가된 부분
-  monthlyDeposit?: string; // 월납입액
-  onMonthlyDepositChange?: (value: string) => void;
 };
 
 export default function SavingsForm({
@@ -33,17 +29,10 @@ export default function SavingsForm({
   onAmountChange,
   onPeriodChange,
   onTransferDayChange,
-  monthlyDeposit = '',
-  onMonthlyDepositChange,
 }: SavingsFormProps) {
   const [isPeriodOpen, setIsPeriodOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
-
-  // 예상 월납입액 계산 (간단히 총액/개월수)
-  const principal = Number.parseInt(amount.replace(/,/g, '')) || 0;
-  const estimatedDeposit = period
-    ? Math.round(principal / period).toLocaleString()
-    : '0';
+  const [rawAmount, setRawAmount] = useState<string>('');
 
   return (
     <div className='flex-1 px-6 py-8'>
@@ -62,8 +51,17 @@ export default function SavingsForm({
               value={
                 amount ? Number(amount.replace(/,/g, '')).toLocaleString() : ''
               }
-              onChange={(e) => onAmountChange(e.target.value)}
-              placeholder='최소 100만원'
+              onChange={(e) => {
+                const input = e.target.value;
+                const rawValue = input.replace(/[^\d]/g, '');
+
+                // 포맷된 값을 rawAmount에 저장
+                setRawAmount(rawValue ? Number(rawValue).toLocaleString() : '');
+
+                // 부모에게는 순수 숫자만 전달
+                onAmountChange?.(rawValue);
+              }}
+              placeholder='최소 10만원'
               className='text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0 flex-none'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
@@ -100,35 +98,27 @@ export default function SavingsForm({
           </div>
         </div>
 
-        {/* 2. 월납입액 입력 */}
         <div>
           <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
-            매월 얼마씩 저축할까요?
+            정기적으로 저축합니다
           </Txt>
+        </div>
+        {/* 2. 월납입액 입력 */}
+        <div className='flex items-end gap-2 mb-[20px]'>
           <div className='flex items-end gap-2 mb-[20px]'>
             <ExpandingInput
-              value={monthlyDeposit}
-              onChange={(e) => onMonthlyDepositChange?.(e.target.value)}
-              placeholder={`예상 ${estimatedDeposit}원`}
-              className='text-[14px] font-[400] leading-[24px] text-icongray
+              value={rawAmount}
+              readOnly={true}
+              placeholder={`위에서 설정한 금액`}
+              className='text-[14px] font-[400] leading-[24px] text-primarycolor
                          border-b-[0.5px] border-mainblack bg-transparent
                          px-0 pb-0 flex-none'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
-              씩 저축
+              을
             </Txt>
-          </div>
-          <Txt size='text-[12px]' className='text-gray-500 mb-[40px]'>
-            * 예상 월납입액: {estimatedDeposit}원
-          </Txt>
-        </div>
 
-        {/* 3. 납입일 선택 */}
-        <div>
-          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
-            언제 저축할까요?
-          </Txt>
-          <div className='flex items-end gap-2 mb-[42px]'>
+            {/* 3. 납입일 선택 */}
             <Txt size='text-[12px]' className='text-mainblack'>
               매월
             </Txt>

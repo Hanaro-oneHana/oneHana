@@ -116,7 +116,7 @@ model User {
   code            String?           @db.VarChar(15)
   mate_code       String?           @db.VarChar(15)
   type            Int               @default(0) @db.TinyInt
-  Account         Account[]
+  account         Account[]
   BudgetPlan      BudgetPlan[]
   PartnerCalendar PartnerCalendar[]
   UserCalendar    UserCalendar[]
