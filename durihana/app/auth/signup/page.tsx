@@ -31,7 +31,7 @@ export default function SignUp() {
 
         return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
     }
-    
+
     const handdleSubmit = (e: FormEvent<HTMLFormElement>) => {
         if(Object.values(userInfo).some((v) => v.trim() === '')) {
             e.preventDefault();
@@ -53,7 +53,7 @@ export default function SignUp() {
                 <Txt className="font-[500] text-[16px] mt-[40px] ml-[25px]">이름</Txt>
                 <InputComponent width="w-[325px]" className={inputSet} placeholder="이름을 입력해 주세요"
                     name="name" value={userInfo.name} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.name.trim() === '' ? '*이름을 입력해 주세요.' : '\u00A0'}</Txt>
+                <Txt className={errMasseage}>{status === 'inputError' && userInfo.name.trim() === '' ? '*이름을 입력해 주세요.' : ''} </Txt>
             </div>
 
             <div>
@@ -61,7 +61,7 @@ export default function SignUp() {
                 <InputComponent className={inputSet} placeholder="abc@durihana.com"
                     type="email" name="email" value={userInfo.email} onChange={handleChange}/>
                 <Txt className={errMasseage} >{status === 'inputError' && userInfo.email.trim() === '' ? '*이메일을 입력해 주세요' 
-                : !emailValidator.success && userInfo.email.length > 0 ? ' *이메일형식이 올바르지 않습니다 ' : '\u00A0'}</Txt>
+                : !emailValidator.success && userInfo.email.length > 0 ? ' *이메일형식이 올바르지 않습니다 ' : ''}</Txt>
             </div>
             
             <div>
@@ -69,7 +69,7 @@ export default function SignUp() {
                 <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
                     type="password" name="password" value={userInfo.password} onChange={handleChange}/>
                 <Txt className={errMasseage}>{status === 'inputError' && userInfo.password.trim() === '' ? '*비밀번호를 입력해 주세요' 
-                : userInfo.password.length > 0 && userInfo.password.length < 8 ? ' *8자 이상 입력해주세요 ' : '\u00A0'}</Txt>
+                : userInfo.password.length > 0 && userInfo.password.length < 8 ? ' *8자 이상 입력해주세요 ' : ''}</Txt>
             </div>
             
             <div>
@@ -77,21 +77,21 @@ export default function SignUp() {
                 <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
                     type="password" name="passwordCheck" value={userInfo.passwordCheck} onChange={handleChange}/>
                 <Txt className={errMasseage}>{status === 'inputError' && userInfo.passwordCheck.trim() === '' ? '*비밀번호를 다시 입력해 주세요' 
-                : userInfo.password !== userInfo.passwordCheck && userInfo.passwordCheck.length > 0  ? ' *비밀번호가 일치하지 않습니다 ' : '\u00A0'}</Txt>
+                : userInfo.password !== userInfo.passwordCheck && userInfo.passwordCheck.length > 0  ? ' *비밀번호가 일치하지 않습니다 ' : ''}</Txt>
             </div>
 
             <div>
                 <Txt className={title}>전화번호</Txt>
                 <InputComponent className={inputSet} placeholder="010-12324-1234"
                     name="phone" value={userInfo.phone} onChange={handleChange} maxLength={13} />
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.phone.trim() === '' ? '*전화번호를 입력해 주세요' : '\u00A0'}</Txt>
+                <Txt className={errMasseage}>{status === 'inputError' && userInfo.phone.trim() === '' ? '*전화번호를 입력해 주세요' : ''}</Txt>
             </div>
 
             <div>
                 <Txt className={title}>결혼예정일</Txt>
                 <InputComponent className={inputSet} placeholder="2026-01-01"
                     type="date" name="marriageDate" value={userInfo.marriageDate} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.marriageDate.trim() === '' ? '*결혼예정일을 입력해 주세요' : '\u00A0'}</Txt>
+                <Txt className={errMasseage}>{status === 'inputError' && userInfo.marriageDate.trim() === '' ? '*결혼예정일을 입력해 주세요' : ''}</Txt>
             </div>
             
             <Button type="submit" className="w-[335px] h-[48px] block mx-auto mt-[76px] font-[500]" >완료</Button>
