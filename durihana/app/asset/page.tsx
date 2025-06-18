@@ -35,7 +35,6 @@ export default async function Asset() {
   const data = await getTypeAmounts(userId);
 
   const total = await getBucketTotalAmount(userId);
-  console.log('🚀 ~ Asset ~ total:', total);
 
   return (
     <>
