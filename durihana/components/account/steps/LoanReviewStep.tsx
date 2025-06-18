@@ -5,7 +5,7 @@ export default function LoanReviewStep() {
   return (
     <div className='flex-1 px-6 py-8 flex flex-col items-center justify-center'>
       <Txt size='text-[22px]' className='text-mainblack mb-16'>
-        두리아나대출통장
+        두리하나대출통장
       </Txt>
 
       <div className='flex-1 flex flex-col items-center justify-center'>

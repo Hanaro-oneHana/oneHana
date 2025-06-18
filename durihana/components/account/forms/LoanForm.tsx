@@ -198,7 +198,7 @@ export default function LoanForm({
           </Txt>
           <div className='space-y-1'>
             <Txt size='text-[12px]' className='text-primarycolor'>
-              두리아나입출금통장
+              두리하나입출금통장
             </Txt>
             <Txt
               size='text-[14px]'
