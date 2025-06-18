@@ -9,7 +9,7 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
 
   const [financePlans, reservations, userAccounts] = await Promise.all([
     // 개인 금융 계획
-    prisma.usercalendar.findMany({
+    prisma.userCalendar.findMany({
       where: {
         user_id: userId,
         user_date: {
@@ -18,7 +18,7 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
       },
     }),
     // 예약 일정
-    prisma.partnercalendar.findMany({
+    prisma.partnerCalendar.findMany({
       where: {
         user_id: userId,
         reservation_date: {
@@ -26,11 +26,11 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
         },
       },
       include: {
-        partnerservice: {
+        PartnerService: {
           select: {
             id: true,
             name: true,
-            partner: {
+            Partner: {
               select: {
                 id: true,
                 name: true,
@@ -81,7 +81,7 @@ export const getUserFinancePlans = async (
   const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
   const endDate = `${year}-${String(month + 1).padStart(2, '0')}-31`;
 
-  return await prisma.usercalendar.findMany({
+  return await prisma.userCalendar.findMany({
     where: {
       user_id: userId,
       user_date: {
@@ -103,7 +103,7 @@ export const getUserReservations = async (
   const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
   const endDate = `${year}-${String(month + 1).padStart(2, '0')}-31`;
 
-  return await prisma.partnercalendar.findMany({
+  return await prisma.partnerCalendar.findMany({
     where: {
       user_id: userId,
       reservation_date: {
@@ -112,11 +112,11 @@ export const getUserReservations = async (
       },
     },
     include: {
-      partnerservice: {
+      PartnerService: {
         select: {
           id: true,
           name: true,
-          partner: {
+          Partner: {
             select: {
               id: true,
               name: true,
@@ -148,7 +148,7 @@ export const getFinanceScheduleDates = async (
   console.log('🚀 ~ getFinanceScheduleDates ~ startDate:', startDate);
   console.log('🚀 ~ getFinanceScheduleDates ~ endDate:', endDate);
 
-  const financeDates = await prisma.usercalendar.findMany({
+  const financeDates = await prisma.userCalendar.findMany({
     where: {
       user_id: userId,
       user_date: {
@@ -187,7 +187,7 @@ export const getReservationScheduleDates = async (
   console.log('🚀 ~ getReservationScheduleDates ~ startDate:', startDate);
   console.log('🚀 ~ getReservationScheduleDates ~ endDate:', endDate);
 
-  const reservationDates = await prisma.partnercalendar.findMany({
+  const reservationDates = await prisma.partnerCalendar.findMany({
     where: {
       user_id: userId,
       reservation_date: {

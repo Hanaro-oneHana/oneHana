@@ -60,7 +60,9 @@ export default function Header({
           )}
         </div>
 
-        <Txt> {title} </Txt>
+        <Txt className='font-[16px]' align='text-center'>
+          {title}
+        </Txt>
 
         <button
           className='w-[24px] h-[24px]cursor-pointer bg-transparent'
