@@ -1,18 +1,20 @@
 'use client';
 
 import Image from 'next/image';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import Txt from './atoms/Txt';
 
 type Props = {
   selectedItem: number;
+  setSelectedItem: (id: number) => void;
   progress: boolean;
   onClick?: () => void;
 };
 
 export default function ProgressBarButton({
   selectedItem,
+  setSelectedItem,
   progress,
   onClick,
 }: Props) {
@@ -24,7 +26,9 @@ export default function ProgressBarButton({
     { id: 5, name: '예물·예단', icon: '/asset/icons/ring.svg' },
   ];
 
-  const [selected, setSelected] = useState(selectedItem);
+  useEffect(() => {
+    setSelectedItem(selectedItem);
+  }, [selectedItem]);
 
   return (
     <div className='flex items-center justify-center w-full  gap-[8px]'>
@@ -35,14 +39,13 @@ export default function ProgressBarButton({
         >
           <div className='flex flex-col items-center gap-[10px]'>
             <ButtonBox
-              selected={item.id === selected}
+              selected={item.id === selectedItem}
               onClick={() => {
-                setSelected(item.id);
+                setSelectedItem(item.id);
                 if (onClick) {
                   onClick();
                 }
               }}
-              disabled={progress}
             >
               <Image
                 src={item.icon}

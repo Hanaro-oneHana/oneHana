@@ -1,5 +1,6 @@
 'use server';
 
+import { AccountType } from '@/components/AccountDetail';
 import prisma from '@/lib/db';
 import { createAccountSchedules } from './AccountCalendarActions';
 
@@ -171,7 +172,7 @@ export const deleteUserAccounts = async (userId: number) => {
     });
 
     // 해당 사용자의 모든 UserCalendar 일정 삭제
-    const deletedSchedules = await prisma.usercalendar.deleteMany({
+    const deletedSchedules = await prisma.userCalendar.deleteMany({
       where: {
         user_id: userId,
       },
@@ -187,3 +188,31 @@ export const deleteUserAccounts = async (userId: number) => {
     throw error;
   }
 };
+
+export async function getAllAccountsByUserId(userId: number) {
+  const accounts = await prisma.account.findMany({
+    where: { user_id: userId },
+    orderBy: { type: 'asc' },
+  });
+
+  return accounts.map((acc) => ({
+    ...acc,
+    balance: Number(acc.balance),
+    type: acc.type as AccountType,
+  }));
+}
+
+export async function getFirstAccountByUserId(userId: number) {
+  const account = await prisma.account.findFirst({
+    where: { user_id: userId },
+    orderBy: { type: 'asc' },
+  });
+
+  if (!account) return null;
+
+  return {
+    ...account,
+    balance: Number(account.balance),
+    type: account.type as AccountType,
+  };
+}
