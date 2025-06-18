@@ -3,13 +3,17 @@ import AssetOverview from '@/components/asset/AssetOverview';
 import BottomNavigation from '@/components/atoms/BottomNavigation';
 import Header from '@/components/atoms/Header';
 import { getAccountsByUserId } from '@/lib/actions/AccountActions';
-import { getTypeAmounts } from '@/lib/actions/AssetActions';
+import {
+  getBucketTotalAmount,
+  getTypeAmounts,
+} from '@/lib/actions/AssetActions';
 import { auth } from '@/lib/auth';
 
 export default async function Asset() {
   const session = await auth();
   const userId = Number(session?.user?.id);
 
+  // 로그인 유저 없을 때 임시 처리. 추후 미들웨어 처리 예정
   if (!session?.user) {
     return <>사용자가 없습니다</>;
   }
@@ -30,7 +34,8 @@ export default async function Asset() {
   }));
 
   const data = await getTypeAmounts(userId);
-  console.log('🚀 ~ Asset ~ datas:', data);
+
+  const total = await getBucketTotalAmount(userId);
 
   return (
     <>
@@ -44,7 +49,7 @@ export default async function Asset() {
           />
         </div>
         <div className='mb-[75px]'>
-          <AssetOverview data={data} balance={mainAccount.balance} />
+          <AssetOverview data={data} balance={total} />
         </div>
       </div>
 

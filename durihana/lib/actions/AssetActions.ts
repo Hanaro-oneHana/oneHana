@@ -9,7 +9,6 @@ type TypeAmount = {
 
 // 웨딩 관련 지출 내역 가져오기
 export const getTypeAmounts = async (userId: number) => {
-  // 유저의 제휴 캘린더 전체 조회
   const calendars = await prisma.partnerCalendar.findMany({
     where: { user_id: userId },
     select: {
@@ -37,30 +36,61 @@ export const getTypeAmounts = async (userId: number) => {
       const categoryType = service.Partner.PartnerCategory.type;
       const content = service.content;
 
-      const price =
-        typeof content === 'object' && content !== null && '가격' in content
-          ? content['가격']
-          : null;
-
-      if (typeof price === 'number') {
-        return { name: categoryType, value: price };
-      } else if (typeof price === 'string' && !isNaN(+price)) {
-        return { name: categoryType, value: +price };
-      }
-
-      return null;
+      const price = extractPrice(content);
+      return { name: categoryType, value: price };
     })
     .filter((item): item is TypeAmount => item !== null);
 
   console.log('🚀 ~ getTypeAmounts ~ rawData:', rawData);
 
   // name(제휴 타입) 기준으로 value(가격) 누적 합산
-  const result = Array.from(
-    rawData.reduce((acc, { name, value }) => {
-      acc.set(name, (acc.get(name) ?? 0) + value);
-      return acc;
-    }, new Map<string, number>())
-  ).map(([name, value]) => ({ name, value }));
+  const amountMap = new Map<string, number>();
+
+  rawData.forEach(({ name, value }) => {
+    const current = amountMap.get(name) ?? 0;
+    amountMap.set(name, value + current);
+  });
+
+  const result: TypeAmount[] = Array.from(amountMap).map(([name, value]) => ({
+    name,
+    value,
+  }));
 
   return result;
 };
+
+// 웨딩 버켓 총 금액 가져오기
+export const getBucketTotalAmount = async (userId: number) => {
+  const budgetplans = await prisma.budgetPlan.findMany({
+    where: { user_id: userId },
+    select: {
+      PartnerService: {
+        select: {
+          content: true,
+        },
+      },
+    },
+  });
+
+  const prices: number[] = budgetplans.map((budgetplan) => {
+    const content = budgetplan.PartnerService.content;
+
+    return extractPrice(content);
+  });
+
+  const result = prices.reduce((acc, val) => acc + val, 0);
+
+  return result;
+};
+
+// json타입인 content에서 가격 추출
+function extractPrice(content: unknown) {
+  if (typeof content == 'object' && content !== null && '가격' in content) {
+    const price = content['가격'];
+
+    if (typeof price === 'number') return price;
+    else if (typeof price === 'string' && !isNaN(+price)) return +price;
+  }
+
+  return 0;
+}
