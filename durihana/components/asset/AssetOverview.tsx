@@ -21,7 +21,9 @@ export default function AssetOverview({ data, balance }: Props) {
     <>
       <div className='flex flex-col items-center gap-y-[40px] pt-[40px] pb-[40px]'>
         <AssetLog data={assetData} />
-        <AssetPieChart data={assetData} />
+        <div className='w-full px-[20px]'>
+          <AssetPieChart data={assetData} />
+        </div>
         <ProgressBar current={usedBudget} total={totalBudget} />
       </div>
     </>

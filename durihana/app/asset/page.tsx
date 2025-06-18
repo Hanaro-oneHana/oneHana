@@ -3,14 +3,8 @@ import AssetOverview from '@/components/asset/AssetOverview';
 import BottomNavigation from '@/components/atoms/BottomNavigation';
 import Header from '@/components/atoms/Header';
 import { getAccountsByUserId } from '@/lib/actions/AccountActions';
+import { getTypeAmounts } from '@/lib/actions/AssetActions';
 import { auth } from '@/lib/auth';
-
-// const PieChartComponent = dynamic(
-//   () => import('@/components/asset/AssetChart'),
-//   {
-//     ssr: false,
-//   }
-// );
 
 export default async function Asset() {
   const session = await auth();
@@ -35,14 +29,8 @@ export default async function Asset() {
     balance: acc.balance,
   }));
 
-  const data = [
-    { name: '예식장', value: 4200000 },
-    { name: '신혼여행', value: 5000000 },
-    { name: '스드메', value: 2300000 },
-    { name: '가전·가구', value: 1500000 },
-    { name: '예물', value: 1100000 },
-  ];
-  const total = 20000000;
+  const data = await getTypeAmounts(userId);
+  console.log('🚀 ~ Asset ~ datas:', data);
 
   return (
     <>
@@ -56,7 +44,7 @@ export default async function Asset() {
           />
         </div>
         <div className='mb-[75px]'>
-          <AssetOverview data={data} balance={total} />
+          <AssetOverview data={data} balance={mainAccount.balance} />
         </div>
       </div>
 

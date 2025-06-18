@@ -119,7 +119,7 @@ export default function ProgressBar({ total, current }: Props) {
     <div className='w-full flex flex-col'>
       {/* 설명 텍스트 */}
       <Txt size='text-[15px]' className='mb-[10px]'>
-        {isOver ? `예산 초과` : `예산의 ${ratio}% 사용`}
+        {isOver ? `예산 초과` : `웨딩 버켓 기준으로 ${ratio}% 사용`}
       </Txt>
 
       {/* 프로그레스바 + 숫자 레이어 */}

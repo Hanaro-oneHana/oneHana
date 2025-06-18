@@ -9,7 +9,7 @@ export default function AssetLog({ data }: Props) {
     <>
       <div className='flex flex-col w-full'>
         <Txt size='text-[18px]' className='mb-[8px] ml-[5px]'>
-          지출 내역
+          웨딩 카테고리별 지출
         </Txt>
         <div className='w-full bg-accountgray rounded-[10px] px-[20px] py-[15px] flex flex-col gap-y-[15px]'>
           {data.map((entry, index) => (
