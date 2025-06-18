@@ -89,7 +89,7 @@ export default function SignUp() {
 
             <div>
                 <Txt className={title}>결혼예정일</Txt>
-                <InputComponent className={inputSet} placeholder="2026-01-01"
+                <InputComponent className={inputSet} 
                     type="date" name="marriageDate" value={userInfo.marriageDate} onChange={handleChange}/>
                 <Txt className={errMasseage}>{status === 'inputError' && userInfo.marriageDate.trim() === '' ? '*결혼예정일을 입력해 주세요' : ''}</Txt>
             </div>
