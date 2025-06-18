@@ -78,7 +78,7 @@ export default function SavingsForm({
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-[90px]' align='start'>
-                {[12, 24, 36, 48].map((m) => (
+                {[12, 24].map((m) => (
                   <DropdownMenuItem
                     key={m}
                     onSelect={() => {

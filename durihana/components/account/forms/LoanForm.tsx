@@ -88,22 +88,17 @@ export default function LoanForm({
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-[90px]' align='start'>
-                <DropdownMenuItem
-                  onSelect={() => {
-                    onPeriodChange(12);
-                    setIsPeriodOpen(false);
-                  }}
-                >
-                  12개월
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => {
-                    onPeriodChange(24);
-                    setIsPeriodOpen(false);
-                  }}
-                >
-                  24개월
-                </DropdownMenuItem>
+                {[12, 24].map((m) => (
+                  <DropdownMenuItem
+                    key={m}
+                    onSelect={() => {
+                      onPeriodChange(m);
+                      setIsPeriodOpen(false);
+                    }}
+                  >
+                    {m}개월
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
