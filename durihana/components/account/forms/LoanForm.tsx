@@ -56,7 +56,7 @@ export default function LoanForm({
   return (
     <div className='flex-1 px-6 py-8'>
       <Txt size='text-[22px]' className='block text-mainblack mb-[40px]'>
-        두리아나대출통장
+        두리하나대출통장
       </Txt>
 
       <div className='space-y-6'>
