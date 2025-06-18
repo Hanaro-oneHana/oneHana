@@ -1,7 +1,6 @@
 import AccountCard, { MainAccount, SubAccount } from '@/components/AccountCard';
 import AssetOverview from '@/components/asset/AssetOverview';
-import BottomNavigation from '@/components/atoms/BottomNavigation';
-import Header from '@/components/atoms/Header';
+import { BottomNavigation, Header } from '@/components/atoms';
 import { getAccountsByUserId } from '@/lib/actions/AccountActions';
 import {
   getBucketTotalAmount,
