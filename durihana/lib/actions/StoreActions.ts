@@ -8,7 +8,6 @@ export type Store = {
   location: string;
   price: number;
   categoryId: number;
-  popular: number;
 };
 
 export const getStoreList = async (search: string, category: number) => {
@@ -33,11 +32,6 @@ export const getStoreList = async (search: string, category: number) => {
           partner_category_id: true,
         },
       },
-      BudgetPlan: {
-        select: {
-          id: true,
-        },
-      },
     },
   });
 
@@ -59,7 +53,6 @@ export const getStoreList = async (search: string, category: number) => {
           : ''
         : '',
     categoryId: store.Partner.partner_category_id,
-    popular: store.BudgetPlan.length,
   }));
 
   return result.sort((a, b) => a.price - b.price);
