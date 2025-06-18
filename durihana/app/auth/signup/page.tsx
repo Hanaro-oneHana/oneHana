@@ -24,12 +24,14 @@ export default function SignUp() {
     const [status, setStatus] = useState<"idle" | "success" | "error" | "inputError">("idle");
     
     const phoneHyphen = (h: string) => {
-        return h
-            .replace(/[^0-9]/g, '')
-            .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})/, "$1-$2-$3")
-            .replace(/-$/g, "");
-    };
+        const digits = h.replace(/\D/g, "");
+        
+        if (digits.length < 4)  return digits;
+        if (digits.length < 8)  return `${digits.slice(0, 3)}-${digits.slice(3)}`;
 
+        return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
+    }
+    
     const handdleSubmit = (e: FormEvent<HTMLFormElement>) => {
         if(Object.values(userInfo).some((v) => v.trim() === '')) {
             e.preventDefault();
