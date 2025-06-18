@@ -23,6 +23,13 @@ export default function SignUp() {
     const emailValidator = credentialValidator.safeParse({email: userInfo.email});
     const [status, setStatus] = useState<"idle" | "success" | "error" | "inputError">("idle");
     
+    const phoneHyphen = (h: string) => {
+        return h
+            .replace(/[^0-9]/g, '')
+            .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})/, "$1-$2-$3")
+            .replace(/-$/g, "");
+    };
+
     const handdleSubmit = (e: FormEvent<HTMLFormElement>) => {
         if(Object.values(userInfo).some((v) => v.trim() === '')) {
             e.preventDefault();
@@ -32,7 +39,9 @@ export default function SignUp() {
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        getUserInfo((prev) => ({ ...prev, [name]: value }));
+        const valueCheck = name === "phone" ? phoneHyphen(value) : value;
+
+        getUserInfo((prev) => ({ ...prev, [name]: valueCheck }));
     };
 
     return <>
@@ -72,7 +81,7 @@ export default function SignUp() {
             <div>
                 <Txt className={title}>전화번호</Txt>
                 <InputComponent className={inputSet} placeholder="010-12324-1234"
-                    name="phone" value={userInfo.phone} onChange={handleChange}/>
+                    name="phone" value={userInfo.phone} onChange={handleChange} maxLength={13} />
                 <Txt className={errMasseage}>{status === 'inputError' && userInfo.phone.trim() === '' ? '*전화번호를 입력해 주세요' : '\u00A0'}</Txt>
             </div>
 
