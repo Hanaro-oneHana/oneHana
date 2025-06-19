@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Txt from './atoms/Txt';
+import { Txt } from '../atoms';
 
 export default function HouseLoanCard() {
   return (
