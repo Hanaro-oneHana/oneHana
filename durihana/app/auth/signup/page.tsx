@@ -2,7 +2,7 @@
 
 import { Button, Header, InputComponent, Txt } from "@/components/atoms";
 import { createAction } from "@/lib/actions/CreateActions";
-import { credentialValidator } from "@/lib/validator";
+import { UserValidator } from "@/lib/validator";
 import { ChangeEvent, FormEvent, useState } from "react";
 import type React from 'react';
 
@@ -20,7 +20,7 @@ export default function SignUp() {
         phone: '',
         marriageDate: '',
     });
-    const emailValidator = credentialValidator.safeParse({email: userInfo.email});
+    const emailValidator = UserValidator.safeParse({email: userInfo.email});
     const [status, setStatus] = useState<"idle" | "success" | "error" | "inputError">("idle");
     
     const phoneHyphen = (h: string) => {

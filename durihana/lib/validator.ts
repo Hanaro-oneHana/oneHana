@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, ZodType } from 'zod';
 
 // 전화번호 -> 앞부분이 010 등의 번호구조인가 -> z.string().regex(/^[a-z]+$/);?
 // 이름 -> 단순 초성이 아닌, 제대로 조합이 되있느냐
@@ -13,11 +13,23 @@ import { z } from 'zod';
 // nonempty -> "" false
 // nullable -> "" true
 
-export const credentialValidator = z.object({
+const userValidator = {
     name: z.string().nonempty(),
     email: z.string().nonempty().email(),
     password: z.string().nonempty().min(8),
     passwordCheck: z.string().nonempty(),
     phone: z.string().nonempty(),
     marriageDate: z.date().min(new Date)
-});
+};
+
+export const UserValidator = z.object(userValidator);
+export type zinfer<T extends ZodType> = z.infer<T>;
+
+
+// const UserValidator = {
+//   id: z.string().transform(Number),
+//   name: z.string().min(1),
+//   image: z.nullable(z.string()),
+// };
+// export const userUpdateValidator = z.object(UserValidator);
+// export type zinfer<T extends ZodType> = z.infer<T>;
