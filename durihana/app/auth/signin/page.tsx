@@ -45,9 +45,9 @@ export default function SignInPage() {
   };
 
   return (
-    <div className='min-h-screen flex flex-col justify-center px-6'>
+    <div className=' flex flex-col justify-center px-[20px] pt-[120px]'>
       <div className='text-center mb-16'>
-        <Txt size='text-[36px]' weight='font-[500]'>
+        <Txt size='text-[36px]' weight='font-[500]' align='text-center'>
           두리하나
         </Txt>
       </div>
@@ -93,8 +93,13 @@ export default function SignInPage() {
           <Button type='submit'>로그인</Button>
         </div>
         <div>
-          <Button className='bg-transparent ' onClick={goToSignUp}>
-            <Txt weight='font-[500]' color='text-textgray' size='text-[13px]'>
+          <Button className='bg-transparent jus' onClick={goToSignUp}>
+            <Txt
+              weight='font-[500]'
+              color='text-textgray'
+              size='text-[13px]'
+              align='text-center'
+            >
               회원가입
             </Txt>
           </Button>
