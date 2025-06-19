@@ -1,7 +1,7 @@
 'use client';
 
 import ProgressBarButton from '@/components/ProgressBarButton';
-import { Txt, Search, Button } from '@/components/atoms';
+import { Search, Txt } from '@/components/atoms';
 import StoreCard from '@/components/estimate/StoreCard';
 import Filtering from '@/components/filtering/Filtering';
 import {
@@ -24,22 +24,19 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Store } from '@/lib/actions/StoreActions';
-import AlertModal from '../alert/AlertModal';
 
 type Props = {
   storeList?: Store[];
   categoryId?: number;
 };
 
-export default function EstimateMain({ storeList, categoryId }: Props) {
+export default function StoreComponent({ storeList, categoryId }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const [sortOptionList, setSortOptionList] = useState<PriceOption[]>([]);
-  const [items, setItems] = useState<Store[]>(storeList || []);
   const [category, setCategory] = useState(categoryId || 1);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [items, setItems] = useState<Store[]>(storeList || []);
 
   const updateSearchParam = (key: string[], value: string[]) => {
     const params = new URLSearchParams(searchParams);
@@ -99,13 +96,13 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   }, [selectedRegions]);
 
   return (
-    <div className='relative flex flex-col items-center justify-center h-dvh'>
-      <div className='flex flex-col items-center justify-start w-full flex-none'>
-        <div className='flex flex-col w-full items-center justify-start gap-[30px] pt-[25px] px-[20px]'>
+    <>
+      <div className='flex flex-col items-center justify-start h-dvh pt-[65px] pb-[72.5px] '>
+        <div className='flex flex-col w-full px-[20px] gap-[25px]'>
           <ProgressBarButton
             selectedItem={category}
             setSelectedItem={setCategory}
-            progress={true}
+            progress={false}
           />
           <Search
             onSearch={(query: string) => {
@@ -126,7 +123,8 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
             />
           </div>
         )}
-        <div className='flex flex-row items-center justify-end w-full px-[20px]'>
+
+        <div className='flex  items-center justify-end w-full px-[20px]'>
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger className=' mt-[20px]'>
               <div className='flex items-center justify-center gap-[-2px] focus:outline-none  m-0 p-0'>
@@ -169,30 +167,13 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <div className='flex flex-col flex-1 items-center justify-start w-full overflow-y-scroll px-[20px] py-[20px] gap-[10px] '>
+          {items.map((item, index) => (
+            <StoreCard key={index} store={item} />
+          ))}
+        </div>
       </div>
-      <div className='flex flex-col flex-1 items-center justify-start w-full overflow-y-scroll px-[20px] pt-[20px] gap-[10px] '>
-        {items.map((item, index) => (
-          <StoreCard key={index} store={item} />
-        ))}
-      </div>
-
-      <div className='flex flex-row flex-none items-center bg-transparent justify-center w-full px-[20px] mt-[20px] mb-[40px]'>
-        <Button
-          onClick={() => {
-            if (categoryId === 5) {
-              setIsModalOpen(true);
-            } else {
-              updateSearchParam(
-                ['category', 'search'],
-                [(categoryId ? categoryId + 1 : 0).toString(), '']
-              );
-            }
-          }}
-        >
-          {categoryId === 5 ? '완료' : '다음'}
-        </Button>
-      </div>
-      <button className='absolute bottom-[108px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
+      <button className='absolute bottom-[92.5px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
         <Image
           src='/asset/icons/bucket.svg'
           alt='Bucket'
@@ -203,37 +184,6 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           }}
         />
       </button>
-      {isModalOpen && (
-        <AlertModal onClose={() => setIsModalOpen(false)}>
-          <Txt align='text-center' weight='font-[600]'>
-            선택하신 웨딩 견적에 맞춰 <br /> 신혼부부를 위한 <br /> 하나은행의
-            맞춤 <span className='text-primarycolor'>예적금·대출 서비스</span>로{' '}
-            <br /> 결혼 부담을 덜어보세요!
-          </Txt>
-          <div className='flex flex-row items-center justify-center gap-[15px] w-full mt-[25px]'>
-            <Button
-              bgColor='bg-icon'
-              onClick={() => {
-                setIsModalOpen(false);
-                router.push('/');
-              }}
-              className='py-[10px]'
-            >
-              홈으로
-            </Button>
-            <Button
-              bgColor='bg-primarycolor'
-              onClick={() => {
-                setIsModalOpen(false);
-                router.push('/wedding-bucket');
-              }}
-              className='py-[10px]'
-            >
-              확인
-            </Button>
-          </div>
-        </AlertModal>
-      )}
-    </div>
+    </>
   );
 }

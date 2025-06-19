@@ -11,15 +11,15 @@ export default async function EstimatePage({
 }: {
   searchParams: SearchParams;
 }) {
-  const params = await searchParams;
+  const { search, category } = await searchParams;
   const storeList = await getStoreList(
-    params.search || '',
-    parseInt(params.category || '0', 10)
+    search || '',
+    parseInt(category || '0', 10)
   );
   return (
     <EstimateMain
       storeList={storeList}
-      categoryId={parseInt(params.category || '0', 10)}
+      categoryId={parseInt(category || '0', 10)}
     />
   );
 }

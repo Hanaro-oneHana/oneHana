@@ -1,35 +1,19 @@
 'use client';
 
+import { Button, HorizontalSlider } from '@/components/atoms';
 import { useEffect } from 'react';
-import Button from '../atoms/Button';
-import HorizontalSlider from '../atoms/HorizontalSlider';
 
 type Props = {
+  regions?: string[];
   selectedRegions: string[];
   setSelectedRegions: (regions: string[]) => void;
 };
 
-export default function DomesticFiltering({
+export default function Filtering({
+  regions,
   selectedRegions,
   setSelectedRegions,
 }: Props) {
-  const regions = [
-    '서울',
-    '경기도',
-    '인천',
-    '강원도',
-    '대전',
-    '세종',
-    '충청도',
-    '광주',
-    '전라도',
-    '대구',
-    '부산',
-    '울산',
-    '경상도',
-    '제주도',
-  ];
-
   useEffect(() => {
     if (setSelectedRegions) {
       setSelectedRegions(selectedRegions || []);
@@ -50,11 +34,12 @@ export default function DomesticFiltering({
     <>
       <HorizontalSlider>
         <div className='flex gap-[7px] px-[20px]'>
-          {regions.map((region) => (
-            <Button
-              key={region}
-              onClick={() => toggleRegion(region)}
-              className={`rounded-10px px-[12px] py-[7px] text-[12px] whitespace-nowrap
+          {regions &&
+            regions.map((region) => (
+              <Button
+                key={region}
+                onClick={() => toggleRegion(region)}
+                className={`rounded-10px px-[12px] py-[7px] text-[12px] whitespace-nowrap
                       transition-colors duration-200
                       ${
                         selectedRegions.includes(region)
@@ -62,10 +47,10 @@ export default function DomesticFiltering({
                           : 'bg-buttonlightgray text-mainblack'
                       }
                     `}
-            >
-              {region}
-            </Button>
-          ))}
+              >
+                {region}
+              </Button>
+            ))}
         </div>
       </HorizontalSlider>
     </>
