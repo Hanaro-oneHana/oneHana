@@ -24,7 +24,7 @@ export default function Txt({
   return (
     <span
       className={cn(
-        `bg-transparent ${size} ${color} ${weight} align font-hana 
+        `bg-transparent ${size} ${color} ${weight} ${align} font-hana 
         ${height}
         ${className}`
       )}
