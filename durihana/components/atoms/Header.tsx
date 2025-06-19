@@ -36,7 +36,7 @@ export default function Header({
 
   return (
     <>
-      <header className='flex w-full items-center justify-between h-[60px] bg-transparent px-[20px]'>
+      <header className='fixed top-0 left-[50%] translate-x-[-50%] max-w-[960px] flex w-dvw items-center justify-between h-[60px] bg-background z-50 px-[20px]'>
         <div className='flex items-center justify-center  gap-[10px] bg-transparent '>
           <button
             className='flex items-center justify-center w-[24px] h-[24px] shrink-0 cursor-pointer'
@@ -60,7 +60,9 @@ export default function Header({
           )}
         </div>
 
-        <Txt> {title} </Txt>
+        <Txt className='font-[16px]' align='text-center'>
+          {title}
+        </Txt>
 
         <button
           className='w-[24px] h-[24px]cursor-pointer bg-transparent'

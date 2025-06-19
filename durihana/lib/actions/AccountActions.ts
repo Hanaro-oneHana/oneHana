@@ -38,7 +38,7 @@ export const createAccount = async (
 
     const accountData: any = {
       account: `530-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
-      balance: BigInt(Math.floor(Math.random() * 50000000) + 1000000), // 100만원 ~ 5000만원
+      balance: Math.floor(Math.random() * 50000000) + 1000000, // 100만원 ~ 5000만원
       type: accountType,
       user_id: userId,
     };
@@ -54,12 +54,12 @@ export const createAccount = async (
       case 2: // 적금
         accountData.expire_date = expireDate.toISOString().split('T')[0];
         accountData.transfer_date = String(transferDay); // 선택한 날짜
-        accountData.payment = BigInt(500000); // 50만원 납입
+        accountData.payment = 500000; // 50만원 납입
         break;
       case 3: // 대출
         accountData.expire_date = expireDate.toISOString().split('T')[0];
         accountData.transfer_date = String(transferDay); // 선택한 날짜
-        accountData.payment = BigInt(300000); // 30만원 상환
+        accountData.payment = 300000; // 30만원 상환
         break;
     }
 
@@ -103,7 +103,7 @@ export const createMultipleAccounts = async (
 
         const dbAccountData: any = {
           account: `530-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
-          balance: BigInt(accountData.amount),
+          balance: accountData.amount,
           type: accountData.type,
           user_id: userId,
         };
@@ -118,14 +118,12 @@ export const createMultipleAccounts = async (
           case 2: // 적금
             dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             dbAccountData.transfer_date = String(accountData.transferDay || 15);
-            dbAccountData.payment = BigInt(accountData.amount);
+            dbAccountData.payment = accountData.amount;
             break;
           case 3: // 대출
             dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             dbAccountData.transfer_date = String(accountData.transferDay || 15);
-            dbAccountData.payment = BigInt(
-              Math.floor(accountData.amount * 0.1)
-            ); // 대출 상환액
+            dbAccountData.payment = Math.floor(accountData.amount * 0.1); // 대출 상환액
             break;
         }
 
@@ -135,11 +133,9 @@ export const createMultipleAccounts = async (
         });
 
         createdAccounts.push(account);
-      }
 
-      // 모든 계좌가 성공적으로 생성된 후 일정 생성
-      for (const account of createdAccounts) {
-        const scheduleResult = await createAccountSchedules(account.id);
+        // 트랜잭션 내에서 일정 생성 (tx 클라이언트 전달)
+        const scheduleResult = await createAccountSchedules(account.id, tx);
         totalSchedules += scheduleResult.count;
       }
 
@@ -171,7 +167,7 @@ export const deleteUserAccounts = async (userId: number) => {
     });
 
     // 해당 사용자의 모든 UserCalendar 일정 삭제
-    const deletedSchedules = await prisma.usercalendar.deleteMany({
+    const deletedSchedules = await prisma.userCalendar.deleteMany({
       where: {
         user_id: userId,
       },

@@ -1,6 +1,5 @@
 'use client';
 
-import { useAgreement } from '@/app/contexts/account/useAgreement';
 import AlertModal from '@/components/alert/AlertModal';
 import AccountAgreement from '@/components/atoms/AccountAgreement';
 import Button from '@/components/atoms/Button';
@@ -16,6 +15,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useRouter } from 'next/navigation';
+import { useAgreement } from '@/contexts/account/useAgreement';
 import { useState } from 'react';
 
 export default function ElseAccount() {
@@ -31,6 +32,7 @@ export default function ElseAccount() {
   } = useAgreement();
 
   const [modal, showModal] = useState(false);
+  const router = useRouter();
 
   return (
     <div className='relative flex flex-col shrink-0 w-full items-center justify-between h-dvh overflow-hidden'>
@@ -147,6 +149,12 @@ export default function ElseAccount() {
               showModal(true);
             } else {
               // 여기에 다음 페이지로 넘어가는거 추가
+              const types: number[] = [];
+              if (depositAgree) types.push(1); // 예금
+              if (savingsAgree) types.push(2); // 적금
+              if (loanAgree) types.push(3); // 대출
+
+              router.push(`./create-account?types=${types.join(',')}`);
             }
           }}
           className='flex justify-center w-full h-[48px] text-[16px]'

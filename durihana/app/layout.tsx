@@ -1,6 +1,6 @@
 import AuthSessionProvider from '@/components/auth/session-provider';
 import type { Metadata } from 'next';
-import { AgreementProvider } from './contexts/account/agreementProvider';
+import { AgreementProvider } from '../contexts/account/agreementProvider';
 import './globals.css';
 
 export const metadata: Metadata = {

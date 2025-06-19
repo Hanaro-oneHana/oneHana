@@ -1,112 +1,80 @@
 'use client';
 
-import DepositForm from '@/components/account/forms/DepositForm';
-import LoanForm from '@/components/account/forms/LoanForm';
-import SavingsForm from '@/components/account/forms/SavingsForm';
-import CompleteStep from '@/components/account/steps/CompleteStep';
-import LoanReviewStep from '@/components/account/steps/LoanReviewStep';
-import Button from '@/components/atoms/Button';
-import Txt from '@/components/atoms/Txt';
-import { useState } from 'react';
+import AccountCreationContent from '@/components/account/AccountCreationContent';
+import { Button, Header, Txt } from '@/components/atoms';
+import { useAccountCreation } from '@/hooks/useAccountCreation';
+import { useAccountNavigation } from '@/hooks/useAccountNavigation';
 
-export default function TestComponentsPage() {
-  const [currentComponent, setCurrentComponent] = useState<string>('deposit');
-  const [formData, setFormData] = useState({
-    amount: '1,000,000',
-    period: 12,
-    transferDay: 13,
+export default function CreateAccount() {
+  const {
+    types,
+    step,
+    setStep,
+    currentStage,
+    setCurrentStage,
+    loading,
+    current,
+    updateForm,
+    createAccounts,
+    router,
+    formStates,
+  } = useAccountCreation();
+
+  const { handleBack, handleNext } = useAccountNavigation({
+    currentStage,
+    setCurrentStage,
+    step,
+    setStep,
+    types,
+    formStatesLength: formStates.length,
+    createAccounts,
+    router,
   });
 
-  const userAccount = '530-910028-53607';
+  // 로딩 상태
+  if (types.length === 0) {
+    return (
+      <div className='w-full max-w-md mx-auto bg-mainwhite h-screen flex items-center justify-center'>
+        <Txt>약관 동의 페이지로 이동 중...</Txt>
+      </div>
+    );
+  }
 
-  const handleAmountChange = (value: string) => {
-    const numericValue = value.replace(/[^0-9]/g, '');
-    const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    setFormData({ ...formData, amount: formattedValue });
+  const getButtonText = () => {
+    if (loading) return '처리 중...';
+    if (currentStage === 'complete') return '완료';
+    return '다음';
   };
 
-  const components = [
-    { key: 'deposit', label: '예금 폼' },
-    { key: 'savings', label: '적금 폼' },
-    { key: 'loan', label: '대출 폼' },
-    { key: 'loanReview', label: '대출 심사' },
-    { key: 'complete', label: '완료 단계' },
-  ];
+  const isButtonDisabled =
+    (!current?.amount && currentStage === 'form') || loading;
 
   return (
-    <div className='w-full max-w-md mx-auto bg-mainwhite h-screen flex flex-col'>
-      <div className='flex-1 px-6 py-8 bg-gray-50'>
-        <div className='p-4 border-b border-gray-100'>
-          <Txt
-            size='text-[18px]'
-            weight='font-[600]'
-            className='text-mainblack mb-4 text-center'
-          >
-            컴포넌트 테스트
-          </Txt>
-          <div className='flex flex-wrap gap-2'>
-            {components.map((comp) => (
-              <Button
-                key={comp.key}
-                onClick={() => setCurrentComponent(comp.key)}
-                className={`px-3 py-1 text-sm rounded-full ${
-                  currentComponent === comp.key
-                    ? 'bg-primarycolor text-white'
-                    : 'bg-gray-100 text-gray-600'
-                }`}
-              >
-                {comp.label}
-              </Button>
-            ))}
-          </div>
-        </div>
+    <div className='w-full max-w-md mx-auto bg-background h-screen flex flex-col'>
+      <Header
+        leftIcon='back'
+        title={`상품 가입 (${step + 1}/${formStates.length})`}
+        onBackClick={handleBack}
+      />
 
-        {/* 컴포넌트 렌더링 */}
-        <div className='flex-1 overflow-y-auto'>
-          {currentComponent === 'deposit' && (
-            <DepositForm
-              amount={formData.amount}
-              period={formData.period}
-              userAccount={userAccount}
-              onAmountChange={handleAmountChange}
-              onPeriodChange={(period) => setFormData({ ...formData, period })}
-            />
-          )}
+      <div className='flex-1 overflow-y-auto pt-[80px]'>
+        <AccountCreationContent
+          currentStage={currentStage}
+          current={current}
+          step={step}
+          formStatesLength={formStates.length}
+          onChange={updateForm}
+        />
+      </div>
 
-          {currentComponent === 'savings' && (
-            <SavingsForm
-              amount={formData.amount}
-              period={formData.period}
-              transferDay={formData.transferDay}
-              userAccount={userAccount}
-              onAmountChange={handleAmountChange}
-              onPeriodChange={(period) => setFormData({ ...formData, period })}
-              onTransferDayChange={(transferDay) =>
-                setFormData({ ...formData, transferDay })
-              }
-            />
-          )}
-
-          {currentComponent === 'loan' && (
-            <LoanForm
-              amount={formData.amount}
-              period={formData.period}
-              transferDay={formData.transferDay}
-              userAccount={userAccount}
-              onAmountChange={handleAmountChange}
-              onPeriodChange={(period) => setFormData({ ...formData, period })}
-              onTransferDayChange={(transferDay) =>
-                setFormData({ ...formData, transferDay })
-              }
-            />
-          )}
-
-          {currentComponent === 'loanReview' && <LoanReviewStep />}
-
-          {currentComponent === 'complete' && (
-            <CompleteStep accountType={1} isLastAccount={false} />
-          )}
-        </div>
+      <div className='p-6'>
+        <Button
+          onClick={() => handleNext(current.type)}
+          disabled={isButtonDisabled}
+          className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
+        >
+          {getButtonText()}
+        </Button>
       </div>
     </div>
   );
