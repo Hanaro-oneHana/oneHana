@@ -31,6 +31,9 @@ export const calculateDday = (date: string) => {
   const diff = targetDate.getTime() - today.getTime(); // 밀리초 차이
   console.log('🚀 ~ calculateDday ~ diff:', diff);
   const dDay = Math.floor(diff / (1000 * 60 * 60 * 24)); // 일 수로 변환
+  console.log('🚀 ~ calculateDday ~ dDay:', dDay);
 
-  return dDay;
+  if (dDay > 0) return `-${dDay}`;
+  else if (dDay < 0) return `+${-1 * dDay}`;
+  else return '-day!';
 };
