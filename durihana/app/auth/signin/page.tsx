@@ -1,8 +1,6 @@
 'use client';
 
-import Button from '@/components/atoms/Button';
-import InputComponent from '@/components/atoms/InputComponent';
-import Txt from '@/components/atoms/Txt';
+import { Button, Txt, InputComponent } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import type React from 'react';

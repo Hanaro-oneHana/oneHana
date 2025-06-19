@@ -1,7 +1,6 @@
 import AccountCard, { SubAccount, MainAccount } from '@/components/AccountCard';
 import AccountCardDefault from '@/components/AccountCardDefault';
-import BottomNavigation from '@/components/atoms/BottomNavigation';
-import Header from '@/components/atoms/Header';
+import { Header, BottomNavigation } from '@/components/atoms';
 import { getAccountsByUserId } from '@/lib/actions/AccountActions';
 import { auth } from '@/lib/auth';
 
