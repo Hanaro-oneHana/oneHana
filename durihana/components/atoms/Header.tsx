@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Button from './Button';
@@ -10,8 +11,7 @@ type Props = {
   title?: string;
   leftIcon: 'back' | 'my';
   rightIcon?: 'close' | 'bell';
-  onBackClick?: () => void; // 뒤로가기
-  onMyClick?: () => void; // 사람 모양 아이콘
+  onLeftClick?: () => void; // 뒤로가기 혹은 마이
   onRightClick?: () => void; // 종 혹은 닫기
 };
 
@@ -19,10 +19,10 @@ export default function Header({
   title,
   leftIcon,
   rightIcon,
-  onBackClick,
-  onMyClick,
+  onLeftClick,
   onRightClick,
 }: Props) {
+  const router = useRouter();
   const [isLeftBack, setLeftBack] = useState(leftIcon === 'back');
   const [isRightClose, setRightClose] = useState(rightIcon === 'close');
   const { data: session } = useSession();
@@ -40,7 +40,17 @@ export default function Header({
         <div className='flex items-center justify-center  gap-[10px] bg-transparent '>
           <button
             className='flex items-center justify-center w-[24px] h-[24px] shrink-0 cursor-pointer'
-            onClick={isLeftBack ? onBackClick : onMyClick}
+            onClick={
+              onLeftClick
+                ? onLeftClick
+                : () => {
+                    if (isLeftBack) {
+                      router.back();
+                    } else {
+                      router.push('/my');
+                    }
+                  }
+            }
           >
             <Image
               src={imageLeftUrl}
@@ -52,7 +62,7 @@ export default function Header({
           </button>
           {leftIcon === 'my' && (
             <Button
-              className='flex text-[11px] py-[4px] px-[8px] rounded-[8px]'
+              className='flex text-[11px] py-[4px] px-[8px] rounded-[8px] '
               onClick={session?.user ? () => signOut() : () => signIn()}
             >
               {session?.user ? '로그아웃' : '로그인'}
@@ -60,7 +70,7 @@ export default function Header({
           )}
         </div>
 
-        <Txt className='font-[16px]' align='text-center'>
+        <Txt align='text-center' size='text-[16px]' weight='font-[500]'>
           {title}
         </Txt>
 
