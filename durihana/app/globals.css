@@ -211,12 +211,17 @@
     @apply border-border outline-ring/50;
     background-color: transparent;
   }
-  body {
+  body,
+  html,
+  #root {
     @apply bg-background text-foreground;
     background-color: var(--color-background);
     margin: 0 auto;
+    padding: 0;
+    position: relative;
     max-width: 960px;
     width: 100vw;
+    min-height: 100dvh;
     min-height: -webkit-fill-available;
     min-height: 100vh;
     overflow-x: hidden;
