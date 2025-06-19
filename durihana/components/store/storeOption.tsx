@@ -7,27 +7,25 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useState } from 'react';
-import { JsonValue } from '@/lib/generated/prisma/runtime/library';
-import { WeddingHallContent, SDMContent } from '@/lib/storeTypes';
 import { Txt } from '../atoms';
+import { StoreDetailProps } from './StoreDetail';
 
-type Props = {
-  name?: string;
-  content?: JsonValue;
-  partner?: {
-    address: string;
-    partnercategory: {
-      type: string;
-    };
-  };
-};
-
-export default function StoreOption(details: Props | null) {
+export default function StoreOption(
+  details: StoreDetailProps & {
+    onSelectChange?: (selected: Record<string, string>) => void;
+  }
+) {
   const content = details?.content;
   const type = details?.partner?.partnercategory?.type;
 
   const [openItems, setOpenItems] = useState<string[]>([]);
   const [selected, setSelected] = useState<Record<string, string>>({});
+
+  const updateSelected = (valueKey: string, item: string) => {
+    const newSelected = { ...selected, [valueKey]: item };
+    setSelected(newSelected);
+    details?.onSelectChange?.(newSelected); // 부모에 전달해주기
+  };
 
   const renderOptionItem = (
     label: string,
@@ -59,7 +57,7 @@ export default function StoreOption(details: Props | null) {
                 key={idx}
                 className='px-[15px] py-[12px] border-t-[0.5px]'
                 onClick={() => {
-                  setSelected((prev) => ({ ...prev, [valueKey]: item }));
+                  updateSelected(valueKey, item);
                   setOpenItems((prev) => prev.filter((v) => v !== valueKey));
                 }}
               >
@@ -72,6 +70,7 @@ export default function StoreOption(details: Props | null) {
     );
   };
 
+  //옵션들은 그 타입에 맞는 것들을(예식장, 스드메...) 하드코딩
   const optionConfig: Record<string, { label: string; key: string }[]> = {
     예식장: [
       { label: '식대', key: '식대' },

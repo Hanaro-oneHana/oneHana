@@ -1,3 +1,5 @@
+'use server';
+
 import prisma from '../db';
 
 export const getStoreDetail = async (storeId: number) => {
@@ -6,6 +8,7 @@ export const getStoreDetail = async (storeId: number) => {
       id: storeId, // partnerservice의 PK
     },
     select: {
+      id: true,
       name: true,
       content: true, // JSON 필드
       partner: {
@@ -22,4 +25,18 @@ export const getStoreDetail = async (storeId: number) => {
   });
 
   return detail;
+};
+
+export const insertOptions = async (
+  user_id: number,
+  partner_service_id: number,
+  options?: Record<string, string>
+) => {
+  return await prisma.budgetplan.create({
+    data: {
+      user_id,
+      partner_service_id,
+      selected: options, // ✅ Prisma에서 Json 타입에 그대로 넣으면 됨
+    },
+  });
 };
