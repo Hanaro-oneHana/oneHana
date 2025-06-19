@@ -32,6 +32,7 @@ model budgetplan {
   partnerservice     partnerservice @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_service")
   user               user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_user")
 
+  @@unique([user_id, partner_service_id], map: "unique_user_ps")
   @@index([partner_service_id], map: "fk_budget_service")
   @@index([user_id], map: "fk_budget_user")
 }

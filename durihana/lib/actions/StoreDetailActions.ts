@@ -32,11 +32,20 @@ export const insertOptions = async (
   partner_service_id: number,
   options?: Record<string, string>
 ) => {
-  return await prisma.budgetplan.create({
-    data: {
+  return await prisma.budgetplan.upsert({
+    where: {
+      user_id_partner_service_id: {
+        user_id,
+        partner_service_id,
+      },
+    },
+    update: {
+      selected: options,
+    },
+    create: {
       user_id,
       partner_service_id,
-      selected: options, // ✅ Prisma에서 Json 타입에 그대로 넣으면 됨
+      selected: options,
     },
   });
 };

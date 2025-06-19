@@ -10,6 +10,19 @@ import { useState } from 'react';
 import { Txt } from '../atoms';
 import { StoreDetailProps } from './StoreDetail';
 
+//옵션들은 그 타입에 맞는 것들을(예식장, 스드메...) 하드코딩
+export const optionConfig: Record<string, { label: string; key: string }[]> = {
+  예식장: [
+    { label: '식대', key: '식대' },
+    { label: '식사형태', key: '식사형태' },
+  ],
+  스드메: [
+    { label: '스튜디오', key: '스튜디오' },
+    { label: '드레스형식', key: '드레스형식' },
+    { label: '메이크업', key: '메이크업' },
+  ],
+};
+
 export default function StoreOption(
   details: StoreDetailProps & {
     onSelectChange?: (selected: Record<string, string>) => void;
@@ -68,19 +81,6 @@ export default function StoreOption(
         </Txt>
       </AccordionItem>
     );
-  };
-
-  //옵션들은 그 타입에 맞는 것들을(예식장, 스드메...) 하드코딩
-  const optionConfig: Record<string, { label: string; key: string }[]> = {
-    예식장: [
-      { label: '식대', key: '식대' },
-      { label: '식사형태', key: '식사형태' },
-    ],
-    스드메: [
-      { label: '스튜디오', key: '스튜디오' },
-      { label: '드레스형식', key: '드레스형식' },
-      { label: '메이크업', key: '메이크업' },
-    ],
   };
 
   if (!type || !optionConfig[type]) return null;
