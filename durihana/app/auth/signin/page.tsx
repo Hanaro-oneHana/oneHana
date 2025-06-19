@@ -62,7 +62,7 @@ export default function SignInPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder='abc@doorihana.com'
-            className='text-primarycolor text-[14px] font-[600] placeholder:text-icon'
+            className='text-primarycolor text-[14px] font-[600] placeholder:text-buttongray'
             required
           />
         </div>
@@ -74,7 +74,7 @@ export default function SignInPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder='8자 이상 입력해주세요'
-            className='text-primarycolor text-[14px] font-[600] placeholder:text-icon'
+            className='text-primarycolor text-[14px] font-[600] placeholder:text-buttongray'
             required
             minLength={8}
           />
