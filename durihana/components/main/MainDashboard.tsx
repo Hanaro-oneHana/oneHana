@@ -49,7 +49,15 @@ export default function MainDashBoard({ date, category }: Props) {
       </div>
       <div className='w-full bg-lightpurple rounded-[10px] border border-linegray flex justify-between'>
         <div className='pt-[29px] pl-[20px]'>
-          <Txt weight='font-[600]'>{`D${dDay}`}</Txt>
+          <Txt weight='font-[600]'>
+            {dDay === null
+              ? '결혼 예정일이 없어요'
+              : dDay > 0
+                ? `D-${dDay}`
+                : dDay < 0
+                  ? `D+${-dDay}`
+                  : '오늘 결혼해요'}
+          </Txt>
 
           <div className='flex flex-col gap-[4px] mt-[25px] mb-[34px]'>
             {checklist.map(({ keyword, todoText, doneText }) => {

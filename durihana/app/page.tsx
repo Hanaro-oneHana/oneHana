@@ -1,7 +1,9 @@
 import AccountCard, { SubAccount, MainAccount } from '@/components/AccountCard';
 import AccountCardDefault from '@/components/AccountCardDefault';
 import { Header, BottomNavigation } from '@/components/atoms';
+import MainDashBoard from '@/components/main/MainDashboard';
 import { getAccountsByUserId } from '@/lib/actions/AccountActions';
+import { getMarriageDate } from '@/lib/actions/DashboardActions';
 import { auth } from '@/lib/auth';
 
 export default async function Home() {
@@ -33,6 +35,8 @@ export default async function Home() {
     }));
   }
 
+  const marriageDate = await getMarriageDate(userId);
+  const completedCategory = ['예식장'];
   return (
     <div className='flex flex-col h-screen pt-[70px] px-[20px]'>
       <Header leftIcon='my' rightIcon='bell' />
@@ -48,6 +52,9 @@ export default async function Home() {
           subAccounts={subAccounts}
         />
       )}
+      <div className='pt-[30px]'>
+        <MainDashBoard date={marriageDate} category={completedCategory} />
+      </div>
     </div>
   );
 }

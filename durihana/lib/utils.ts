@@ -25,6 +25,10 @@ export const calculateDday = (date: string) => {
   const targetDate = new Date(date);
   const today = new Date(now);
 
+  if (isNaN(targetDate.getTime())) {
+    return null;
+  }
+
   targetDate.setHours(0, 0, 0, 0);
   today.setHours(0, 0, 0, 0);
 
@@ -33,7 +37,5 @@ export const calculateDday = (date: string) => {
   const dDay = Math.floor(diff / (1000 * 60 * 60 * 24)); // 일 수로 변환
   console.log('🚀 ~ calculateDday ~ dDay:', dDay);
 
-  if (dDay > 0) return `-${dDay}`;
-  else if (dDay < 0) return `+${-1 * dDay}`;
-  else return '-day!';
+  return dDay;
 };
