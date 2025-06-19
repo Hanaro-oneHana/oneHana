@@ -14,7 +14,7 @@ export async function POST( request: NextRequest) {
         }
 
         const {name, email, password, phone, marriageDate } = validator.data;
-
         
+
     }
 }
