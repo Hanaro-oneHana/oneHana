@@ -24,7 +24,7 @@ export default function AccountCardDefault({ signUp }: AccountCardProps) {
         모바일 전용 통장
       </Txt>
       <Button onClick={goToSignUp}>
-        <Txt weight='font-[500]' color='text-mainwhite'>
+        <Txt weight='font-[500]' color='text-mainwhite' align='text-center'>
           가입하기
         </Txt>
       </Button>
