@@ -16,6 +16,7 @@ export async function createAction(formData: FormData) {
     // encode passwords
     const hashed = await bcrypt.hash(password, 10);
 
+    
     await prisma.user.create({
         data: {
         name,

@@ -10,14 +10,14 @@ import { z, ZodType } from 'zod';
 // date.parse("2020-01-01");
 
 // 가입 성공시, [이름]님 환영합니다! 떠서 견적짜기 안내창 가볍게 띄우기?
+//
 // nonempty -> "" false
 // nullable -> "" true
 
 const userValidator = {
-    name: z.string().nonempty(),
+    name: z.string().min(2, '2자 이상 입력해 주세요'),
     email: z.string().nonempty().email(),
-    password: z.string().nonempty().min(8),
-    passwordCheck: z.string().nonempty(),
+    password: z.string().nonempty().min(8, '8자 이상 입력해 주세요'),
     phone: z.string().nonempty(),
     marriageDate: z.date().min(new Date)
 };
@@ -27,7 +27,7 @@ export type zinfer<T extends ZodType> = z.infer<T>;
 
 
 // const UserValidator = {
-//   id: z.string().transform(Number),
+//   id: z.string().transform(Number), // string으로 변형
 //   name: z.string().min(1),
 //   image: z.nullable(z.string()),
 // };
