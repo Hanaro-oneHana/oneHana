@@ -9,7 +9,9 @@ import { ChangeEvent, FormEvent, useState } from "react";
 export default function Singup() {
     const title = "text-[16px] mt-[11px] font-[500]";
     const inputSet = "mt-[10px] w-[325px] text-[14px] font-[600] block mx-auto text-primarycolor";
-    const gap = "mt-[30px] px-[20px]";
+    const errMasseage = "text-red text-[8px] mt-[3px]";
+    const normalGap = "mt-[30px] px-[20px]";
+    const messageGap = "mt-[11px] px-[20px]";
 
     const phoneHyphen = (h: string) => {
         const digits = h.replace(/\D/g, "");
@@ -58,7 +60,7 @@ export default function Singup() {
             return;
         }
         try {
-            const response = await fetch('api/auth/signup', {
+            const response = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -103,27 +105,29 @@ export default function Singup() {
                 <InputComponent className={inputSet} type="text" name="name" placeholder="이름을 입력해 주세요" value={formData.name} onChange={handleInput} required maxLength={25}/>
             </div>
 
-            <div className={gap}>
+            <div className={messageGap}>
                 <Txt className={title} >이메일</Txt>
                 <InputComponent className={inputSet} type="email" name="email" placeholder="abc@durihana.com" value={formData.email} onChange={handleInput} required/>
+                {/* {error && ( <Txt className={errMasseage}>{error}</Txt>)} */}
+                
             </div>
 
-            <div className={gap}>
+            <div className={messageGap}>
                 <Txt className={title} >비밀번호</Txt>
                 <InputComponent className={inputSet} type="password" name="password" placeholder="8자 이상을 입력해 주세요" value={formData.password} onChange={handleInput} required/>
             </div>
 
-            <div className={gap}>
+            <div className={messageGap}>
                 <Txt className={title} >비밀번호 확인</Txt>
                 <InputComponent className={inputSet} type="password" name="passwordCheck" placeholder="8자 이상을 입력해 주세요" value={formData.passwordCheck} onChange={handleInput} required/>
             </div>
 
-            <div className={gap}>
+            <div className={messageGap}>
                 <Txt className={title} >전화번호</Txt>
                 <InputComponent className={inputSet} type="text" name="phone" placeholder="010-1234-1234" value={formData.phone} onChange={handleInput} required/>
             </div>
 
-            <div className={gap}>
+            <div className={normalGap}>
                 <Txt className={title} >예정 결혼일</Txt>
                 <InputComponent className={inputSet} type="text" name="marriageDate" placeholder="2027-01-01" value={formData.marriageDate} onChange={handleInput} required/>
             </div>
@@ -131,9 +135,6 @@ export default function Singup() {
             <div className="px-[20px]">
             <Button type="submit" className="block w-full mt-[76px]" disabled={isLoading} >{isLoading ? '가입중' : '완료'}</Button>
             </div>
-
         </form>
-    
-    
     </>;
 }

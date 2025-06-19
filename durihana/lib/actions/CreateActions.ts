@@ -1,32 +1,37 @@
 "use server";
 
-import bcrypt from "bcryptjs";
-import { revalidatePath } from "next/cache";
+import { hash } from "bcryptjs";
 import prisma from "../db";
-import { redirect } from "next/navigation";
 
-export async function createAction(formData: FormData) {
+export const emailCrossCheck = async (email:string) => {
+        return await prisma.user.findFirst({
+            where: {
+                email ,
+            },
+        });
+};
 
-    const name = formData.get("name")?.toString() ?? "";
-    const email = formData.get("email")?.toString() ?? "";
-    const password = formData.get("password")?.toString() ?? "";
-    const phone = formData.get("phone")?.toString() ?? "";
-    const marriageDate = formData.get("marriageDate")?.toString() ?? "";
-
-    // encode passwords
-    const hashed = await bcrypt.hash(password, 10);
-
+export const createAction= async (
+        name: string,
+        email: string,
+        password: string,
+        phone: string,
+        marriageDate: string
+    ) => {
+        try{
+            const hashed = await hash(password, 10);
     
-    await prisma.user.create({
-        data: {
-        name,
-        email,
-        password: hashed,
-        phone,
-        marriage_date: marriageDate,
-        },
-    });
-
-    revalidatePath("/auth/signin");
-    redirect("/auth/signin");
+            return  await prisma.user.create({
+                data: {
+                name,
+                email,
+                password: hashed,
+                phone,
+                marriage_date: marriageDate,
+                },
+            });
+        } catch (error) {
+            console.error('Error: ',error);
+            throw new Error('사용자 생성 실패');
+        }
 }
