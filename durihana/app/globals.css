@@ -70,7 +70,6 @@
     --linegray: #dddee4;
     --icongray: #8d8f9a;
     --accountgray: #f1f2f6;
-
   }
 
   @theme inline {
@@ -89,7 +88,7 @@
     --color-mint: var(--mint);
     --color-lightmint: var(--lightmint);
     --color-purple: var(--purple);
-    --color-lightpurple: var(--purple2);
+    --color-lightpurple: var(--lightpurple);
     --color-pink: var(--pink);
     --color-skyblue: var(--skyblue);
     --color-lime: var(--lime);
@@ -98,7 +97,6 @@
     --color-red: var(--red);
     --color-icongray: var(--icongray);
     --color-accountgray: var(--accountgray);
-
   }
 }
 
