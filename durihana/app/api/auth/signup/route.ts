@@ -7,12 +7,14 @@ export async function POST( request: NextRequest) {
         const body = await request.json();
         const validator = UserValidator.safeParse(body);
 
+
         if(!validator.success) {
-            return NextResponse.json (
-                { error: validator.error.errors[0].message },
+            
+            return NextResponse.json (  
+                
+                {error: validator.error.errors[0]},
                 { status: 400 },
             );
-            console.log("validator failed");
         }
 
         const {name, email, password, phone, marriageDate } = validator.data;

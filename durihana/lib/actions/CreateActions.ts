@@ -11,6 +11,7 @@ export const emailCrossCheck = async (email:string) => {
         });
 };
 
+
 export const createAction= async (
         name: string,
         email: string,
@@ -20,7 +21,8 @@ export const createAction= async (
     ) => {
         try{
             const hashed = await hash(password, 10);
-    
+            
+
             return  await prisma.user.create({
                 data: {
                 name,

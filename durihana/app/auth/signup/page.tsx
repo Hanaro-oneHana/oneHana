@@ -1,6 +1,7 @@
 'use client'
 
 import { Button, Header, InputComponent, Txt } from "@/components/atoms";
+import { UserValidator } from "@/lib/validator";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
@@ -42,7 +43,10 @@ export default function Singup() {
         phone: '',
         marriageDate: ''
     });
-    const[error, setError ] = useState('');
+    const[emailError, setEmailError ] = useState('');
+    const[passwordError, setPasswordError ] = useState('');
+    const[checkError, setCheckError ] = useState('');
+
     const[success, setSuccess] = useState('');
     const[isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -50,12 +54,14 @@ export default function Singup() {
 
     const handleSubmit = async (e:FormEvent) => {
         e.preventDefault();
-        setError('');
+        setEmailError('');
+        setPasswordError('');
+        setCheckError('');
         setSuccess('');
         setIsLoading(true);
 
         if(formData.password !==formData.passwordCheck) {
-            setError('비밀번호가 일치하지 않습니다.');
+            setCheckError('*비밀번호가 일치하지 않습니다.');
             setIsLoading(false);
             return;
         }
@@ -74,13 +80,20 @@ export default function Singup() {
                 }),
             });
 
-            const data = await response.json();
+            const data = await response.json()
 
-            if(!response.ok)    setError(data.error || '회원가입에 오류가 발새했습니다.');
-            else                setSuccess('회원가입이 완료되었습니다.');
+      // 5) 서버 응답 검증 (서버에서 Zod를 쓰고 동일한 schema로 에러를 돌려준다고 가정)
+            if(!response.ok){
+                if(data.error.validation==='email'){
+                    setEmailError(data.error.message|| '회원가입 중 오류가 발생했습니다.');
+                }else{
+                    setPasswordError(data.error.message||'회원가입 중 오류가 발생했습니다.')
+                }
+            }
+            else setSuccess('회원가입이 완료되었습니다.');
         }
         catch (error) {
-            setError('오류가 발생했습니다.');
+            console.log("🚀 ~ handleSubmit ~ error:", error);
         }
         finally {
             setIsLoading(false);
@@ -105,21 +118,22 @@ export default function Singup() {
                 <InputComponent className={inputSet} type="text" name="name" placeholder="이름을 입력해 주세요" value={formData.name} onChange={handleInput} required maxLength={25}/>
             </div>
 
-            <div className={messageGap}>
+            <div className={normalGap}>
                 <Txt className={title} >이메일</Txt>
                 <InputComponent className={inputSet} type="email" name="email" placeholder="abc@durihana.com" value={formData.email} onChange={handleInput} required/>
-                {/* {error && ( <Txt className={errMasseage}>{error}</Txt>)} */}
-                
+                {emailError && ( <Txt className={errMasseage}>{emailError}</Txt>)}
             </div>
 
             <div className={messageGap}>
                 <Txt className={title} >비밀번호</Txt>
                 <InputComponent className={inputSet} type="password" name="password" placeholder="8자 이상을 입력해 주세요" value={formData.password} onChange={handleInput} required/>
+                {passwordError && ( <Txt className={errMasseage}>{passwordError}</Txt>)}
             </div>
 
             <div className={messageGap}>
                 <Txt className={title} >비밀번호 확인</Txt>
                 <InputComponent className={inputSet} type="password" name="passwordCheck" placeholder="8자 이상을 입력해 주세요" value={formData.passwordCheck} onChange={handleInput} required/>
+                {checkError && ( <Txt className={errMasseage}>{checkError}</Txt>)}
             </div>
 
             <div className={messageGap}>
