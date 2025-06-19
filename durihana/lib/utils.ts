@@ -18,3 +18,19 @@ export const formatDisplayDate = (date: Date) => {
   const day = date.getDate();
   return `${year}년 ${month}월 ${day}일`;
 };
+
+export const calculateDday = (date: string) => {
+  const now = formatDate(new Date());
+
+  const targetDate = new Date(date);
+  const today = new Date(now);
+
+  targetDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const diff = targetDate.getTime() - today.getTime(); // 밀리초 차이
+  console.log('🚀 ~ calculateDday ~ diff:', diff);
+  const dDay = Math.floor(diff / (1000 * 60 * 60 * 24)); // 일 수로 변환
+
+  return dDay;
+};
