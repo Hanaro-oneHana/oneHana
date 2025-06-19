@@ -82,7 +82,7 @@ export default function Singup() {
 
             const data = await response.json()
 
-      // 5) 서버 응답 검증 (서버에서 Zod를 쓰고 동일한 schema로 에러를 돌려준다고 가정)
+            // 5) 서버 응답 검증 (서버에서 Zod를 쓰고 동일한 schema로 에러를 돌려준다고 가정)
             if(!response.ok){
                 if(data.error.validation==='email'){
                     setEmailError(data.error.message|| '회원가입 중 오류가 발생했습니다.');
@@ -106,7 +106,8 @@ export default function Singup() {
         setFormData((prev) => ({
             ...prev,
             [name]: valCheck,
-        }));
+        }))
+        
     };
 
     return <>
@@ -121,19 +122,20 @@ export default function Singup() {
             <div className={normalGap}>
                 <Txt className={title} >이메일</Txt>
                 <InputComponent className={inputSet} type="email" name="email" placeholder="abc@durihana.com" value={formData.email} onChange={handleInput} required/>
-                {emailError && ( <Txt className={errMasseage}>{emailError}</Txt>)}
+                {/* {emailError && ( <Txt className={errMasseage}>{emailError}</Txt>)} */}
+                <Txt className={errMasseage}>{emailError || '\u00A0'}</Txt>
             </div>
 
             <div className={messageGap}>
                 <Txt className={title} >비밀번호</Txt>
                 <InputComponent className={inputSet} type="password" name="password" placeholder="8자 이상을 입력해 주세요" value={formData.password} onChange={handleInput} required/>
-                {passwordError && ( <Txt className={errMasseage}>{passwordError}</Txt>)}
+                <Txt className={errMasseage}>{passwordError || '\u00A0'}</Txt>
             </div>
 
             <div className={messageGap}>
                 <Txt className={title} >비밀번호 확인</Txt>
                 <InputComponent className={inputSet} type="password" name="passwordCheck" placeholder="8자 이상을 입력해 주세요" value={formData.passwordCheck} onChange={handleInput} required/>
-                {checkError && ( <Txt className={errMasseage}>{checkError}</Txt>)}
+                <Txt className={errMasseage}>{checkError || '\u00A0'}</Txt>
             </div>
 
             <div className={messageGap}>
