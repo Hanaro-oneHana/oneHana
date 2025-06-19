@@ -1,7 +1,6 @@
 'use client'
 
 import { Button, Header, InputComponent, Txt } from "@/components/atoms";
-import { UserValidator } from "@/lib/validator";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
