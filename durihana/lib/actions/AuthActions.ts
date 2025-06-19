@@ -1,6 +1,6 @@
 'use server';
 
-import bcrypt from 'bcryptjs';
+import { compare } from 'bcryptjs';
 import prisma from '@/lib/db';
 import { signInValidator } from '../validator';
 
@@ -27,10 +27,7 @@ export async function signInValidateAction(email: string, password: string) {
   }
 
   // 비밀번호가 일치하는지 확인
-  const isPasswordValid = await bcrypt.compare(
-    password,
-    user.data.password || ''
-  );
+  const isPasswordValid = await compare(password, user.data.password || '');
   if (!isPasswordValid) {
     return { isSuccess: false, error: '비밀번호가 올바르지 않습니다' };
   }
