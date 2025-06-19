@@ -113,7 +113,7 @@ export default function ProgressBar({ total, current }: Props) {
   const rawRatio = total === 0 ? 0 : (current / total) * 100;
   const ratio = Math.round(Math.min(rawRatio, 100));
 
-  const isOver = rawRatio >= 100;
+  const isOver = rawRatio > 100;
 
   return (
     <div className='w-full flex flex-col'>
@@ -136,11 +136,11 @@ export default function ProgressBar({ total, current }: Props) {
         />
 
         {/* 금액 텍스트 */}
-        {isOver ? (
+        {isOver || rawRatio === 100 ? (
           <Txt
             size='text-[10px]'
             color='text-textgray'
-            className={`absolute top-[-20px] right-0 whitespace-nowrap`}
+            className={`absolute bottom-[-20px] right-0 whitespace-nowrap`}
           >
             {formatKRWUnit(current)}
           </Txt>
