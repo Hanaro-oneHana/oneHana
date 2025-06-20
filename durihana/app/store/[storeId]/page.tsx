@@ -13,9 +13,9 @@ export default function StoreId({ params }: Props) {
   if (!details?.id) return null;
 
   return (
-    <>
+    <div className='pt-[60px]'>
       <Header leftIcon='back' rightIcon='close' />
       <StoreDetail {...details}></StoreDetail>
-    </>
+    </div>
   );
 }
