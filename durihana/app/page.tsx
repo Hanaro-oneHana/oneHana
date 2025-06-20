@@ -81,7 +81,9 @@ export default async function Home() {
       <div className='pt-[17px]'>
         <HouseLoanCard />
       </div>
-      <PopularPartner />
+      <div className='pt-[40px] pb-[105px]'>
+        <PopularPartner />
+      </div>
     </div>
   );
 }
