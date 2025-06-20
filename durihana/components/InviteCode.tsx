@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { updateRandomCode, tryMating } from '../lib/actions/InviteActions';
+import AlertModal from './alert/AlertModal';
 import Button from './atoms/Button';
 import InputComponent from './atoms/InputComponent';
 import Txt from './atoms/Txt';
@@ -22,9 +23,13 @@ export default function InviteCode() {
   const [randomCode, setRandomCode] = useState('');
   const [mateCode, setMateCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
   const params = useSearchParams();
   const idParam = params.get('id');
   const id = idParam ? Number(idParam) : null;
+  const router = useRouter();
 
   useEffect(() => {
     if (!id) return;
@@ -34,14 +39,19 @@ export default function InviteCode() {
   }, [id]);
 
   const tryConnecting = async (id: number, mate_code: string) => {
+    if (!id) return;
     setLoading(true);
-    const mate = await tryMating(id, mate_code);
+    const mate = await tryMating(id, mateCode);
+    setLoading(false);
+
     if (mate.status === 'success') {
-      setLoading(false);
-      alert('연결 성공');
+      setModalMessage('연결 성공');
+      setIsSuccess(true);
     } else {
-      alert('상대방이 없습니다');
+      setModalMessage('상대방이 없습니다');
+      setIsSuccess(false);
     }
+    setModalOpen(true);
   };
 
   const handleConnect = () => {
@@ -94,6 +104,28 @@ export default function InviteCode() {
           연결하기
         </Button>
       </div>
+      {modalOpen && (
+        <AlertModal onClose={() => setModalOpen(false)}>
+          <Txt size='text-[16px]' className='text-mainblack text-center'>
+            {modalMessage}
+          </Txt>
+          {isSuccess ? (
+            <Button
+              className='mt-[20px] w-full'
+              onClick={() => router.push('/account/checking-account')}
+            >
+              계좌 만들러가기
+            </Button>
+          ) : (
+            <Button
+              className='mt-[20px] w-full'
+              onClick={() => setModalOpen(false)}
+            >
+              확인
+            </Button>
+          )}
+        </AlertModal>
+      )}
     </>
   );
 }
