@@ -50,12 +50,13 @@ export default function Singup() {
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
-  const [newUserId, setNewUserId] = useState('');
+  const [newUserId, setNewUserId] = useState<number | null>(null);
   const router = useRouter();
 
   const handleModalClose = () => {
     setSuccessModal(false);
-    router.push(`'/invite-code?id=${newUserId}'`);
+    console.log(newUserId);
+    router.push(`/invite-code?id=${newUserId}`);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -101,7 +102,7 @@ export default function Singup() {
         }
       } else {
         setSuccess('회원가입이 완료되었습니다.');
-        setNewUserId(data.user.userId);
+        setNewUserId(data.user.id);
         setSuccessModal(true);
       }
     } catch (error) {
