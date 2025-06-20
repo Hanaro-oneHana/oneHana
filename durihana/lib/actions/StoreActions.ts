@@ -7,6 +7,9 @@ export type Store = {
   name: string;
   location: string;
   price: number;
+  images?: string[];
+  destination: string;
+  modelId: string;
   categoryId: number;
 };
 
@@ -26,6 +29,7 @@ export const getStoreList = async (search: string, category: number) => {
       id: true,
       name: true,
       content: true,
+      image: true,
       Partner: {
         select: {
           id: true,
@@ -38,18 +42,29 @@ export const getStoreList = async (search: string, category: number) => {
   const result: Store[] = stores.map((store) => ({
     id: store.id,
     name: store.name,
+    images: store.image?.toString().split(',') || [],
     price:
-      typeof store.content === 'object'
-        ? store.content !== null
-          ? '가격' in store.content
-            ? parseInt(store.content['가격']?.toString() || '0')
-            : 0
-          : 0
+      typeof store.content === 'object' &&
+      store.content !== null &&
+      '가격' in store.content
+        ? parseInt(store.content['가격']?.toString() || '0')
         : 0,
     location:
       typeof store.content === 'object' && store.content !== null
         ? '위치' in store.content
           ? store.content['위치']?.toString() || ''
+          : ''
+        : '',
+    destination:
+      typeof store.content === 'object' && store.content !== null
+        ? '여행지' in store.content
+          ? store.content['여행지']?.toString() || ''
+          : ''
+        : '',
+    modelId:
+      typeof store.content === 'object' && store.content !== null
+        ? '모델명' in store.content
+          ? store.content['모델명']?.toString() || ''
           : ''
         : '',
     categoryId: store.Partner.partner_category_id,
