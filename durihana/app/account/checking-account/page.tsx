@@ -13,12 +13,13 @@ import {
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAgreement } from '@/contexts/account/useAgreement';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function CheckingAccount() {
   const [agree, setAgree] = useState(false);
   const [modal, showModal] = useState(false);
-
+  const router = useRouter();
   const { baseAgree } = useAgreement();
 
   return (
@@ -104,7 +105,7 @@ export default function CheckingAccount() {
           if (!agree) {
             showModal(true);
           } else {
-            // 여기에 다음 페이지로 넘어가는거 추가
+            router.push('/estimate');
           }
         }}
         className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
