@@ -1,28 +1,18 @@
 'use client'
 
 import { Button, Header, InputComponent, Txt } from "@/components/atoms";
-import { createAction } from "@/lib/actions/CreateActions";
-import { credentialValidator } from "@/lib/validator";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
-import type React from 'react';
 
 
-export default function SignUp() {
-    const title = "text-[16px] mt-[11px] ml-[25px] font-[500]";
-    const inputSet = "mt-[10px] ml-[25px] w-[325px] text-[14px] font-[600] block mx-auto text-primarycolor";
-    const errMasseage = "text-red text-[8px] mt-[3px] ml-[25px]";
 
-    const [userInfo, getUserInfo] = useState({
-        name: '',
-        email: '',
-        password: '',
-        passwordCheck: '',
-        phone: '',
-        marriageDate: '',
-    });
-    const emailValidator = credentialValidator.safeParse({email: userInfo.email});
-    const [status, setStatus] = useState<"idle" | "success" | "error" | "inputError">("idle");
-    
+export default function Singup() {
+    const title = "text-[16px] mt-[11px] font-[500]";
+    const inputSet = "mt-[10px] w-[325px] text-[14px] font-[600] block mx-auto text-primarycolor";
+    const errMasseage = "text-red text-[8px] mt-[3px]";
+    const normalGap = "mt-[30px] px-[20px]";
+    const messageGap = "mt-[11px] px-[20px]";
+
     const phoneHyphen = (h: string) => {
         const digits = h.replace(/\D/g, "");
         
@@ -31,70 +21,136 @@ export default function SignUp() {
 
         return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
     }
+    const dateHyphen = (h: string) => {
+        const digits = h.replace(/\D/g, '').slice(0, 8);
+        const len = digits.length;
 
-    const handdleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        if(Object.values(userInfo).some((v) => v.trim() === '')) {
-            e.preventDefault();
-            setStatus('inputError');
+        if (len < 5) {
+            return digits;
         }
+        if (len < 7) {
+            return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+        }
+        return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
     };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        const valueCheck = name === "phone" ? phoneHyphen(value) : value;
+    const[formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        passwordCheck: '',
+        phone: '',
+        marriageDate: ''
+    });
 
-        getUserInfo((prev) => ({ ...prev, [name]: valueCheck }));
+    const[emailError, setEmailError ] = useState('');
+    const[passwordError, setPasswordError ] = useState('');
+    const[checkError, setCheckError ] = useState('');
+
+    const[success, setSuccess] = useState('');
+    const[isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+
+
+    const handleSubmit = async (e:FormEvent) => {
+        e.preventDefault();
+        setEmailError('');
+        setPasswordError('');
+        setCheckError('');
+        setSuccess('');
+        setIsLoading(true);
+
+        if(formData.password !==formData.passwordCheck) {
+            setCheckError('*비밀번호가 일치하지 않습니다.');
+            setIsLoading(false);
+            return;
+        }
+        try {
+            const response = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password,
+                    phone: formData.phone,
+                    marriageDate: formData.marriageDate,
+                }),
+            });
+
+            const data = await response.json()
+
+            // 5) 서버 응답 검증 (서버에서 Zod를 쓰고 동일한 schema로 에러를 돌려준다고 가정)
+            if(!response.ok){
+                if(data.error.validation==='email'){
+                    setEmailError(data.error.message|| '회원가입 중 오류가 발생했습니다.');
+                }else{
+                    setPasswordError(data.error.message||'회원가입 중 오류가 발생했습니다.')
+                }
+            }
+            else setSuccess('회원가입이 완료되었습니다.');
+        }
+        catch (error) {
+            console.log("🚀 ~ handleSubmit ~ error:", error);
+        }
+        finally {
+            setIsLoading(false);
+        }
+    };
+    
+    const handleInput = (e:ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const valCheck = name === "phone" ? phoneHyphen(value) : name === "marriageDate" ? dateHyphen(value) : value;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: valCheck,
+        }))
+        
     };
 
     return <>
-        <Header leftIcon='back' title="회원가입" />
-        <form action={createAction} onSubmit={handdleSubmit}>
-            <div>
-                <Txt className="font-[500] text-[16px] mt-[40px] ml-[25px]">이름</Txt>
-                <InputComponent width="w-[325px]" className={inputSet} placeholder="이름을 입력해 주세요"
-                    name="name" value={userInfo.name} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.name.trim() === '' ? '*이름을 입력해 주세요.' : ''} </Txt>
+        <Header title="회원가입" leftIcon="back"/>
+
+        <form onSubmit={handleSubmit} >
+            <div className="mt-[100px] px-[20px]">
+                <Txt className={title} >이름</Txt>
+                <InputComponent className={inputSet} type="text" name="name" placeholder="이름을 입력해 주세요" value={formData.name} onChange={handleInput} required maxLength={25}/>
             </div>
 
-            <div>
-                <Txt className={title}>이메일</Txt>
-                <InputComponent className={inputSet} placeholder="abc@durihana.com"
-                    type="email" name="email" value={userInfo.email} onChange={handleChange}/>
-                <Txt className={errMasseage} >{status === 'inputError' && userInfo.email.trim() === '' ? '*이메일을 입력해 주세요' 
-                : !emailValidator.success && userInfo.email.length > 0 ? ' *이메일형식이 올바르지 않습니다 ' : ''}</Txt>
-            </div>
-            
-            <div>
-                <Txt className={title}>비밀번호</Txt>
-                <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
-                    type="password" name="password" value={userInfo.password} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.password.trim() === '' ? '*비밀번호를 입력해 주세요' 
-                : userInfo.password.length > 0 && userInfo.password.length < 8 ? ' *8자 이상 입력해주세요 ' : ''}</Txt>
-            </div>
-            
-            <div>
-                <Txt className={title}>비밀번호 확인</Txt>
-                <InputComponent className={inputSet} placeholder="8자 이상 입력해 주세요"
-                    type="password" name="passwordCheck" value={userInfo.passwordCheck} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.passwordCheck.trim() === '' ? '*비밀번호를 다시 입력해 주세요' 
-                : userInfo.password !== userInfo.passwordCheck && userInfo.passwordCheck.length > 0  ? ' *비밀번호가 일치하지 않습니다 ' : ''}</Txt>
+            <div className={normalGap}>
+                <Txt className={title} >이메일</Txt>
+                <InputComponent className={inputSet} type="email" name="email" placeholder="abc@durihana.com" value={formData.email} onChange={handleInput} required/>
+                {/* {emailError && ( <Txt className={errMasseage}>{emailError}</Txt>)} */}
+                <Txt className={errMasseage}>{emailError || '\u00A0'}</Txt>
             </div>
 
-            <div>
-                <Txt className={title}>전화번호</Txt>
-                <InputComponent className={inputSet} placeholder="010-12324-1234"
-                    name="phone" value={userInfo.phone} onChange={handleChange} maxLength={13} />
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.phone.trim() === '' ? '*전화번호를 입력해 주세요' : ''}</Txt>
+            <div className={messageGap}>
+                <Txt className={title} >비밀번호</Txt>
+                <InputComponent className={inputSet} type="password" name="password" placeholder="8자 이상을 입력해 주세요" value={formData.password} onChange={handleInput} required/>
+                <Txt className={errMasseage}>{passwordError || '\u00A0'}</Txt>
             </div>
 
-            <div>
-                <Txt className={title}>결혼예정일</Txt>
-                <InputComponent className={inputSet} placeholder="2026-01-01"
-                    type="date" name="marriageDate" value={userInfo.marriageDate} onChange={handleChange}/>
-                <Txt className={errMasseage}>{status === 'inputError' && userInfo.marriageDate.trim() === '' ? '*결혼예정일을 입력해 주세요' : ''}</Txt>
+            <div className={messageGap}>
+                <Txt className={title} >비밀번호 확인</Txt>
+                <InputComponent className={inputSet} type="password" name="passwordCheck" placeholder="8자 이상을 입력해 주세요" value={formData.passwordCheck} onChange={handleInput} required/>
+                <Txt className={errMasseage}>{checkError || '\u00A0'}</Txt>
             </div>
-            
-            <Button type="submit" className="w-[335px] h-[48px] block mx-auto mt-[76px] font-[500]" >완료</Button>
+
+            <div className={messageGap}>
+                <Txt className={title} >전화번호</Txt>
+                <InputComponent className={inputSet} type="text" name="phone" placeholder="010-1234-1234" value={formData.phone} onChange={handleInput} required/>
+            </div>
+
+            <div className={normalGap}>
+                <Txt className={title} >예정 결혼일</Txt>
+                <InputComponent className={inputSet} type="text" name="marriageDate" placeholder="2027-01-01" value={formData.marriageDate} onChange={handleInput} required/>
+            </div>
+
+            <div className="px-[20px]">
+            <Button type="submit" className="block w-full mt-[76px]" disabled={isLoading} >{isLoading ? '가입중' : '완료'}</Button>
+            </div>
         </form>
     </>;
 }
