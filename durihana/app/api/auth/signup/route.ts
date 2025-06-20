@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createOneAccount } from '@/lib/actions/AccountActions';
 import { createAction, emailCrossCheck } from '@/lib/actions/CreateActions';
 import { UserValidator } from '@/lib/validator';
 

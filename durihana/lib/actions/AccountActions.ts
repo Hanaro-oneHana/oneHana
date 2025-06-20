@@ -23,67 +23,24 @@ export type AccountCreationData = {
   period: number;
   transferDay?: number;
 };
+export const createOneAccount = async (userId: number) => {
+  const accountNumber = [
+    '530',
+    String(Math.floor(Math.random() * 1_000_000)).padStart(6, '0'),
+    String(Math.floor(Math.random() * 100_000)).padStart(5, '0'),
+  ].join('-');
 
-// 단일 계좌 생성 함수
-export const createAccount = async (
-  userId: number,
-  accountType: number,
-  transferDay = 15,
-  expireYears = 1
-) => {
-  try {
-    const currentDate = new Date();
-    const expireDate = new Date();
-    expireDate.setFullYear(currentDate.getFullYear() + expireYears);
-
-    const accountData: any = {
-      account: `530-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
-      balance: Math.floor(Math.random() * 50000000) + 1000000, // 100만원 ~ 5000만원
-      type: accountType,
+  const account = await prisma.account.create({
+    data: {
       user_id: userId,
-    };
+      account: accountNumber,
+      balance: 0,
+      type: 0,
+    },
+  });
 
-    // 계좌 타입별 설정
-    switch (accountType) {
-      case 0: // 입출금
-        // 입출금은 만료일, 이체일 없음
-        break;
-      case 1: // 예금
-        accountData.expire_date = expireDate.toISOString().split('T')[0];
-        break;
-      case 2: // 적금
-        accountData.expire_date = expireDate.toISOString().split('T')[0];
-        accountData.transfer_date = String(transferDay); // 선택한 날짜
-        accountData.payment = 500000; // 50만원 납입
-        break;
-      case 3: // 대출
-        accountData.expire_date = expireDate.toISOString().split('T')[0];
-        accountData.transfer_date = String(transferDay); // 선택한 날짜
-        accountData.payment = 300000; // 30만원 상환
-        break;
-    }
-
-    // 계좌 생성
-    const account = await prisma.account.create({
-      data: accountData,
-    });
-
-    console.log('🚀 ~ Created account:', account);
-
-    // UserCalendar에 관련 일정들 자동 생성
-    const scheduleResult = await createAccountSchedules(account.id);
-
-    return {
-      success: true,
-      account,
-      schedulesCreated: scheduleResult.count,
-    };
-  } catch (error) {
-    console.error('Failed to create account:', error);
-    throw error;
-  }
+  return account;
 };
-
 // 여러 계좌를 트랜잭션으로 생성하는 함수
 export const createMultipleAccounts = async (
   userId: number,

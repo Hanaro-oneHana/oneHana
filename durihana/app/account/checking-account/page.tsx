@@ -14,13 +14,43 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAgreement } from '@/contexts/account/useAgreement';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { createOneAccount } from '@/lib/actions/AccountActions';
 
 export default function CheckingAccount() {
   const [agree, setAgree] = useState(false);
   const [modal, showModal] = useState(false);
+  const { data: session } = useSession();
+  const rawId = session?.user?.id as number | undefined;
+  const userId = Number(rawId);
   const router = useRouter();
   const { baseAgree } = useAgreement();
+
+  const handleNext = async () => {
+    if (!agree) {
+      showModal(true);
+      return;
+    }
+    if (!userId) {
+      // 로그인 안된 경우
+      return router.push('/auth/signin');
+    }
+
+    // 1) 서버에 계좌 생성 요청
+    const res = await fetch('/api/account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+    });
+    if (!res.ok) {
+      console.error('계좌 생성 실패', await res.json());
+      return;
+    }
+
+    // 2) 다음 단계(견적)로 이동
+    router.push('/estimate');
+  };
 
   return (
     <div className='relative flex flex-col items-center min-h-dvh'>
@@ -101,13 +131,7 @@ export default function CheckingAccount() {
       </div>
 
       <Button
-        onClick={() => {
-          if (!agree) {
-            showModal(true);
-          } else {
-            router.push('/estimate');
-          }
-        }}
+        onClick={handleNext}
         className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
       >
         다음
