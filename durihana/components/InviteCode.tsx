@@ -1,8 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { updateRandomCode, tryMating } from '../lib/actions/InviteActions';
+import AlertModal from './alert/AlertModal';
 import Button from './atoms/Button';
 import InputComponent from './atoms/InputComponent';
 import Txt from './atoms/Txt';
@@ -21,25 +24,40 @@ export default function InviteCode() {
   const [randomCode, setRandomCode] = useState('');
   const [mateCode, setMateCode] = useState('');
   const [loading, setLoading] = useState(false);
-
-  //test 용 id
-  const id = 1;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const { data: session } = useSession(); // ← 세션 및 로딩 상태
+  const rawId = session?.user?.id as number | undefined;
+  const userId = Number(rawId);
+  const router = useRouter();
 
   useEffect(() => {
+    if (!userId) return;
     const code = generateRandomCode();
     setRandomCode(code);
-    updateRandomCode(id, code); // 서버에 저장
-  }, []);
+    updateRandomCode(userId, code);
+  }, [userId]);
 
   const tryConnecting = async (id: number, mate_code: string) => {
+    if (!id) return;
     setLoading(true);
-    const mate = await tryMating(id, mate_code);
+    const mate = await tryMating(id, mateCode);
+    setLoading(false);
+
     if (mate.status === 'success') {
-      setLoading(false);
-      alert('연결 성공');
+      setModalMessage('연결 성공');
+      setIsSuccess(true);
     } else {
-      alert('상대방이 없습니다');
+      setModalMessage('상대방이 없습니다');
+      setIsSuccess(false);
     }
+    setModalOpen(true);
+  };
+
+  const handleConnect = () => {
+    if (!userId) return; // id가 없으면 그냥 리턴
+    tryConnecting(userId, mateCode);
   };
 
   const onlyDigit = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,11 +100,33 @@ export default function InviteCode() {
 
         <Button
           className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
-          onClick={() => tryConnecting(id, mateCode)}
+          onClick={handleConnect}
         >
           연결하기
         </Button>
       </div>
+      {modalOpen && (
+        <AlertModal onClose={() => setModalOpen(false)}>
+          <Txt size='text-[16px]' className='text-mainblack text-center'>
+            {modalMessage}
+          </Txt>
+          {isSuccess ? (
+            <Button
+              className='mt-[20px] w-full'
+              onClick={() => router.push('/account/checking-account')}
+            >
+              계좌 만들러가기
+            </Button>
+          ) : (
+            <Button
+              className='mt-[20px] w-full'
+              onClick={() => setModalOpen(false)}
+            >
+              확인
+            </Button>
+          )}
+        </AlertModal>
+      )}
     </>
   );
 }

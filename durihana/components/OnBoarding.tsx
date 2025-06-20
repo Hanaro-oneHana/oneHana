@@ -25,7 +25,7 @@ export default function Onboarding() {
           className='mb-8'
           priority
         />
-        <Button onClick={() => router.push('/auth/login')}>
+        <Button onClick={() => router.push('/')}>
           <Txt size='text-[20px]'>시작하기</Txt>
         </Button>
       </div>
