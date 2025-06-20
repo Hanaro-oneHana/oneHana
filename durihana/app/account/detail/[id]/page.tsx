@@ -25,7 +25,7 @@ export default async function AccountDetailPage({ params }: Props) {
   return (
     <>
       <AccountDetailHeader />
-      <div className='flex flex-col p-[20px]'>
+      <div className='flex flex-col p-[20px] mt-[60px]'>
         <AccountDetail
           account={firstAccount}
           allAccounts={allAccounts}
