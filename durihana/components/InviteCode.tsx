@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { updateRandomCode, tryMating } from '../lib/actions/InviteActions';
 import AlertModal from './alert/AlertModal';
@@ -26,17 +27,16 @@ export default function InviteCode() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
-  const params = useSearchParams();
-  const idParam = params.get('id');
-  const id = idParam ? Number(idParam) : null;
+  const { data: session, status } = useSession(); // ← 세션 및 로딩 상태
+  const userId = session?.user?.id as number | undefined;
   const router = useRouter();
 
   useEffect(() => {
-    if (!id) return;
+    if (!userId) return;
     const code = generateRandomCode();
     setRandomCode(code);
-    updateRandomCode(id, code);
-  }, [id]);
+    updateRandomCode(userId, code);
+  }, [userId]);
 
   const tryConnecting = async (id: number, mate_code: string) => {
     if (!id) return;
@@ -55,8 +55,8 @@ export default function InviteCode() {
   };
 
   const handleConnect = () => {
-    if (!id) return; // id가 없으면 그냥 리턴
-    tryConnecting(id, mateCode);
+    if (!userId) return; // id가 없으면 그냥 리턴
+    tryConnecting(userId, mateCode);
   };
 
   const onlyDigit = (e: ChangeEvent<HTMLInputElement>) => {

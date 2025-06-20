@@ -116,8 +116,6 @@ export default function Singup() {
             password: formData.password,
           });
           setSuccessModal(true);
-        } else {
-          console.log('!!!!!!!!!!!!!!!!!!!!!!!');
         }
       }
     } catch (error) {
