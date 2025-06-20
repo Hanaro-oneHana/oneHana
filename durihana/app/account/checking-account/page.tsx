@@ -13,13 +13,33 @@ import {
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAgreement } from '@/contexts/account/useAgreement';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { createOneAccount } from '@/lib/actions/AccountActions';
 
 export default function CheckingAccount() {
   const [agree, setAgree] = useState(false);
   const [modal, showModal] = useState(false);
-
+  const { data: session } = useSession();
+  const rawId = session?.user?.id as number | undefined;
+  const userId = Number(rawId);
+  const router = useRouter();
   const { baseAgree } = useAgreement();
+
+  const handleNext = async () => {
+    if (!agree) {
+      showModal(true);
+      return;
+    }
+    if (!userId) {
+      // 로그인 안된 경우
+      return router.push('/auth/signin');
+    }
+    await createOneAccount(userId);
+    // 2) 다음 단계(견적)로 이동
+    router.push('/estimate');
+  };
 
   return (
     <div className='relative flex flex-col items-center min-h-dvh'>
@@ -100,13 +120,7 @@ export default function CheckingAccount() {
       </div>
 
       <Button
-        onClick={() => {
-          if (!agree) {
-            showModal(true);
-          } else {
-            // 여기에 다음 페이지로 넘어가는거 추가
-          }
-        }}
+        onClick={handleNext}
         className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
       >
         다음
