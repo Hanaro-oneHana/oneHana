@@ -36,18 +36,7 @@ export default function CheckingAccount() {
       // 로그인 안된 경우
       return router.push('/auth/signin');
     }
-
-    // 1) 서버에 계좌 생성 요청
-    const res = await fetch('/api/account', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId }),
-    });
-    if (!res.ok) {
-      console.error('계좌 생성 실패', await res.json());
-      return;
-    }
-
+    await createOneAccount(userId);
     // 2) 다음 단계(견적)로 이동
     router.push('/estimate');
   };

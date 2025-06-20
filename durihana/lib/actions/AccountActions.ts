@@ -124,7 +124,7 @@ export const deleteUserAccounts = async (userId: number) => {
     });
 
     // 해당 사용자의 모든 UserCalendar 일정 삭제
-    const deletedSchedules = await prisma.userCalendar.deleteMany({
+    const deletedSchedules = await prisma.UserCalendar.deleteMany({
       where: {
         user_id: userId,
       },
