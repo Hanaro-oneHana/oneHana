@@ -109,11 +109,11 @@ export function useUserCalendar(userId: number) {
 
         formattedSchedules.push({
           id: reservation.id,
-          title: reservation.partnerservice.name,
+          title: reservation.PartnerService.name,
           date: localDate,
           time: timePart,
           type: 'reservation',
-          partnerName: reservation.partnerservice.partner.name,
+          partnerName: reservation.PartnerService.Partner.name,
         });
       });
 

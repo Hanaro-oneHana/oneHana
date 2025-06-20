@@ -7,8 +7,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Button from '../atoms/Button';
-import Txt from '../atoms/Txt';
+import { Button, Txt } from '../atoms';
 
 type CalendarHeaderProps = {
   currentMonth: number;

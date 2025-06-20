@@ -32,7 +32,7 @@ export function useAccountCreation() {
       amount: '',
       period: 12,
       transferDay: 1,
-      userAccount: '530-910028-53607',
+      userAccount: '',
       monthlyPayment: '',
     }))
   );
