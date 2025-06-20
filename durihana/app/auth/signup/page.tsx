@@ -42,6 +42,7 @@ export default function Singup() {
         phone: '',
         marriageDate: ''
     });
+
     const[emailError, setEmailError ] = useState('');
     const[passwordError, setPasswordError ] = useState('');
     const[checkError, setCheckError ] = useState('');

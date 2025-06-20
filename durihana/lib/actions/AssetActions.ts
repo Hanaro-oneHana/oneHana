@@ -2,11 +2,6 @@
 
 import prisma from '../db';
 
-type TypeAmount = {
-  name: string;
-  value: number;
-};
-
 // 웨딩 관련 지출 내역 가져오기
 export const getTypeAmounts = async (userId: number) => {
   const calendars = await prisma.partnerCalendar.findMany({
@@ -29,37 +24,20 @@ export const getTypeAmounts = async (userId: number) => {
     },
   });
 
-  // 카테고리 타입과 가격 정보만 추출하여 {name, value} 형태로
-  const rawData: TypeAmount[] = calendars
-    .map((calendar) => {
-      const service = calendar.PartnerService;
-      const categoryType = service.Partner.PartnerCategory.type;
-      const content = service.content;
+  // 웨딩 카테고리별로 지출한 금액 리턴
+  return calendars.map((calendar) => {
+    const service = calendar.PartnerService;
+    const categoryType = service.Partner.PartnerCategory.type;
+    const content = service.content;
 
-      const price = extractPrice(content);
-      return { name: categoryType, value: price };
-    })
-    .filter((item): item is TypeAmount => item !== null);
-
-  console.log('🚀 ~ getTypeAmounts ~ rawData:', rawData);
-
-  // name(제휴 타입) 기준으로 value(가격) 누적 합산
-  const amountMap = new Map<string, number>();
-
-  rawData.forEach(({ name, value }) => {
-    const current = amountMap.get(name) ?? 0;
-    amountMap.set(name, value + current);
+    return {
+      name: categoryType,
+      value: extractPrice(content),
+    };
   });
-
-  const result: TypeAmount[] = Array.from(amountMap).map(([name, value]) => ({
-    name,
-    value,
-  }));
-
-  return result;
 };
 
-// 웨딩 버켓 총 금액 가져오기
+// 웨딩 버켓 총 금액 가져오기 (항목별로 가장 비싼 것들만 집계)
 export const getBucketTotalAmount = async (userId: number) => {
   const budgetplans = await prisma.budgetPlan.findMany({
     where: { user_id: userId },
@@ -67,18 +45,36 @@ export const getBucketTotalAmount = async (userId: number) => {
       PartnerService: {
         select: {
           content: true,
+          Partner: {
+            select: {
+              partner_category_id: true,
+            },
+          },
         },
       },
     },
   });
 
-  const prices: number[] = budgetplans.map((budgetplan) => {
-    const content = budgetplan.PartnerService.content;
+  // 웨딩 카테고리별로 가장 비싼 가격만 Map에 저장
+  const maxAmounts = budgetplans.reduce((acc, budgetplan) => {
+    const service = budgetplan.PartnerService;
+    const categoryId = service.Partner.partner_category_id;
+    const content = service.content;
 
-    return extractPrice(content);
-  });
+    const price = extractPrice(content);
+    const currentMax = acc.get(categoryId) ?? 0;
 
-  const result = prices.reduce((acc, val) => acc + val, 0);
+    if (price > currentMax) {
+      acc.set(categoryId, price);
+    }
+
+    return acc;
+  }, new Map<number, number>());
+
+  const result = Array.from(maxAmounts.values()).reduce(
+    (acc, val) => acc + val,
+    0
+  );
 
   return result;
 };

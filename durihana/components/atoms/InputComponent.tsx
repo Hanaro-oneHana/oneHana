@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { ChangeEvent, InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
 export interface Props extends InputHTMLAttributes<HTMLInputElement> {
