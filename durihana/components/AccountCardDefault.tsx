@@ -16,7 +16,7 @@ export default function AccountCardDefault({ signUp }: AccountCardProps) {
   };
 
   return (
-    <div className='bg-lightmint rounded-[10px] border border-borderline px-6 py-6 flex flex-col items-center justify-center m-2'>
+    <div className='bg-lightmint rounded-[10px] border border-borderline px-6 py-6 flex flex-col items-center justify-center'>
       <Txt color='text-icon' className='mb-[10px]'>
         하나은행 입출금 통장이 없다면?
       </Txt>
@@ -24,7 +24,7 @@ export default function AccountCardDefault({ signUp }: AccountCardProps) {
         모바일 전용 통장
       </Txt>
       <Button onClick={goToSignUp}>
-        <Txt weight='font-[500]' color='text-mainwhite'>
+        <Txt weight='font-[500]' color='text-mainwhite' align='text-center'>
           가입하기
         </Txt>
       </Button>

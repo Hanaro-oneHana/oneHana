@@ -3,134 +3,135 @@
 import ProgressBarButton from '@/components/ProgressBarButton';
 import { Txt, Search, Button } from '@/components/atoms';
 import StoreCard from '@/components/estimate/StoreCard';
-import DomesticFiltering from '@/components/filtering/DomesticFiltering';
+import Filtering from '@/components/filtering/Filtering';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  domesticRegions,
+  electronicPriceOptions,
+  foreignRegions,
+  honeyMoonPriceOptions,
+  PriceOption,
+  sdmPriceOptions,
+  weddingGiftPriceOptions,
+  weddinghallPriceOptions,
+} from '@/constants/filtering';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Store } from '@/lib/actions/StoreActions';
+import AlertModal from '../alert/AlertModal';
 
-export default function EstimateMain() {
-  const [sortOption, setSortOption] = useState('가격순');
-  const items = [
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-    {
-      name: '두리 하나 스토어',
-      location: '서울특별시',
-      priceRange: '5000만원~5500만원',
-      capacity: '250명',
-    },
-  ];
+type Props = {
+  storeList?: Store[];
+  categoryId?: number;
+};
+
+export default function EstimateMain({ storeList, categoryId }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [sortOptionList, setSortOptionList] = useState<PriceOption[]>([]);
+  const [items, setItems] = useState<Store[]>(storeList || []);
+  const [category, setCategory] = useState(categoryId || 1);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const updateSearchParam = (key: string[], value: string[]) => {
+    const params = new URLSearchParams(searchParams);
+    key.forEach((k, index) => {
+      params.set(k, value[index]);
+    });
+    router.push(`?${params.toString()}`);
+    router.refresh();
+  };
+
+  const handlePriceFilter = (price: number, isLast: boolean) => {
+    const filteredItems =
+      storeList?.filter((item) =>
+        isLast ? item.price >= price * 10000 : item.price <= price * 10000
+      ) || [];
+    setItems(filteredItems);
+  };
+
+  useEffect(() => {
+    setItems(storeList || []);
+    setCategory(categoryId || 1);
+  }, [searchParams, storeList, categoryId]);
+
+  useEffect(() => {
+    updateSearchParam(['category', 'search'], [category.toString(), '']);
+    switch (category) {
+      case 1:
+        setSortOptionList(weddinghallPriceOptions);
+        break;
+      case 2:
+        setSortOptionList(sdmPriceOptions);
+        break;
+      case 3:
+        setSortOptionList(honeyMoonPriceOptions);
+        break;
+      case 4:
+        setSortOptionList(electronicPriceOptions);
+        break;
+      case 5:
+        setSortOptionList(weddingGiftPriceOptions);
+        break;
+      default:
+        setSortOptionList([]);
+        break;
+    }
+  }, [category]);
+
+  useEffect(() => {
+    if (selectedRegions.length > 0) {
+      const filteredItems =
+        storeList?.filter((item) => selectedRegions.includes(item.location)) ||
+        [];
+      setItems(filteredItems);
+    } else {
+      setItems(storeList || []);
+    }
+  }, [selectedRegions]);
+
   return (
     <div className='relative flex flex-col items-center justify-center h-dvh'>
       <div className='flex flex-col items-center justify-start w-full flex-none'>
-        <div className='flex flex-col w-full items-center justify-start gap-[30px] pt-[25px] px-[20px] '>
-          <ProgressBarButton selectedItem={1} progress={true} />
+        <div className='flex flex-col w-full items-center justify-start gap-[30px] pt-[25px] px-[20px]'>
+          <ProgressBarButton
+            selectedItem={category}
+            setSelectedItem={setCategory}
+            progress={true}
+          />
           <Search
             onSearch={(query: string) => {
-              console.log('Search query:', query);
+              updateSearchParam(['search'], [query]);
             }}
           />
         </div>
-        <div className='flex mt-[20px] w-full'>
-          <DomesticFiltering
-            onChange={(regions: string[]): void => {
-              console.log('Selected regions:', regions);
-            }}
-          />
-        </div>
+        {category !== 4 && category !== 5 && (
+          <div className='flex flex-col w-full pt-[20px]'>
+            <Filtering
+              selectedRegions={selectedRegions}
+              setSelectedRegions={setSelectedRegions}
+              regions={
+                category === 1 || category === 2
+                  ? domesticRegions
+                  : foreignRegions
+              }
+            />
+          </div>
+        )}
         <div className='flex flex-row items-center justify-end w-full px-[20px]'>
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger className=' mt-[20px]'>
               <div className='flex items-center justify-center gap-[-2px] focus:outline-none  m-0 p-0'>
                 <Txt size='text-[12px]' color='text-textgray'>
-                  {sortOption}
+                  {sortOptionList.length > 0 ? sortOptionList[0].label : '전체'}
                 </Txt>
                 <Image
                   src='/asset/icons/down-shevron.svg'
@@ -140,33 +141,99 @@ export default function EstimateMain() {
                 />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='min-w-auto'>
-              <DropdownMenuItem onSelect={() => setSortOption('가격순')}>
-                <Txt size='text-[12px]' color='text-textgray'>
-                  가격순
-                </Txt>
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setSortOption('인기순')}>
-                <Txt size='text-[12px]' color='text-textgray'>
-                  인기순
-                </Txt>
-              </DropdownMenuItem>
+            <DropdownMenuContent className='flex flex-col items-end min-w-auto'>
+              {sortOptionList.map((option, index) => (
+                <DropdownMenuItem
+                  key={index}
+                  onSelect={() => {
+                    if (option.value === 0) {
+                      setItems(storeList || []);
+                      updateSearchParam(['search'], ['']);
+                    } else {
+                      handlePriceFilter(
+                        option.value,
+                        index === sortOptionList.length - 1
+                      );
+                    }
+                  }}
+                >
+                  <Txt
+                    size='text-[12px]'
+                    color='text-textgray'
+                    align='text-center'
+                  >
+                    {option.label}
+                  </Txt>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
       <div className='flex flex-col flex-1 items-center justify-start w-full overflow-y-scroll px-[20px] pt-[20px] gap-[10px] '>
         {items.map((item, index) => (
-          <StoreCard key={index} />
+          <StoreCard key={index} store={item} />
         ))}
       </div>
 
-      <div className='flex flex-row flex-none  items-center bg-transparent justify-center w-full px-[20px] mt-[20px] gap-[15px] mb-[40px]'>
-        <Button bgColor='bg-icon'>건너뛰기</Button>
-        <Button onClick={() => console.log('Another button clicked!')}>
-          다음 단계
+      <div className='flex flex-row flex-none items-center bg-transparent justify-center w-full px-[20px] mt-[20px] mb-[40px]'>
+        <Button
+          onClick={() => {
+            if (categoryId === 5) {
+              setIsModalOpen(true);
+            } else {
+              updateSearchParam(
+                ['category', 'search'],
+                [(categoryId ? categoryId + 1 : 0).toString(), '']
+              );
+            }
+          }}
+        >
+          {categoryId === 5 ? '완료' : '다음'}
         </Button>
       </div>
+      <button className='absolute bottom-[108px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
+        <Image
+          src='/asset/icons/bucket.svg'
+          alt='Bucket'
+          width={30}
+          height={30}
+          onClick={() => {
+            router.push('/wedding-bucket');
+          }}
+        />
+      </button>
+      {isModalOpen && (
+        <AlertModal onClose={() => setIsModalOpen(false)}>
+          <Txt align='text-center' weight='font-[600]'>
+            선택하신 웨딩 견적에 맞춰 <br /> 신혼부부를 위한 <br /> 하나은행의
+            맞춤 <span className='text-primarycolor'>예적금·대출 서비스</span>로{' '}
+            <br /> 결혼 부담을 덜어보세요!
+          </Txt>
+          <div className='flex flex-row items-center justify-center gap-[15px] w-full mt-[25px]'>
+            <Button
+              bgColor='bg-icon'
+              onClick={() => {
+                setIsModalOpen(false);
+                router.push('/');
+              }}
+              className='py-[10px]'
+            >
+              홈으로
+            </Button>
+            <Button
+              bgColor='bg-primarycolor'
+              onClick={() => {
+                setIsModalOpen(false);
+                router.push('/wedding-bucket');
+              }}
+              className='py-[10px]'
+            >
+              확인
+            </Button>
+          </div>
+        </AlertModal>
+      )}
     </div>
   );
 }

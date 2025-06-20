@@ -48,7 +48,7 @@ export default function WeddingBucket() {
     },
   ];
   return (
-    <div className='flex flex-col items-center justify-start w-full'>
+    <div className='flex flex-col items-center justify-start w-full pt-[60px]'>
       <Header title='웨딩 버켓' leftIcon='back' rightIcon='close' />
       <div className='flex flex-col items-start justify-start w-full px-[25px] pt-[20px] pb-[40px] gap-[30px]'>
         {categories.map((category, index) => (
@@ -97,8 +97,12 @@ export default function WeddingBucket() {
                         >
                           {items[index].price?.toLocaleString()} 원
                         </Txt>
-                        <Button className='w-fit h-fit px-[10px] py-[7px] bg-mint leading-none'>
-                          <Txt size='text-[12px]' weight='font-[500]'>
+                        <Button className='w-fit h-fit px-[10px] py-[7px] bg-mint leading-none '>
+                          <Txt
+                            size='text-[12px]'
+                            weight='font-[500]'
+                            align='text-center'
+                          >
                             {items[index].state}
                           </Txt>
                         </Button>
@@ -115,10 +119,20 @@ export default function WeddingBucket() {
           </div>
         ))}
         <div className='flex items-center justify-between w-full '>
-          <Txt className='text-[20px] text-primarycolor font-[500]'>
+          <Txt
+            align='text-center'
+            color='text-primarycolor'
+            size='text-[20px]'
+            weight='font-[500]'
+          >
             총 견적
           </Txt>
-          <Txt className='text-[20px] text-primarycolor font-[500]'>
+          <Txt
+            align='text-center'
+            color='text-primarycolor'
+            size='text-[20px]'
+            weight='font-[500]'
+          >
             {items
               .reduce((total, item) => total + (item.price || 0), 0)
               .toLocaleString()}{' '}
@@ -126,7 +140,12 @@ export default function WeddingBucket() {
           </Txt>
         </div>
         <Button>
-          <Txt size='text-[16px]' weight='font-[500]' color='text-mainwhite'>
+          <Txt
+            size='text-[16px]'
+            weight='font-[500]'
+            color='text-mainwhite'
+            align='text-center'
+          >
             완료
           </Txt>
         </Button>

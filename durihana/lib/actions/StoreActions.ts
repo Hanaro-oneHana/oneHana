@@ -1,0 +1,59 @@
+'use server';
+
+import prisma from '../db';
+
+export type Store = {
+  id: number;
+  name: string;
+  location: string;
+  price: number;
+  categoryId: number;
+};
+
+export const getStoreList = async (search: string, category: number) => {
+  const stores = await prisma.partnerService.findMany({
+    where: {
+      name: {
+        contains: search,
+      },
+      Partner: {
+        is: {
+          partner_category_id: category,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      content: true,
+      Partner: {
+        select: {
+          id: true,
+          partner_category_id: true,
+        },
+      },
+    },
+  });
+
+  const result: Store[] = stores.map((store) => ({
+    id: store.id,
+    name: store.name,
+    price:
+      typeof store.content === 'object'
+        ? store.content !== null
+          ? '가격' in store.content
+            ? parseInt(store.content['가격']?.toString() || '0')
+            : 0
+          : 0
+        : 0,
+    location:
+      typeof store.content === 'object' && store.content !== null
+        ? '위치' in store.content
+          ? store.content['위치']?.toString() || ''
+          : ''
+        : '',
+    categoryId: store.Partner.partner_category_id,
+  }));
+
+  return result.sort((a, b) => a.price - b.price);
+};
