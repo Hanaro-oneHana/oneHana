@@ -43,7 +43,7 @@ export default function MainDashBoard({ date, category }: Props) {
   return (
     <>
       <div className='flex flex-col w-full'>
-        <Txt weight='font-[500]' className='mb-[20px]'>
+        <Txt size='text-[18px]' weight='font-[500]' className='mb-[20px]'>
           나의 결혼 준비
         </Txt>
       </div>
