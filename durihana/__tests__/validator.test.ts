@@ -27,7 +27,7 @@ describe('signup', () => {
         email: 'test@gmail.com',
         password: '12345678',
         phone: '010-1234-1234',
-        marriageDate: '2026-01-01'
+        marriageDate: '2026-01-01',
     };
 
     it('pass', () => {
@@ -35,5 +35,12 @@ describe('signup', () => {
         expect(result.success).toBe(true);
     });
 
-    
+    for(const fails of ['name', 'email', 'password', 'phone', 'marriageDate'] as const) {
+        it(`reject ${fails}`, () =>{
+            const rejectInput = {...valid, [fails] : ''};
+            const result = UserValidator.safeParse(rejectInput);
+            expect(result.success).toBe(false);
+            expect(result.error?.formErrors.fieldErrors[fails]).toBeDefined();
+        });
+    }
 });
