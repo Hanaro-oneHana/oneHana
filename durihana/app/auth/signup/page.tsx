@@ -1,5 +1,6 @@
 'use client';
 
+import AlertModal from '@/components/alert/AlertModal';
 import { Button, Header, InputComponent, Txt } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useState } from 'react';
@@ -48,7 +49,13 @@ export default function Singup() {
 
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
   const router = useRouter();
+
+  const handleModalClose = () => {
+    setSuccessModal(false);
+    router.push('/invite-code');
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -93,7 +100,7 @@ export default function Singup() {
         }
       } else {
         setSuccess('회원가입이 완료되었습니다.');
-        router.push('./signin');
+        setSuccessModal(true);
       }
     } catch (error) {
       console.log('🚀 ~ handleSubmit ~ error:', error);
@@ -214,6 +221,17 @@ export default function Singup() {
           </Button>
         </div>
       </form>
+
+      {successModal && (
+        <AlertModal onClose={handleModalClose}>
+          <Txt size='text-[16px]' className='text-mainblack text-center'>
+            회원가입이 완료되었습니다.
+          </Txt>
+          <Button className='mt-[20px] w-full' onClick={handleModalClose}>
+            초대코드 받으러가기
+          </Button>
+        </AlertModal>
+      )}
     </>
   );
 }
