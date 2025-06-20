@@ -18,6 +18,7 @@ export default async function Asset() {
   }
 
   const accounts = await getAccountsByUserId(userId);
+  console.log('🚀 ~ Asset ~ accounts:', accounts);
   const main = accounts.find((acc) => acc.type === 0)!;
   const subs = accounts.filter((acc) => acc.type !== 0);
 

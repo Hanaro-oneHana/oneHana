@@ -34,6 +34,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [sortOptionList, setSortOptionList] = useState<PriceOption[]>([]);
+  const [sortOption, setSortOption] = useState<PriceOption | null>(null);
   const [category, setCategory] = useState(categoryId || 1);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [items, setItems] = useState<Store[]>(storeList || []);
@@ -87,8 +88,9 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   useEffect(() => {
     if (selectedRegions.length > 0) {
       const filteredItems =
-        storeList?.filter((item) => selectedRegions.includes(item.location)) ||
-        [];
+        storeList?.filter((item) =>
+          selectedRegions.some((region) => item.location.includes(region))
+        ) || [];
       setItems(filteredItems);
     } else {
       setItems(storeList || []);
@@ -129,7 +131,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
             <DropdownMenuTrigger className=' mt-[20px]'>
               <div className='flex items-center justify-center gap-[-2px] focus:outline-none  m-0 p-0'>
                 <Txt size='text-[12px]' color='text-textgray'>
-                  {sortOptionList.length > 0 ? sortOptionList[0].label : '전체'}
+                  {sortOption ? sortOption.label : '전체'}
                 </Txt>
                 <Image
                   src='/asset/icons/down-shevron.svg'
@@ -146,8 +148,10 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
                   onSelect={() => {
                     if (option.value === 0) {
                       setItems(storeList || []);
+                      setSortOption(sortOptionList[0]);
                       updateSearchParam(['search'], ['']);
                     } else {
+                      setSortOption(option);
                       handlePriceFilter(
                         option.value,
                         index === sortOptionList.length - 1
