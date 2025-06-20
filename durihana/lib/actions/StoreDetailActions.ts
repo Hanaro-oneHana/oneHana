@@ -37,9 +37,11 @@ export const getStoreDetail = async (storeId: number) => {
 
   if (typeof detail?.content === 'object' && detail.content !== null) {
     for (const [key, value] of Object.entries(detail.content)) {
-      if (typeof value === 'string' || typeof value === 'number') {
+      if (typeof value === 'string') {
         //나중에 value 도 다 string 되면 type number 제거
         info[key] = String(value);
+      } else if (typeof value === 'number') {
+        info[key] = `${value.toLocaleString('ko-KR')} 원`; // 숫자 형식으로 변환
       } else if (Array.isArray(value)) {
         //배열인 JSON 만 옵션으로 처리
         options[key] = JSON.stringify(value); // 문자열로 변환해서 저장
