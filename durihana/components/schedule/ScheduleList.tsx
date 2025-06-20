@@ -19,7 +19,7 @@ export default function ScheduleList({
   if (loading) {
     return (
       <div className='text-center py-8'>
-        <Txt size='text-[14px]' className='text-gray-500'>
+        <Txt size='text-[14px]' className='text-icongray'>
           일정을 불러오는 중...
         </Txt>
       </div>
@@ -32,7 +32,7 @@ export default function ScheduleList({
   if (!hasSchedules) {
     return (
       <div className='text-center py-12'>
-        <Txt size='text-[14px]' className='text-gray-500'>
+        <Txt size='text-[14px]' className='text-icongray'>
           {formatDisplayDate(selectedDate)}에 일정이 없습니다.
         </Txt>
       </div>
@@ -43,11 +43,7 @@ export default function ScheduleList({
     <div className='space-y-6'>
       {reservationSchedules.length > 0 && (
         <div className='space-y-4'>
-          <Txt
-            size='text-[14px]'
-            weight='font-[400]'
-            className='text-mainblack'
-          >
+          <Txt size='text-[14px]' className='text-mainblack'>
             예약일정
           </Txt>
           <div className='space-y-3'>
@@ -64,11 +60,7 @@ export default function ScheduleList({
 
       {financeSchedules.length > 0 && (
         <div className='space-y-4'>
-          <Txt
-            size='text-[14px]'
-            weight='font-[400]'
-            className='text-mainblack'
-          >
+          <Txt size='text-[14px]' className='text-mainblack'>
             금융
           </Txt>
           <div className='space-y-3'>
