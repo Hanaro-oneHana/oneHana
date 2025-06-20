@@ -47,3 +47,7 @@ next-env.d.ts
 
 /lib/generated/prisma
 /components/test/TestAccountCreator.tsx
+
+# storybook
+*storybook.log
+storybook-static

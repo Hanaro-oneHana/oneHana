@@ -35,7 +35,7 @@ export default function StoreOption({ options, onSelectChange }: Props) {
       <AccordionItem
         key={valueKey}
         value={valueKey}
-        className='border rounded-[10px] last:border-b-[0.5px] '
+        className='border rounded-[10px] last:border-b-[1px] '
       >
         <AccordionTrigger className='px-[10px] w-full'>
           <div className='flex justify-between w-full'>
