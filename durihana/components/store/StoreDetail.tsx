@@ -1,6 +1,7 @@
 // StoreDetail.tsx
 'use client';
 
+import AlertModal from '@/components/alert/AlertModal';
 import { Button, Txt } from '@/components/atoms';
 import StoreInfo from '@/components/store/StoreInfo';
 import StoreOption from '@/components/store/StoreOption';
@@ -11,14 +12,16 @@ import {
 } from '@/components/ui/carousel';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import {
   insertOptions,
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
-import AlertModal from '../alert/AlertModal';
 
 // StoreDetail.tsx
+
+/* eslint-disable @next/next/no-img-element */
 
 export default function StoreDetail(details: StoreDetailProps) {
   const [selectedOptions, setSelectedOptions] = useState<
@@ -26,16 +29,9 @@ export default function StoreDetail(details: StoreDetailProps) {
   >({});
   const [modal, showModal] = useState(false);
   const router = useRouter();
-
-  // 테스트용 이미지
-  const images = [
-    '/asset/images/wedding-hall.svg',
-    '/asset/images/wedding-hall2.svg',
-    '/asset/images/wedding-hall3.svg',
-  ];
+  const { data: session } = useSession();
 
   const handleAdd = async () => {
-    const user_id = 1; // 테스트용 사용자 id
     const requiredKeys = Object.keys(details.options);
     const hasUnselected = requiredKeys.some((key) => !selectedOptions[key]);
 
@@ -45,7 +41,11 @@ export default function StoreDetail(details: StoreDetailProps) {
     }
 
     try {
-      await insertOptions(user_id, details.id, selectedOptions);
+      await insertOptions(
+        parseInt(session?.user?.id || '0', 10),
+        details.id,
+        selectedOptions
+      );
       showModal(true);
     } catch (error) {
       console.error('옵션 저장 실패:', error);
@@ -54,22 +54,16 @@ export default function StoreDetail(details: StoreDetailProps) {
   };
 
   return (
-    <div className='h-dvh overflow-y-auto pb-[100px]'>
+    <div className=' pb-[100px]'>
       <div className='flex flex-col w-full items-center'>
         <Carousel>
           <CarouselContent>
-            {images.map((src, index) => (
+            {details.images?.map((src, index) => (
               <CarouselItem
                 key={index}
                 className='relative flex w-full items-center'
               >
-                <Image
-                  src={src}
-                  alt={`image-${index}`}
-                  width={0}
-                  height={0}
-                  className='w-full'
-                />
+                <img src={src} alt={`image-${index}`} className='w-full' />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -105,7 +99,7 @@ export default function StoreDetail(details: StoreDetailProps) {
         onSelectChange={(opts) => setSelectedOptions(opts)}
       />
 
-      <div className='fixed bottom-0 left-0 w-full h-[80px] bg-background z-50 flex items-center justify-between px-[20px] gap-[15px]'>
+      <div className='fixed max-w-[960px]  bottom-0 left-[50%] translate-x-[-50%] w-full h-[80px] bg-background z-50 flex items-center justify-between px-[20px] gap-[15px]'>
         <Button className='bg-buttongray h-[48px] w-full'>
           상담 일정 보기
         </Button>

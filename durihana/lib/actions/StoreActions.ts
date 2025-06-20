@@ -72,3 +72,25 @@ export const getStoreList = async (search: string, category: number) => {
 
   return result.sort((a, b) => a.price - b.price);
 };
+
+export const getBucketList = async (userId: number) => {
+  const bucketList = await prisma.budgetPlan.findMany({
+    where: {
+      user_id: userId,
+    },
+    select: {
+      id: true,
+      partner_service_id: true,
+      selected: true,
+      state: true,
+      PartnerService: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return bucketList;
+};

@@ -13,6 +13,7 @@ model BudgetPlan {
   user_id            Int            @db.UnsignedInt
   partner_service_id Int            @db.UnsignedInt
   state              Int?           @db.TinyInt
+  selected           Json?
   PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_service")
   User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_user")
 
