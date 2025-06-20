@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { formatDisplayDate } from '@/lib/utils';
 import AlertModal from '../alert/AlertModal';
-import Button from '../atoms/Button';
-import Txt from '../atoms/Txt';
+import { Button, Txt } from '../atoms';
 import { CalendarDrawer } from '../calendar/CalendarDrawer';
 
 type Props = {

@@ -22,15 +22,18 @@ model Account {
   Transaction   Transaction[]
 
   @@index([user_id], map: "fk_account_user")
+	@@map("account")
 }
 
 model BudgetPlan {
   id                 Int            @id @default(autoincrement()) @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   partner_service_id Int            @db.UnsignedInt
+  selected           Json?
   PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_service")
   User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_user")
 
+  @@unique([user_id, partner_service_id], map: "unique_user_ps")
   @@index([partner_service_id], map: "fk_budget_service")
   @@index([user_id], map: "fk_budget_user")
 }
@@ -116,7 +119,7 @@ model User {
   code            String?           @db.VarChar(15)
   mate_code       String?           @db.VarChar(15)
   type            Int               @default(0) @db.TinyInt
-  Account         Account[]
+  account         Account[]
   BudgetPlan      BudgetPlan[]
   PartnerCalendar PartnerCalendar[]
   UserCalendar    UserCalendar[]

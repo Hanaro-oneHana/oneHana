@@ -1,8 +1,7 @@
 'use client';
 
-import Button from '../atoms/Button';
+import { Button, Txt } from '../atoms';
 import HorizontalSlider from '../atoms/HorizontalSlider';
-import Txt from '../atoms/Txt';
 
 type TimeSlotListProps = {
   times: string[];
