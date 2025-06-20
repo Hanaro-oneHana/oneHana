@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import Txt from './atoms/Txt';
+import { Txt } from '../atoms';
 
 export default function HouseLoanCard() {
   return (
-    <div className='bg-purple rounded-xl h-[71px] flex justify-center m-2'>
+    <div className='bg-purple rounded-xl h-[71px] flex justify-center'>
       <div className='flex flex-col justify-center gap-[4px] mr-5'>
         <Txt size='text-[10px]' weight='font-[350]'>
           신혼집 자금이 걱정되면?
