@@ -14,6 +14,22 @@ export default async function Home() {
   const session = await auth();
   const userId = Number(session?.user?.id);
 
+  if (!session?.user) {
+    return (
+      <div className='flex flex-col h-screen pt-[70px] px-[20px]'>
+        <Header leftIcon='my' rightIcon='bell' />
+        <BottomNavigation selectedItem='home' />
+        <AccountCardDefault />
+        <div className='pt-[30px]'>
+          <MainDashBoard date='' category={['']} />
+        </div>
+        <div className='pt-[17px]'>
+          <HouseLoanCard />
+        </div>
+      </div>
+    );
+  }
+
   const accounts = await getAccountsByUserId(userId);
 
   const isAccountEmpty = !accounts || accounts.length === 0;
@@ -46,11 +62,9 @@ export default async function Home() {
     <div className='flex flex-col h-screen pt-[70px] px-[20px]'>
       <Header leftIcon='my' rightIcon='bell' />
       <BottomNavigation selectedItem='home' />
-      {(session && !session.user) || isAccountEmpty || !mainAccount ? (
-        /* 로그인 안 되거나 계좌가 없는 경우 기본 계좌 카드 표시 */
+      {isAccountEmpty || !mainAccount ? (
         <AccountCardDefault />
       ) : (
-        /* 로그인 된 경우 계좌 정보 표시 */
         <AccountCard
           userId={userId}
           mainAccount={mainAccount}
