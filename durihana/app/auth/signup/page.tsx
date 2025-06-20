@@ -3,7 +3,9 @@
 import AlertModal from '@/components/alert/AlertModal';
 import { Button, Header, InputComponent, Txt } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { signInValidateAction } from '@/lib/actions/AuthActions';
 
 export default function Singup() {
   const title = 'text-[16px] mt-[11px] font-[500]';
@@ -46,17 +48,14 @@ export default function Singup() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [checkError, setCheckError] = useState('');
-
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
-  const [newUserId, setNewUserId] = useState<number | null>(null);
   const router = useRouter();
 
   const handleModalClose = () => {
     setSuccessModal(false);
-    console.log(newUserId);
-    router.push(`/invite-code?id=${newUserId}`);
+    router.push('invite-code');
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -102,8 +101,24 @@ export default function Singup() {
         }
       } else {
         setSuccess('회원가입이 완료되었습니다.');
-        setNewUserId(data.user.id);
-        setSuccessModal(true);
+
+        const result = await signInValidateAction(
+          data.user.email,
+          formData.password
+        );
+        console.log(result, data.user.email, formData.password);
+        if (result.isSuccess) {
+          // 로그인 성공 시 NextAuth로 로그인 처리
+          await signIn('credentials', {
+            redirect: false,
+            id: data.user.id,
+            email: data.user.email,
+            password: formData.password,
+          });
+          setSuccessModal(true);
+        } else {
+          console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+        }
       }
     } catch (error) {
       console.log('🚀 ~ handleSubmit ~ error:', error);
