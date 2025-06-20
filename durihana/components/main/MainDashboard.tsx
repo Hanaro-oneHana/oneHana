@@ -86,8 +86,8 @@ export default function MainDashBoard({ date, category }: Props) {
         <Image
           src='/asset/icons/flower-dashboard.svg'
           alt='꽃다발'
-          width={130}
-          height={130}
+          width={138}
+          height={138}
           className='shrink-0 aspect-[118.25/118.25] rotate-[23.132deg] mr-[25px]'
         />
       </div>
