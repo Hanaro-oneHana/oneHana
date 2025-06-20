@@ -3,6 +3,7 @@ import AccountCardDefault from '@/components/AccountCardDefault';
 import { Header, BottomNavigation } from '@/components/atoms';
 import HouseLoanCard from '@/components/main/HouseLoanCard';
 import MainDashBoard from '@/components/main/MainDashboard';
+import PopularPartner from '@/components/main/PopularPartner';
 import { getAccountsByUserId } from '@/lib/actions/AccountActions';
 import {
   getCategoriesByUserId,
@@ -25,6 +26,9 @@ export default async function Home() {
         </div>
         <div className='pt-[17px]'>
           <HouseLoanCard />
+        </div>
+        <div className='pt-[40px] pb-[105px]'>
+          <PopularPartner />
         </div>
       </div>
     );
@@ -76,6 +80,9 @@ export default async function Home() {
       </div>
       <div className='pt-[17px]'>
         <HouseLoanCard />
+      </div>
+      <div className='pt-[40px] pb-[105px]'>
+        <PopularPartner />
       </div>
     </div>
   );
