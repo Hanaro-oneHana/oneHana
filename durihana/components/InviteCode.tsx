@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { updateRandomCode, tryMating } from '../lib/actions/InviteActions';
 import Button from './atoms/Button';
@@ -21,15 +22,16 @@ export default function InviteCode() {
   const [randomCode, setRandomCode] = useState('');
   const [mateCode, setMateCode] = useState('');
   const [loading, setLoading] = useState(false);
-
-  //test 용 id
-  const id = 1;
+  const params = useSearchParams();
+  const idParam = params.get('id');
+  const id = idParam ? Number(idParam) : null;
 
   useEffect(() => {
+    if (!id) return;
     const code = generateRandomCode();
     setRandomCode(code);
-    updateRandomCode(id, code); // 서버에 저장
-  }, []);
+    updateRandomCode(id, code);
+  }, [id]);
 
   const tryConnecting = async (id: number, mate_code: string) => {
     setLoading(true);
@@ -40,6 +42,11 @@ export default function InviteCode() {
     } else {
       alert('상대방이 없습니다');
     }
+  };
+
+  const handleConnect = () => {
+    if (!id) return; // id가 없으면 그냥 리턴
+    tryConnecting(id, mateCode);
   };
 
   const onlyDigit = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +89,7 @@ export default function InviteCode() {
 
         <Button
           className='absolute flex justify-center bottom-[40px] left-[50%] w-[335px] h-[48px] text-[16px] translate-x-[-50%]'
-          onClick={() => tryConnecting(id, mateCode)}
+          onClick={handleConnect}
         >
           연결하기
         </Button>
