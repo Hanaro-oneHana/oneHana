@@ -27,8 +27,9 @@ export default function InviteCode() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
-  const { data: session, status } = useSession(); // ← 세션 및 로딩 상태
-  const userId = session?.user?.id as number | undefined;
+  const { data: session } = useSession(); // ← 세션 및 로딩 상태
+  const rawId = session?.user?.id as number | undefined;
+  const userId = Number(rawId);
   const router = useRouter();
 
   useEffect(() => {

@@ -55,7 +55,7 @@ export default function Singup() {
 
   const handleModalClose = () => {
     setSuccessModal(false);
-    router.push('invite-code');
+    router.push('/invite-code');
   };
 
   const handleSubmit = async (e: FormEvent) => {
