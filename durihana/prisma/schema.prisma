@@ -8,46 +8,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Account {
-  id            Int           @id @default(autoincrement()) @db.UnsignedInt
-  account       String        @db.VarChar(31)
-  balance       Int           @default(0)
-  type          Int           @db.TinyInt
-  expire_date   String?       @db.VarChar(31)
-  transfer_date String?       @db.VarChar(31)
-  payment       Int?
-  user_id       Int           @db.UnsignedInt
-  User          User          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
-  Transaction   Transaction[]
-
-  @@index([user_id], map: "fk_account_user")
-	@@map("account")
-}
-
 model BudgetPlan {
   id                 Int            @id @default(autoincrement()) @db.UnsignedInt
   user_id            Int            @db.UnsignedInt
   partner_service_id Int            @db.UnsignedInt
-  selected           Json?
+  state              Int?           @db.TinyInt
   PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_service")
   User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_user")
 
   @@unique([user_id, partner_service_id], map: "unique_user_ps")
   @@index([partner_service_id], map: "fk_budget_service")
-  @@index([user_id], map: "fk_budget_user")
 }
 
 model DepositInterest {
-  id     Int     @id @default(autoincrement()) @db.UnsignedInt
-  period Int     @db.TinyInt
-  rate   Decimal @db.Decimal(5, 2)
+  step Int     @id @db.UnsignedTinyInt
+  rate Decimal @db.Decimal(5, 2)
 }
 
 model LoanInterest {
-  id     Int     @id @default(autoincrement()) @db.UnsignedInt
-  period Int     @db.TinyInt
-  rate   Decimal @db.Decimal(5, 2)
+  step Int     @id @db.UnsignedTinyInt
+  rate Decimal @db.Decimal(5, 2)
 }
 
 model Partner {
@@ -87,7 +67,8 @@ model PartnerCategory {
 model PartnerService {
   id              Int               @id @default(autoincrement()) @db.UnsignedInt
   partner_id      Int               @db.UnsignedInt
-  name            String            @db.VarChar(20)
+  name            String            @db.VarChar(255)
+  image           Json?
   content         Json
   BudgetPlan      BudgetPlan[]
   PartnerCalendar PartnerCalendar[]
@@ -119,7 +100,7 @@ model User {
   code            String?           @db.VarChar(15)
   mate_code       String?           @db.VarChar(15)
   type            Int               @default(0) @db.TinyInt
-  account         Account[]
+  Account         Account[]
   BudgetPlan      BudgetPlan[]
   PartnerCalendar PartnerCalendar[]
   UserCalendar    UserCalendar[]
@@ -134,4 +115,26 @@ model UserCalendar {
   User      User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_user")
 
   @@index([user_id], map: "fk_usercalender_user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Account {
+  id            Int           @id @default(autoincrement()) @db.UnsignedInt
+  account       String        @db.VarChar(31)
+  balance       Int           @default(0)
+  type          Int           @db.TinyInt
+  expire_date   String?       @db.VarChar(31)
+  transfer_date String?       @db.VarChar(31)
+  payment       Int?
+  user_id       Int           @db.UnsignedInt
+  User          User          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
+  Transaction   Transaction[]
+
+  @@index([user_id], map: "fk_account_user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model SavingsInterest {
+  step Int     @id @db.UnsignedTinyInt
+  rate Decimal @db.Decimal(5, 2)
 }

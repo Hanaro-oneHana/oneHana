@@ -1,8 +1,8 @@
 export const domesticRegions = [
   '서울',
-  '경기도',
+  '경기',
   '인천',
-  '강원도',
+  '강원',
   '대전',
   '세종',
   '충청도',
@@ -12,7 +12,7 @@ export const domesticRegions = [
   '부산',
   '울산',
   '경상도',
-  '제주도',
+  '제주',
 ];
 
 export const foreignRegions = [
