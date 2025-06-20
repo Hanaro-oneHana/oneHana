@@ -2,6 +2,8 @@
 
 
 # dependencies
+/*.prisma
+/prisma/ 
 /*.sql
 /sql/
 node_modules
