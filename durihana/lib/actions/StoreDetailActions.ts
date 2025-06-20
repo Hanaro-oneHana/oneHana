@@ -11,7 +11,7 @@ export type StoreDetailProps = {
 };
 
 export const getStoreDetail = async (storeId: number) => {
-  const detail = await prisma.partnerservice.findUnique({
+  const detail = await prisma.partnerService.findUnique({
     where: {
       id: storeId, // partnerservice의 PK
     },
@@ -19,10 +19,10 @@ export const getStoreDetail = async (storeId: number) => {
       id: true,
       name: true,
       content: true, // JSON 필드
-      partner: {
+      Partner: {
         select: {
           name: true,
-          partnercategory: {
+          PartnerCategory: {
             select: {
               type: true, // '예식장', '스드메', '여행' 중 하나
             },
@@ -53,7 +53,7 @@ export const getStoreDetail = async (storeId: number) => {
     id: detail?.id || 0,
     name: detail?.name || '',
     info,
-    type: detail?.partner?.partnercategory?.type || '',
+    type: detail?.Partner?.PartnerCategory?.type || '',
     options,
   };
 
@@ -66,7 +66,7 @@ export const insertOptions = async (
   partner_service_id: number,
   options?: Record<string, string>
 ) => {
-  return await prisma.budgetplan.upsert({
+  return await prisma.budgetPlan.upsert({
     where: {
       user_id_partner_service_id: {
         user_id,
