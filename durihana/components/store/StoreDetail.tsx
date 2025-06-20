@@ -2,7 +2,7 @@
 'use client';
 
 import { Button, Txt } from '@/components/atoms';
-import StoreInfo from '@/components/store/StoreInfo';
+import StoreInfo from '@/components/store/StoreIo';
 import StoreOption from '@/components/store/StoreOption';
 import {
   Carousel,
@@ -17,6 +17,8 @@ import {
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
 import AlertModal from '../alert/AlertModal';
+
+// StoreDetail.tsx
 
 // StoreDetail.tsx
 
