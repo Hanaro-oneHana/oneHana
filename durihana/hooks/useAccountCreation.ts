@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { createMultipleAccounts } from '@/lib/actions/AccountActions';
 
@@ -18,6 +19,14 @@ export type Stage = 'form' | 'review' | 'complete';
 export function useAccountCreation() {
   const router = useRouter();
   const params = useSearchParams();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session?.user?.id) {
+      router.push('/auth/signin');
+    }
+  }, [status, session, router]);
 
   // URL에서 계좌 타입들 파싱
   const types = (params.get('types') || '')
@@ -59,6 +68,7 @@ export function useAccountCreation() {
 
   // 계좌 생성 실행
   const createAccounts = async () => {
+    if (!session?.user?.id) return;
     setLoading(true);
     try {
       const accountsData = formStates.map((state) => ({
@@ -68,7 +78,10 @@ export function useAccountCreation() {
         transferDay: state.transferDay,
       }));
 
-      const result = await createMultipleAccounts(1, accountsData);
+      const result = await createMultipleAccounts(
+        Number(session.user.id),
+        accountsData
+      );
 
       if (result.success) {
         alert(
