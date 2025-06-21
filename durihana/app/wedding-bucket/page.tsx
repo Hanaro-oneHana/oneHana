@@ -14,6 +14,8 @@ export default function WeddingBucketPage() {
     )
   );
 
+  console.log(session.user);
+
   return (
     <div>
       <WeddingBucket items={bucketList} />

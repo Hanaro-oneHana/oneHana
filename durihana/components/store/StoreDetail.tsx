@@ -29,6 +29,34 @@ import {
 
 // StoreDetail.tsx
 
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
 /* eslint-disable @next/next/no-img-element */
 
 export default function StoreDetail(details: StoreDetailProps) {
@@ -128,9 +156,33 @@ export default function StoreDetail(details: StoreDetailProps) {
               ? '모든 옵션을 선택해주세요'
               : '웨딩버켓에 담기 완료!'}
           </Txt>
-          <Button className='mt-5' onClick={() => showModal(false)}>
-            확인
-          </Button>
+          <div className='flex flex-row gap-[15px] mt-5 w-full'>
+            {!Object.keys(details.options).some(
+              (key) => !selectedOptions[key]
+            ) && (
+              <Button
+                bgColor='bg-icon'
+                onClick={() => {
+                  showModal(false);
+                  router.push('/wedding-bucket');
+                }}
+              >
+                장바구니 가기
+              </Button>
+            )}
+            <Button
+              onClick={() => {
+                showModal(false);
+                Object.keys(details.options).length > 0 &&
+                  !Object.keys(details.options).some(
+                    (key) => !selectedOptions[key]
+                  ) &&
+                  router.back();
+              }}
+            >
+              확인
+            </Button>
+          </div>
         </AlertModal>
       )}
     </div>

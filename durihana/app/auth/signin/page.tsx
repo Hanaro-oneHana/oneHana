@@ -27,7 +27,7 @@ export default function SignInPage() {
           email: email,
           password: password,
           name: result.data?.name || '',
-          partnerCode: result.data?.code || 0,
+          partnerCode: result.data?.mate_code || 0,
         });
         if (signInResult?.error) {
           setError('로그인에 실패했습니다');

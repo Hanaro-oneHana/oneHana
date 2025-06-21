@@ -180,7 +180,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
         <Button
           onClick={() => {
             if (categoryId === 5) {
-              setIsModalOpen(true);
+              router.push('/wedding-bucket');
             } else {
               updateSearchParam(
                 ['category', 'search'],
@@ -203,37 +203,6 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           }}
         />
       </button>
-      {isModalOpen && (
-        <AlertModal onClose={() => setIsModalOpen(false)}>
-          <Txt align='text-center' weight='font-[600]'>
-            선택하신 웨딩 견적에 맞춰 <br /> 신혼부부를 위한 <br /> 하나은행의
-            맞춤 <span className='text-primarycolor'>예적금·대출 서비스</span>로{' '}
-            <br /> 결혼 부담을 덜어보세요!
-          </Txt>
-          <div className='flex flex-row items-center justify-center gap-[15px] w-full mt-[25px]'>
-            <Button
-              bgColor='bg-icon'
-              onClick={() => {
-                setIsModalOpen(false);
-                router.push('/');
-              }}
-              className='py-[10px]'
-            >
-              홈으로
-            </Button>
-            <Button
-              bgColor='bg-primarycolor'
-              onClick={() => {
-                setIsModalOpen(false);
-                router.push('/wedding-bucket');
-              }}
-              className='py-[10px]'
-            >
-              확인
-            </Button>
-          </div>
-        </AlertModal>
-      )}
     </div>
   );
 }
