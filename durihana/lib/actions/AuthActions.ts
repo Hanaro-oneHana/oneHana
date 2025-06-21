@@ -42,9 +42,31 @@ export async function findUserByEmail(email: string) {
       where: { email },
     });
 
+    if (!user) {
+      return { isSuccess: false, error: '사용자를 찾을 수 없습니다' };
+    }
+
     return { isSuccess: true, data: user };
   } catch (error) {
     console.log(error);
-    return { isSuccess: false, error: 'User not found' };
+    return { isSuccess: false, error: '사용자를 찾을 수 없습니다' };
+  }
+}
+
+export async function findPartnerId(code: string) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { code: code },
+      select: { id: true },
+    });
+
+    if (!user) {
+      return { isSuccess: false, error: '파트너를 찾을 수 없습니다' };
+    }
+
+    return { isSuccess: true, data: user.id };
+  } catch (error) {
+    console.log(error);
+    return { isSuccess: false, error: '파트너를 찾을 수 없습니다' };
   }
 }

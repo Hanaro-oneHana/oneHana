@@ -107,19 +107,21 @@ export default function Singup() {
           formData.password
         );
         console.log(result, data.user.email, formData.password);
-        if (result.isSuccess) {
+        if (result.isSuccess && result.data) {
           // 로그인 성공 시 NextAuth로 로그인 처리
           await signIn('credentials', {
             redirect: false,
-            id: data.user.id,
-            email: data.user.email,
-            password: formData.password,
+            id: result.data.id,
+            email: result.data.email,
+            password: result.data.password,
+            name: result.data?.name,
+            partnerCode: result.data?.code,
           });
           setSuccessModal(true);
         }
       }
     } catch (error) {
-      console.log('🚀 ~ handleSubmit ~ error:', error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
