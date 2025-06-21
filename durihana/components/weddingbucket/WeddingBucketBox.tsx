@@ -8,6 +8,7 @@ type Props = {
 };
 
 export default function WeddingBucketBox({ items, index }: Props) {
+  const bucketState = ['예약', '예약완료', '결제', '결제완료'];
   return (
     <>
       <Button className='absolute bg-transparent p-0 top-[15px] right-[15px] w-fit h-fit leading-none'>
@@ -41,7 +42,7 @@ export default function WeddingBucketBox({ items, index }: Props) {
           </Txt>
           <Button className='w-fit h-fit px-[10px] py-[9px] bg-mint leading-[10px] '>
             <Txt size='text-[12px]' weight='font-[500]' align='text-center'>
-              {items[index].state}
+              {bucketState[items[index].state || 0]}
             </Txt>
           </Button>
         </div>
