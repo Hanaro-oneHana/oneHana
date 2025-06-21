@@ -189,6 +189,8 @@ export default function SavingsForm({
             <Txt size='text-[12px]' className='text-primarycolor'>
               두리하나입출금통장
             </Txt>
+          </div>
+          <div>
             <Txt size='text-[14px]' className='text-primarycolor'>
               {userAccount}
             </Txt>

@@ -1,16 +1,7 @@
-// lib/actions/InterestActions.ts
 'use server';
 
 import prisma from '@/lib/db';
 
-// lib/actions/InterestActions.ts
-
-/**
- * partnerCalendar에서 userId로 예약 개수를 세고,
- * 기본 스텝(1)에 count만큼을 더해
- * 이자율 테이블의 step을 결정합니다.
- * 테이블에 정의된 최대 step을 초과하지 않도록 캡 처리합니다.
- */
 async function getStepByCount(
   userId: number,
   model: {
@@ -53,4 +44,28 @@ export async function getLoanInterestRate(userId: number): Promise<number> {
   const step = await getStepByCount(userId, prisma.loanInterest);
   const entry = await prisma.loanInterest.findUnique({ where: { step } });
   return entry?.rate.toNumber() ?? 0;
+}
+
+export async function getDepositInterestRates(): Promise<
+  { step: number; rate: number }[]
+> {
+  const entries = await prisma.depositInterest.findMany({
+    orderBy: { step: 'asc' },
+  });
+  return entries.map((e) => ({
+    step: e.step,
+    rate: typeof e.rate === 'number' ? e.rate : e.rate.toNumber(),
+  }));
+}
+
+export async function getSavingsInterestRates(): Promise<
+  { step: number; rate: number }[]
+> {
+  const entries = await prisma.savingsInterest.findMany({
+    orderBy: { step: 'asc' },
+  });
+  return entries.map((e) => ({
+    step: e.step,
+    rate: typeof e.rate === 'number' ? e.rate : e.rate.toNumber(),
+  }));
 }

@@ -1,13 +1,11 @@
+// hooks/useUserCalendar.tsx
 'use client';
 
 import { getScheduleTitle, Schedule } from '@/types/Schedule';
 import { useState, useEffect } from 'react';
 import {
-  getDepositInterestRate,
-  // ◀ 추가된 부분
-  getSavingsInterestRate,
-  // ◀ 추가된 부분
-  getLoanInterestRate, // ◀ 추가된 부분
+  getDepositInterestRates,
+  getSavingsInterestRates,
 } from '@/lib/actions/InterestActions';
 import {
   getUserSchedulesForDate,
@@ -16,6 +14,14 @@ import {
 } from '@/lib/actions/UserCalendarActions';
 import { formatDate } from '@/lib/utils';
 
+// hooks/useUserCalendar.tsx
+
+// hooks/useUserCalendar.tsx
+
+// hooks/useUserCalendar.tsx
+
+// hooks/useUserCalendar.tsx
+
 export function useUserCalendar(userId: number) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -23,83 +29,107 @@ export function useUserCalendar(userId: number) {
   const [reservationScheduleDates, setReservationScheduleDates] = useState<
     Date[]
   >([]);
-  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
-  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
-  const [loading, setLoading] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState<number>(
+    new Date().getMonth()
+  );
+  const [calendarYear, setCalendarYear] = useState<number>(
+    new Date().getFullYear()
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // 달력에 점 표시할 날짜들 로드
+  // ◀ Deposit/Savings 이자율 테이블 (step별)
+  const [depositRates, setDepositRates] = useState<
+    { step: number; rate: number }[]
+  >([]);
+  const [savingsRates, setSavingsRates] = useState<
+    { step: number; rate: number }[]
+  >([]);
+
+  // 1. 한번만 테이블 전체 로드
   useEffect(() => {
     (async () => {
-      const financeDates = await getFinanceScheduleDates(
+      setDepositRates(await getDepositInterestRates());
+      setSavingsRates(await getSavingsInterestRates());
+    })();
+  }, []);
+
+  // 2. 달력에 점 표시할 날짜들 로드
+  useEffect(() => {
+    (async () => {
+      const fd = await getFinanceScheduleDates(
         userId,
         calendarYear,
         calendarMonth
       );
-      const reservationDates = await getReservationScheduleDates(
+      const rd = await getReservationScheduleDates(
         userId,
         calendarYear,
         calendarMonth
       );
-      setFinanceScheduleDates(financeDates);
-      setReservationScheduleDates(reservationDates);
+      setFinanceScheduleDates(fd);
+      setReservationScheduleDates(rd);
     })();
   }, [userId, calendarYear, calendarMonth]);
 
-  // 선택된 날짜의 상세 일정 로드
+  // 3. 선택일 변경 시 상세 스케줄 로드
   useEffect(() => {
-    async function loadSchedules() {
+    (async () => {
       setLoading(true);
       const dateStr = formatDate(selectedDate);
       const { financePlans, userAccounts, reservations } =
         await getUserSchedulesForDate(userId, dateStr);
 
-      // ◀ 추가된 부분: 현재 사용자에 대한 이자율을 함께 불러옴
-      const depositRate = await getDepositInterestRate(userId);
-      const savingsRate = await getSavingsInterestRate(userId);
-      const loanRate = await getLoanInterestRate(userId);
-
       const formatted: Schedule[] = [];
 
-      financePlans.forEach((plan) => {
+      financePlans.forEach((plan, idx) => {
+        // 날짜/시간 분리
         const [datePart, timePart = '00:00'] = plan.user_date.split(' ');
         const [y, m, d] = datePart.split('-').map(Number);
         const localDate = new Date(y, m - 1, d);
 
-        // 원금 또는 상환액
+        // 해당 계좌 정보
         const account = userAccounts.find((acc) => acc.type === plan.type);
-        let amount = 0;
-        if (account) {
-          if (plan.type === 3)
-            amount = Number(account.payment || 0); // 대출 상환액
-          else amount = Number(account.balance || 0); // 예금/적금 잔액
+
+        if (plan.type === 3) {
+          // ◀ 대출: DB에서 이미 계산된 payment(원리금 균등상환액) 사용
+          const amt = account?.payment ? Number(account.payment) : 0;
+          formatted.push({
+            id: plan.id,
+            title: getScheduleTitle(plan.type, false),
+            date: localDate,
+            time: timePart,
+            type: 'finance',
+            accountType: plan.type,
+            amount: amt,
+          });
+        } else {
+          // ◀ 예금(type=1) & 적금(type=2): step별 이자 계산
+          const baseAmount =
+            plan.type === 1
+              ? Number(account?.balance ?? 0) // 예금: 잔액
+              : Number(account?.payment ?? 0); // 적금: 한 회 납입액
+
+          const step = idx + 1; // 첫 일정부터 단계 1,2,…
+          const rateEntry =
+            plan.type === 1
+              ? depositRates.find((r) => r.step === step)
+              : savingsRates.find((r) => r.step === step);
+          const rate = rateEntry?.rate ?? 0;
+          const interestAmount = Math.round(baseAmount * (rate / 100));
+
+          formatted.push({
+            id: plan.id,
+            title: getScheduleTitle(plan.type, plan.type === 1),
+            date: localDate,
+            time: timePart,
+            type: 'finance',
+            accountType: plan.type,
+            amount: interestAmount,
+          });
         }
-
-        // ◀ 추가된 부분: 타입별 이자율 선택
-        let rate = 0;
-        if (plan.type === 1)
-          rate = depositRate; // 예금
-        else if (plan.type === 2)
-          rate = savingsRate; // 적금
-        else rate = loanRate; // 대출
-
-        // ◀ 추가된 부분: 이자액 계산
-        const interestAmount = Math.round(amount * (rate / 100));
-
-        formatted.push({
-          id: plan.id,
-          title: getScheduleTitle(
-            plan.type,
-            plan.type === 1 || plan.type === 3
-          ),
-          date: localDate,
-          time: timePart,
-          type: 'finance',
-          accountType: plan.type,
-          amount: interestAmount, // ◀ 추가된 부분: 이자 금액으로 표시
-        });
       });
 
-      // 예약 일정 변환 (기존 로직)
+      // 예약 일정 변환 (변경 없음)
       reservations.forEach((res) => {
         const [datePart, timePart = '00:00'] = res.reservation_date.split(' ');
         const [y, m, d] = datePart.split('-').map(Number);
@@ -113,13 +143,12 @@ export function useUserCalendar(userId: number) {
         });
       });
 
-      // 시간순 정렬 & 상태 업데이트
+      // 시간순 정렬
       formatted.sort((a, b) => a.time.localeCompare(b.time));
       setSchedules(formatted);
       setLoading(false);
-    }
-    loadSchedules();
-  }, [selectedDate, userId]);
+    })();
+  }, [selectedDate, userId, depositRates, savingsRates]);
 
   return {
     selectedDate,

@@ -3,7 +3,10 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { createMultipleAccounts } from '@/lib/actions/AccountActions';
+import {
+  createMultipleAccounts,
+  getAllAccountsByUserId,
+} from '@/lib/actions/AccountActions';
 
 export type FormState = {
   type: number;
@@ -46,6 +49,20 @@ export function useAccountCreation() {
     }))
   );
 
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    // 회원의 모든 계좌 조회
+    getAllAccountsByUserId(Number(session.user.id)).then((accounts) => {
+      // 첫 번째 계좌(입출금 통장)를 userAccount에 채워줌
+      const defaultAccount = accounts[0]?.account ?? '';
+      setFormStates((fs) =>
+        fs.map((f) => ({
+          ...f,
+          userAccount: defaultAccount,
+        }))
+      );
+    });
+  }, [session?.user?.id]);
   const [step, setStep] = useState(0);
   const [currentStage, setCurrentStage] = useState<Stage>('form');
   const [loading, setLoading] = useState(false);
