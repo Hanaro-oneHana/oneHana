@@ -21,6 +21,14 @@ import {
 
 // StoreDetail.tsx
 
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
+// StoreDetail.tsx
+
 /* eslint-disable @next/next/no-img-element */
 
 export default function StoreDetail(details: StoreDetailProps) {
@@ -41,11 +49,10 @@ export default function StoreDetail(details: StoreDetailProps) {
     }
 
     try {
-      await insertOptions(
-        parseInt(session?.user?.id || '0', 10),
-        details.id,
-        selectedOptions
-      );
+      const requestUser = session?.user?.isMain
+        ? parseInt(session?.user?.id || '0', 10)
+        : session?.user?.partnerId || 0;
+      await insertOptions(requestUser || 0, details.id, selectedOptions);
       showModal(true);
     } catch (error) {
       console.error('옵션 저장 실패:', error);

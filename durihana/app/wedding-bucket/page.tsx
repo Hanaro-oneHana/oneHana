@@ -8,11 +8,12 @@ export default function WeddingBucketPage() {
   if (!session || !session.user) {
     return <div>로그인이 필요해요</div>;
   }
-  const bucketList = use(getBucketList(parseInt(session.user.id || '0', 10)));
+  const bucketList = use(
+    getBucketList(
+      session.user.isMain ? Number(session.user.id) : session.user.partnerId
+    )
+  );
 
-  if (!bucketList || bucketList.length === 0) {
-    return <div>No items in the bucket list.</div>;
-  }
   return (
     <div>
       <WeddingBucket items={bucketList} />
