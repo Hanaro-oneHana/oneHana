@@ -2,6 +2,7 @@
 
 import { AccountType } from '@/components/AccountDetail';
 import prisma from '@/lib/db';
+import { Prisma } from '../generated/prisma';
 import { createAccountSchedules } from './AccountCalendarActions';
 
 export async function getAccountsByUserId(userId: number) {
@@ -59,7 +60,7 @@ export const createMultipleAccounts = async (
           currentDate.getFullYear() + Math.floor(accountData.period / 12) || 1
         );
 
-        const dbAccountData: any = {
+        const dbAccountData: Prisma.AccountUncheckedCreateInput = {
           account: `530-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
           balance: accountData.amount,
           type: accountData.type,
