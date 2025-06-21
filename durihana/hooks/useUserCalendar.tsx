@@ -1,4 +1,3 @@
-// hooks/useUserCalendar.tsx
 'use client';
 
 import { getScheduleTitle, Schedule } from '@/types/Schedule';
@@ -13,10 +12,6 @@ import {
   getReservationScheduleDates,
 } from '@/lib/actions/UserCalendarActions';
 import { formatDate } from '@/lib/utils';
-
-// hooks/useUserCalendar.tsx
-
-// hooks/useUserCalendar.tsx
 
 export function useUserCalendar(userId: number) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());

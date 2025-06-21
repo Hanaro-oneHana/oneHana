@@ -33,10 +33,10 @@ export default function CalendarDay({
           'h-[37px] w-[37px] flex items-center justify-center rounded-full text-[18px] font-[400] p-0',
           !isCurrentMonth && 'opacity-50',
           isBlocked
-            ? 'bg-mainwhite text-mainblack opacity-50 cursor-not-allowed'
+            ? 'bg-background text-mainblack opacity-50 cursor-not-allowed'
             : isSelected
               ? 'bg-primaryhalf text-mainblack'
-              : 'bg-mainwhite text-mainblack'
+              : 'bg-background text-mainblack'
         )}
       >
         {date.getDate()}
