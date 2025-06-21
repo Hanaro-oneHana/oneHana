@@ -8,7 +8,9 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { getLoanInterestRate } from '@/lib/actions/InterestActions';
 import ExpandingInput from './ExpandingInput';
 
 type LoanFormProps = {
@@ -35,21 +37,33 @@ export default function LoanForm({
   transferDay = 15,
   onMonthlyPaymentChange,
 }: LoanFormProps) {
+  const { data: session } = useSession();
+  const userId = Number(session?.user?.id);
   const [isPeriodOpen, setIsPeriodOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
+  const [annualRate, setAnnualRate] = useState<number>(0);
+  useEffect(() => {
+    if (!userId) return;
+    getLoanInterestRate(userId).then((rate) => {
+      setAnnualRate(rate);
+    });
+  }, [userId]);
 
-  // 대출 금액에 따른 예상 월 상환액 계산 (간단한 예시)
-  const calculateMonthlyPayment = (loanAmount: string, months: number) => {
-    const principal = Number.parseInt(loanAmount.replace(/,/g, '')) || 0;
-    if (principal === 0) return '0';
+  const monthlyRate = annualRate / 100 / 12;
 
-    // 연 5% 이자율 가정 (실제로는 더 복잡한 계산)
-    const monthlyRate = 0.05 / 12;
-    const monthlyPayment =
-      (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) /
-      (Math.pow(1 + monthlyRate, months) - 1);
+  const calculateMonthlyPayment = (
+    loanAmount: string,
+    months: number,
+    rate = monthlyRate
+  ) => {
+    const principal = parseInt(loanAmount.replace(/,/g, ''), 10) || 0;
+    if (!principal || !rate) return '0';
 
-    return Math.round(monthlyPayment).toLocaleString();
+    const payment =
+      (principal * rate * Math.pow(1 + rate, months)) /
+      (Math.pow(1 + rate, months) - 1);
+
+    return Math.round(payment).toLocaleString();
   };
 
   const estimatedPayment = calculateMonthlyPayment(amount, period);
