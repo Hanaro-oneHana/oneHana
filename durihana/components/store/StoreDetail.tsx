@@ -1,4 +1,3 @@
-// StoreDetail.tsx
 'use client';
 
 import AlertModal from '@/components/alert/AlertModal';
@@ -18,44 +17,6 @@ import {
   insertOptions,
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
-
-// StoreDetail.tsx
 
 /* eslint-disable @next/next/no-img-element */
 
