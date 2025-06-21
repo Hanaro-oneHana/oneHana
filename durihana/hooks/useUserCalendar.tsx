@@ -4,7 +4,7 @@
 import { getScheduleTitle, Schedule } from '@/types/Schedule';
 import { useState, useEffect } from 'react';
 import {
-  getDepositInterestRates,
+  getDepositInterestRate,
   getSavingsInterestRates,
 } from '@/lib/actions/InterestActions';
 import {
@@ -13,10 +13,6 @@ import {
   getReservationScheduleDates,
 } from '@/lib/actions/UserCalendarActions';
 import { formatDate } from '@/lib/utils';
-
-// hooks/useUserCalendar.tsx
-
-// hooks/useUserCalendar.tsx
 
 // hooks/useUserCalendar.tsx
 
@@ -37,23 +33,17 @@ export function useUserCalendar(userId: number) {
   );
   const [loading, setLoading] = useState<boolean>(false);
 
-  // ◀ Deposit/Savings 이자율 테이블 (step별)
-  const [depositRates, setDepositRates] = useState<
-    { step: number; rate: number }[]
-  >([]);
+  // 적금 이자율 테이블 전체 로드
   const [savingsRates, setSavingsRates] = useState<
     { step: number; rate: number }[]
   >([]);
-
-  // 1. 한번만 테이블 전체 로드
   useEffect(() => {
     (async () => {
-      setDepositRates(await getDepositInterestRates());
       setSavingsRates(await getSavingsInterestRates());
     })();
   }, []);
 
-  // 2. 달력에 점 표시할 날짜들 로드
+  // 달력 점 표시용 날짜들 불러오기
   useEffect(() => {
     (async () => {
       const fd = await getFinanceScheduleDates(
@@ -71,7 +61,7 @@ export function useUserCalendar(userId: number) {
     })();
   }, [userId, calendarYear, calendarMonth]);
 
-  // 3. 선택일 변경 시 상세 스케줄 로드
+  // 선택된 날짜의 일정 로드
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -79,57 +69,79 @@ export function useUserCalendar(userId: number) {
       const { financePlans, userAccounts, reservations } =
         await getUserSchedulesForDate(userId, dateStr);
 
+      // 동적 예금 이자율(1년 기준)
+      const depositRate = await getDepositInterestRate(userId);
+
       const formatted: Schedule[] = [];
 
-      financePlans.forEach((plan, idx) => {
-        // 날짜/시간 분리
+      financePlans.forEach((plan) => {
         const [datePart, timePart = '00:00'] = plan.user_date.split(' ');
         const [y, m, d] = datePart.split('-').map(Number);
         const localDate = new Date(y, m - 1, d);
-
-        // 해당 계좌 정보
         const account = userAccounts.find((acc) => acc.type === plan.type);
+        const isExpiry = datePart === account?.expire_date;
 
-        if (plan.type === 3) {
-          // ◀ 대출: DB에서 이미 계산된 payment(원리금 균등상환액) 사용
-          const amt = account?.payment ? Number(account.payment) : 0;
+        if (plan.type === 1) {
+          // 예금: 만기일에만 원금 + 이자
+          if (isExpiry) {
+            const principal = Number(account?.balance ?? 0);
+            const interest = Math.round(principal * (depositRate / 100));
+            formatted.push({
+              id: plan.id,
+              title: getScheduleTitle(1, true), // '예금 만료'
+              date: localDate,
+              time: timePart,
+              type: 'finance',
+              accountType: 1,
+              amount: principal + interest,
+            });
+          }
+        } else if (plan.type === 2) {
+          // 적금: 매월 납입, 마지막에는 원금+이자
+          const payment = Number(account?.payment ?? 0);
+          const totalSteps = savingsRates.length;
+          const step = financePlans.filter((p) => p.type === 2).length; // 총 횟수
+          if (!isExpiry) {
+            formatted.push({
+              id: plan.id,
+              title: getScheduleTitle(2, false), // '적금 납입'
+              date: localDate,
+              time: timePart,
+              type: 'finance',
+              accountType: 2,
+              amount: payment,
+            });
+          } else {
+            const principal = Number(account?.balance ?? 0);
+            const rateEntry = savingsRates.find((r) => r.step === totalSteps);
+            const rate = rateEntry?.rate ?? 0;
+            const interest = Math.round(principal * (rate / 100));
+            formatted.push({
+              id: plan.id,
+              title: getScheduleTitle(2, true), // '적금 만료'
+              date: localDate,
+              time: timePart,
+              type: 'finance',
+              accountType: 2,
+              amount: principal + interest,
+            });
+          }
+        } else if (plan.type === 3) {
+          // 대출: 매월 상환, 마지막에는 '대출 만료'에 0원(-0)
+          const payment = Number(account?.payment ?? 0);
           formatted.push({
             id: plan.id,
-            title: getScheduleTitle(plan.type, false),
+            title: isExpiry ? '대출 만료' : getScheduleTitle(3, false), // '대출 상환'
             date: localDate,
             time: timePart,
             type: 'finance',
-            accountType: plan.type,
-            amount: amt,
-          });
-        } else {
-          // ◀ 예금(type=1) & 적금(type=2): step별 이자 계산
-          const baseAmount =
-            plan.type === 1
-              ? Number(account?.balance ?? 0) // 예금: 잔액
-              : Number(account?.payment ?? 0); // 적금: 한 회 납입액
-
-          const step = idx + 1; // 첫 일정부터 단계 1,2,…
-          const rateEntry =
-            plan.type === 1
-              ? depositRates.find((r) => r.step === step)
-              : savingsRates.find((r) => r.step === step);
-          const rate = rateEntry?.rate ?? 0;
-          const interestAmount = Math.round(baseAmount * (rate / 100));
-
-          formatted.push({
-            id: plan.id,
-            title: getScheduleTitle(plan.type, plan.type === 1),
-            date: localDate,
-            time: timePart,
-            type: 'finance',
-            accountType: plan.type,
-            amount: interestAmount,
+            accountType: 3,
+            amount: isExpiry ? 0 : payment,
           });
         }
       });
 
-      // 예약 일정 변환 (변경 없음)
+      // 예약 일정
       reservations.forEach((res) => {
         const [datePart, timePart = '00:00'] = res.reservation_date.split(' ');
         const [y, m, d] = datePart.split('-').map(Number);
@@ -148,7 +160,7 @@ export function useUserCalendar(userId: number) {
       setSchedules(formatted);
       setLoading(false);
     })();
-  }, [selectedDate, userId, depositRates, savingsRates]);
+  }, [selectedDate, userId, savingsRates]);
 
   return {
     selectedDate,
