@@ -1,8 +1,12 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { createMultipleAccounts } from '@/lib/actions/AccountActions';
+import {
+  createMultipleAccounts,
+  getAllAccountsByUserId,
+} from '@/lib/actions/AccountActions';
 
 export type FormState = {
   type: number;
@@ -18,6 +22,14 @@ export type Stage = 'form' | 'review' | 'complete';
 export function useAccountCreation() {
   const router = useRouter();
   const params = useSearchParams();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session?.user?.id) {
+      router.push('/auth/signin');
+    }
+  }, [status, session, router]);
 
   // URL에서 계좌 타입들 파싱
   const types = (params.get('types') || '')
@@ -37,6 +49,20 @@ export function useAccountCreation() {
     }))
   );
 
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    // 회원의 모든 계좌 조회
+    getAllAccountsByUserId(Number(session.user.id)).then((accounts) => {
+      // 첫 번째 계좌(입출금 통장)를 userAccount에 채워줌
+      const defaultAccount = accounts[0]?.account ?? '';
+      setFormStates((fs) =>
+        fs.map((f) => ({
+          ...f,
+          userAccount: defaultAccount,
+        }))
+      );
+    });
+  }, [session?.user?.id]);
   const [step, setStep] = useState(0);
   const [currentStage, setCurrentStage] = useState<Stage>('form');
   const [loading, setLoading] = useState(false);
@@ -59,6 +85,7 @@ export function useAccountCreation() {
 
   // 계좌 생성 실행
   const createAccounts = async () => {
+    if (!session?.user?.id) return;
     setLoading(true);
     try {
       const accountsData = formStates.map((state) => ({
@@ -68,7 +95,10 @@ export function useAccountCreation() {
         transferDay: state.transferDay,
       }));
 
-      const result = await createMultipleAccounts(1, accountsData);
+      const result = await createMultipleAccounts(
+        Number(session.user.id),
+        accountsData
+      );
 
       if (result.success) {
         alert(

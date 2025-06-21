@@ -1,8 +1,9 @@
 'use server';
 
-import prisma from '@/lib/db';
-import { createAccountSchedules } from './AccountCalendarActions';
 import { AccountType } from '@/components/AccountDetail';
+import prisma from '@/lib/db';
+import { Prisma } from '../generated/prisma';
+import { createAccountSchedules } from './AccountCalendarActions';
 
 export async function getAccountsByUserId(userId: number) {
   try {
@@ -59,7 +60,7 @@ export const createMultipleAccounts = async (
           currentDate.getFullYear() + Math.floor(accountData.period / 12) || 1
         );
 
-        const dbAccountData: any = {
+        const dbAccountData: Prisma.AccountUncheckedCreateInput = {
           account: `530-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
           balance: accountData.amount,
           type: accountData.type,
@@ -81,7 +82,20 @@ export const createMultipleAccounts = async (
           case 3: // 대출
             dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             dbAccountData.transfer_date = String(accountData.transferDay || 15);
-            dbAccountData.payment = Math.floor(accountData.amount * 0.1); // 대출 상환액
+            const loanRateEntry = await tx.loanInterest.findUnique({
+              where: { step: 1 },
+            });
+            const annualRate = Number(loanRateEntry?.rate) || 0;
+            const monthlyRate = annualRate / 12 / 100;
+
+            const P = accountData.amount;
+            const n = accountData.period;
+            const payment = Math.round(
+              (P * monthlyRate * Math.pow(1 + monthlyRate, n)) /
+                (Math.pow(1 + monthlyRate, n) - 1)
+            );
+
+            dbAccountData.payment = payment;
             break;
         }
 
@@ -169,4 +183,3 @@ export async function getFirstAccountByUserId(userId: number) {
     type: account.type as AccountType,
   };
 }
-
