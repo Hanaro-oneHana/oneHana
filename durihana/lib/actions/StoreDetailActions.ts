@@ -8,6 +8,7 @@ export type StoreDetailProps = {
   info: Record<string, string>;
   type: string; // '예식장', '스드메', '여행'
   options: Record<string, string>;
+  images?: string[]; // 이미지 배열
 };
 
 export const getStoreDetail = async (storeId: number) => {
@@ -19,6 +20,7 @@ export const getStoreDetail = async (storeId: number) => {
       id: true,
       name: true,
       content: true, // JSON 필드
+      image: true, // 이미지 필드
       Partner: {
         select: {
           name: true,
@@ -55,9 +57,9 @@ export const getStoreDetail = async (storeId: number) => {
     info,
     type: detail?.Partner?.PartnerCategory?.type || '',
     options,
+    images: detail?.image ? detail.image.toString().split(',') : [],
   };
 
-  console.log(result);
   return result;
 };
 

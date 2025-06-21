@@ -10,10 +10,9 @@ import { signInValidateAction } from '@/lib/actions/AuthActions';
 export default function Singup() {
   const title = 'text-[16px] mt-[11px] font-[500]';
   const inputSet =
-    'mt-[10px] w-[325px] text-[14px] font-[600] block mx-auto text-primarycolor';
+    'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
   const errMasseage = 'text-red text-[8px] mt-[3px]';
-  const normalGap = 'mt-[30px] px-[20px]';
-  const messageGap = 'mt-[11px] px-[20px]';
+  const messageGap = '';
 
   const phoneHyphen = (h: string) => {
     const digits = h.replace(/\D/g, '');
@@ -107,19 +106,21 @@ export default function Singup() {
           formData.password
         );
         console.log(result, data.user.email, formData.password);
-        if (result.isSuccess) {
+        if (result.isSuccess && result.data) {
           // 로그인 성공 시 NextAuth로 로그인 처리
           await signIn('credentials', {
             redirect: false,
-            id: data.user.id,
-            email: data.user.email,
-            password: formData.password,
+            id: result.data?.id || '',
+            email: result.data.email,
+            password: result.data.password,
+            name: result.data?.name || '',
+            partnerCode: result.data?.mate_code || 0,
           });
           setSuccessModal(true);
         }
       }
     } catch (error) {
-      console.log('🚀 ~ handleSubmit ~ error:', error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -140,11 +141,11 @@ export default function Singup() {
   };
 
   return (
-    <>
+    <div className='flex flex-col pb-[40px] pt-[80px] px-[20px]'>
       <Header title='회원가입' leftIcon='back' />
 
-      <form onSubmit={handleSubmit}>
-        <div className='mt-[100px] px-[20px]'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-[15px]'>
+        <div className='flex flex-col gap-[10px]'>
           <Txt className={title}>이름</Txt>
           <InputComponent
             className={inputSet}
@@ -158,7 +159,7 @@ export default function Singup() {
           />
         </div>
 
-        <div className={normalGap}>
+        <div className='flex flex-col gap-[10px]'>
           <Txt className={title}>이메일</Txt>
           <InputComponent
             className={inputSet}
@@ -214,7 +215,7 @@ export default function Singup() {
           />
         </div>
 
-        <div className={normalGap}>
+        <div className='flex flex-col gap-[10px]'>
           <Txt className={title}>예정 결혼일</Txt>
           <InputComponent
             className={inputSet}
@@ -227,10 +228,10 @@ export default function Singup() {
           />
         </div>
 
-        <div className='px-[20px]'>
+        <div>
           <Button
             type='submit'
-            className='block w-full mt-[76px]'
+            className='block w-full mt-[40px]'
             disabled={isLoading}
           >
             {isLoading ? '가입중' : '완료'}
@@ -248,6 +249,6 @@ export default function Singup() {
           </Button>
         </AlertModal>
       )}
-    </>
+    </div>
   );
 }
