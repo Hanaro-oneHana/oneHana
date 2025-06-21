@@ -54,19 +54,11 @@ export default function ScheduleCard({
             height={16}
           />
           {schedule.type === 'reservation' ? (
-            <Txt
-              size='text-[10px]'
-              weight='font-[400]'
-              className='text-textgray'
-            >
+            <Txt size='text-[10px]' className='text-textgray'>
               {formatDisplayDate(schedule.date)} {schedule.time}
             </Txt>
           ) : (
-            <Txt
-              size='text-[10px]'
-              weight='font-[400]'
-              className='text-textgray'
-            >
+            <Txt size='text-[10px]' className='text-textgray'>
               {formatDisplayDate(schedule.date)}
             </Txt>
           )}
@@ -81,11 +73,7 @@ export default function ScheduleCard({
               width={16}
               height={16}
             />
-            <Txt
-              size='text-[10px]'
-              weight='font-[400]'
-              className='text-textgray'
-            >
+            <Txt size='text-[10px]' className='text-textgray'>
               {schedule.partnerName}
             </Txt>
           </div>
