@@ -33,14 +33,14 @@ export const {
           credentials?.partnerCode as string
         );
 
-        if (!id || !email || !password || !partnerId.isSuccess) return null;
+        if (!id || !email || !password) return null;
 
         return {
           id,
           email,
           name: name || '',
           partnerId: partnerId.data || 0,
-          isMain: parseInt(id) > (partnerId.data || 0),
+          isMain: parseInt(id) < (partnerId.data || 0),
         };
       },
     }),
@@ -53,23 +53,38 @@ export const {
     error: '/auth/signin',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        token.partnerCode = user.partnerId;
+        token.partnerId = session?.user?.partnerId || user.partnerId;
         token.isMain = user.isMain;
+      }
+
+      if (trigger === 'update' && session?.user) {
+        token.id = session.user.id;
+        token.email = session.user.email;
+        token.name = session.user.name;
+        token.partnerId = session.user.partnerId;
+        token.isMain = session.user.isMain;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, newSession }) {
       if (token) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
-        session.user.partnerId = token.partnerCode as number;
+        session.user.partnerId = token.partnerId as number;
         session.user.isMain = token.isMain as boolean;
+      }
+      if (newSession) {
+        session.user.id = newSession.user.id as string;
+        session.user.email = newSession.user.email as string;
+        session.user.name = newSession.user.name as string;
+        session.user.partnerId = newSession.user.partnerId as number;
+        session.user.isMain = newSession.user.isMain as boolean;
       }
       return session;
     },
