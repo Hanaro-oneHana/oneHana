@@ -3,6 +3,10 @@
 import { getScheduleTitle, Schedule } from '@/types/Schedule';
 import { useState, useEffect } from 'react';
 import {
+  getDepositInterestRate,
+  getSavingsInterestRates,
+} from '@/lib/actions/InterestActions';
+import {
   getUserSchedulesForDate,
   getFinanceScheduleDates,
   getReservationScheduleDates,
@@ -16,146 +20,154 @@ export function useUserCalendar(userId: number) {
   const [reservationScheduleDates, setReservationScheduleDates] = useState<
     Date[]
   >([]);
-  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
-  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
-  const [loading, setLoading] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState<number>(
+    new Date().getMonth()
+  );
+  const [calendarYear, setCalendarYear] = useState<number>(
+    new Date().getFullYear()
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // 일정이 있는 날짜들 로드 (달력 점 표시용)
-  const loadScheduleDates = async (year: number, month: number) => {
-    try {
-      const [financeDates, reservationDates] = await Promise.all([
-        getFinanceScheduleDates(userId, year, month),
-        getReservationScheduleDates(userId, year, month),
-      ]);
-      setFinanceScheduleDates(financeDates);
-      setReservationScheduleDates(reservationDates);
-    } catch (error) {
-      console.error('Failed to load schedule dates:', error);
-    }
-  };
+  // 적금 이자율 테이블 전체 로드
+  const [savingsRates, setSavingsRates] = useState<
+    { step: number; rate: number }[]
+  >([]);
+  useEffect(() => {
+    (async () => {
+      setSavingsRates(await getSavingsInterestRates());
+    })();
+  }, []);
 
-  // 선택된 날짜의 일정들 로드
-  const loadSchedulesForDate = async (date: Date) => {
-    try {
+  // 달력 점 표시용 날짜들 불러오기
+  useEffect(() => {
+    (async () => {
+      const fd = await getFinanceScheduleDates(
+        userId,
+        calendarYear,
+        calendarMonth
+      );
+      const rd = await getReservationScheduleDates(
+        userId,
+        calendarYear,
+        calendarMonth
+      );
+      setFinanceScheduleDates(fd);
+      setReservationScheduleDates(rd);
+    })();
+  }, [userId, calendarYear, calendarMonth]);
+
+  // 선택된 날짜의 일정 로드
+  useEffect(() => {
+    (async () => {
       setLoading(true);
-      const dateStr = formatDate(date);
-      console.log('🚀 ~ loadSchedulesForDate ~ dateStr:', dateStr);
-
+      const dateStr = formatDate(selectedDate);
       const { financePlans, userAccounts, reservations } =
         await getUserSchedulesForDate(userId, dateStr);
 
-      const formattedSchedules: Schedule[] = [];
+      // 동적 예금 이자율(1년 기준)
+      const depositRate = await getDepositInterestRate(userId);
 
-      // 금융 계획 변환 (Account 정보 포함)
+      const formatted: Schedule[] = [];
+
       financePlans.forEach((plan) => {
-        console.log('🚀 ~ financePlan:', plan);
-        const timePart = plan.user_date.includes(' ')
-          ? plan.user_date.split(' ')[1]
-          : '00:00';
-        const datePart = plan.user_date.includes(' ')
-          ? plan.user_date.split(' ')[0]
-          : plan.user_date;
+        const [datePart, timePart = '00:00'] = plan.user_date.split(' ');
+        const [y, m, d] = datePart.split('-').map(Number);
+        const localDate = new Date(y, m - 1, d);
+        const account = userAccounts.find((acc) => acc.type === plan.type);
+        const isExpiry = datePart === account?.expire_date;
 
-        // 시간대 문제 해결을 위해 로컬 시간대로 Date 생성
-        const [year, month, day] = datePart.split('-').map(Number);
-        const localDate = new Date(year, month - 1, day);
-
-        // 만료일인지 확인 (시간이 10:00인 경우 만료일로 간주)
-        const isExpiry = timePart === '10:00';
-
-        // 해당 plan의 type과 일치하는 계좌 찾기
-        const matchingAccount = userAccounts.find(
-          (account) => account.type === plan.type
-        );
-
-        // Account의 payment 또는 balance 정보 사용
-        let amount: number | undefined;
-        if (matchingAccount) {
+        if (plan.type === 1) {
+          // 예금: 만기일에만 원금 + 이자
           if (isExpiry) {
-            // 만료일인 경우 잔액 반환
-            amount = Number(matchingAccount.balance);
-          } else {
-            // 납입/상환일인 경우 payment 금액
-            amount = matchingAccount.payment
-              ? Number(matchingAccount.payment)
-              : undefined;
+            const principal = Number(account?.balance ?? 0);
+            const interest = Math.round(principal * (depositRate / 100));
+            formatted.push({
+              id: plan.id,
+              title: getScheduleTitle(1, true), // '예금 만료'
+              date: localDate,
+              time: timePart,
+              type: 'finance',
+              accountType: 1,
+              amount: principal + interest,
+            });
           }
+        } else if (plan.type === 2) {
+          // 적금: 매월 납입, 마지막에는 원금+이자
+          const payment = Number(account?.payment ?? 0);
+          const totalSteps = savingsRates.length;
+          const step = financePlans.filter((p) => p.type === 2).length; // 총 횟수
+          if (!isExpiry) {
+            formatted.push({
+              id: plan.id,
+              title: getScheduleTitle(2, false), // '적금 납입'
+              date: localDate,
+              time: timePart,
+              type: 'finance',
+              accountType: 2,
+              amount: payment,
+            });
+          } else {
+            const principal = Number(account?.balance ?? 0);
+            const rateEntry = savingsRates.find((r) => r.step === totalSteps);
+            const rate = rateEntry?.rate ?? 0;
+            const interest = Math.round(principal * (rate / 100));
+            formatted.push({
+              id: plan.id,
+              title: getScheduleTitle(2, true), // '적금 만료'
+              date: localDate,
+              time: timePart,
+              type: 'finance',
+              accountType: 2,
+              amount: principal + interest,
+            });
+          }
+        } else if (plan.type === 3) {
+          // 대출: 매월 상환, 마지막에는 '대출 만료'에 0원(-0)
+          const payment = Number(account?.payment ?? 0);
+          formatted.push({
+            id: plan.id,
+            title: isExpiry ? '대출 만료' : getScheduleTitle(3, false), // '대출 상환'
+            date: localDate,
+            time: timePart,
+            type: 'finance',
+            accountType: 3,
+            amount: isExpiry ? 0 : payment,
+          });
         }
-
-        formattedSchedules.push({
-          id: plan.id,
-          title: getScheduleTitle(plan.type, isExpiry),
-          date: localDate,
-          time: timePart,
-          type: 'finance',
-          accountType: plan.type,
-          amount: amount,
-        });
       });
 
-      // 예약 일정 변환
-      reservations.forEach((reservation) => {
-        console.log('🚀 ~ reservation:', reservation);
-        const timePart = reservation.reservation_date.includes(' ')
-          ? reservation.reservation_date.split(' ')[1]
-          : '00:00';
-        const datePart = reservation.reservation_date.includes(' ')
-          ? reservation.reservation_date.split(' ')[0]
-          : reservation.reservation_date;
-
-        // 시간대 문제 해결을 위해 로컬 시간대로 Date 생성
-        const [year, month, day] = datePart.split('-').map(Number);
-        const localDate = new Date(year, month - 1, day);
-
-        formattedSchedules.push({
-          id: reservation.id,
-          title: reservation.PartnerService.name,
-          date: localDate,
+      // 예약 일정
+      reservations.forEach((res) => {
+        const [datePart, timePart = '00:00'] = res.reservation_date.split(' ');
+        const [y, m, d] = datePart.split('-').map(Number);
+        formatted.push({
+          id: res.id,
+          title: res.PartnerService.name,
+          date: new Date(y, m - 1, d),
           time: timePart,
           type: 'reservation',
-          partnerName: reservation.PartnerService.Partner.name,
+          partnerName: res.PartnerService.Partner.name,
         });
       });
 
-      console.log('🚀 ~ formattedSchedules:', formattedSchedules);
-
       // 시간순 정렬
-      formattedSchedules.sort((a, b) => a.time.localeCompare(b.time));
-      setSchedules(formattedSchedules);
-    } catch (error) {
-      console.error('Failed to load schedules for date:', error);
-    } finally {
+      formatted.sort((a, b) => a.time.localeCompare(b.time));
+      setSchedules(formatted);
       setLoading(false);
-    }
-  };
-
-  // 컴포넌트 마운트 시 및 월 변경 시 일정 날짜들 로드
-  useEffect(() => {
-    loadScheduleDates(calendarYear, calendarMonth);
-  }, [userId, calendarMonth, calendarYear]);
-
-  // 선택된 날짜 변경 시 해당 날짜의 일정들 로드
-  useEffect(() => {
-    loadSchedulesForDate(selectedDate);
-  }, [selectedDate, userId]);
-
-  const reservationSchedules = schedules.filter(
-    (s) => s.type === 'reservation'
-  );
-  const financeSchedules = schedules.filter((s) => s.type === 'finance');
+    })();
+  }, [selectedDate, userId, savingsRates]);
 
   return {
     selectedDate,
     setSelectedDate,
-    schedules,
-    financeScheduleDates,
-    reservationScheduleDates,
     calendarMonth,
     setCalendarMonth,
     calendarYear,
     setCalendarYear,
     loading,
-    reservationSchedules,
-    financeSchedules,
+    reservationSchedules: schedules.filter((s) => s.type === 'reservation'),
+    financeSchedules: schedules.filter((s) => s.type === 'finance'),
+    financeScheduleDates,
+    reservationScheduleDates,
   };
 }

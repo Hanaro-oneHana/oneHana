@@ -44,7 +44,7 @@ export default function UserCalendar({ userId }: ScheduleProps) {
       </div>
 
       {/* 일정 리스트 - 스크롤 영역 */}
-      <div className='flex-1 overflow-y-auto px-4 pb-4'>
+      <div className='flex-1 overflow-y-auto px-4 pb-4 bg-background'>
         <ScheduleList
           loading={loading}
           selectedDate={selectedDate}

@@ -1,9 +1,13 @@
 'use server';
 
 import prisma from '../db';
+import { Prisma } from '../generated/prisma';
 
 // 계좌 생성 시 UserCalendar에 관련 일정들을 자동 생성 (트랜잭션 지원)
-export const createAccountSchedules = async (accountId: number, tx?: any) => {
+export const createAccountSchedules = async (
+  accountId: number,
+  tx?: Prisma.TransactionClient
+) => {
   try {
     const client = tx || prisma;
 

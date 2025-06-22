@@ -26,6 +26,8 @@ export default function SignInPage() {
           id: result.data?.id || '',
           email: email,
           password: password,
+          name: result.data?.name || '',
+          partnerCode: result.data?.mate_code || 0,
         });
         if (signInResult?.error) {
           setError('로그인에 실패했습니다');
@@ -93,7 +95,7 @@ export default function SignInPage() {
           <Button type='submit'>로그인</Button>
         </div>
         <div>
-          <Button className='bg-transparent jus' onClick={goToSignUp}>
+          <Button className='bg-transparent' onClick={goToSignUp}>
             <Txt
               weight='font-[500]'
               color='text-textgray'

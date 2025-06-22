@@ -1,5 +1,6 @@
 'use server';
 
+import { BucketItem } from '@/components/weddingbucket/WeddingBucket';
 import prisma from '../db';
 
 export type Store = {
@@ -71,4 +72,69 @@ export const getStoreList = async (search: string, category: number) => {
   }));
 
   return result.sort((a, b) => a.price - b.price);
+};
+
+export const getBucketList = async (userId: number) => {
+  const bucketList = await prisma.budgetPlan.findMany({
+    where: {
+      user_id: userId,
+    },
+    select: {
+      id: true,
+      partner_service_id: true,
+      selected: true,
+      state: true,
+      PartnerService: {
+        select: {
+          id: true,
+          name: true,
+          content: true, // JSON 필드
+          Partner: {
+            select: {
+              partner_category_id: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const result: BucketItem[] = bucketList.map((item) => ({
+    id: item.id,
+    store: item.PartnerService.name,
+    options: item.selected
+      ? Object.entries(item.selected).map(([key, value]) => ({
+          optionTitle: key,
+          optionContent: value,
+        }))
+      : [],
+    price:
+      item.PartnerService.content &&
+      typeof item.PartnerService.content === 'object' &&
+      item.PartnerService.content !== null
+        ? parseInt(
+            (item.PartnerService.content as Record<string, string>)[
+              '가격'
+            ]?.toString() || '0'
+          )
+        : 0,
+    state: item.state !== null ? item.state : 0,
+    category: item.PartnerService.Partner.partner_category_id,
+  }));
+
+  return result.sort((a, b) => (a.category ?? 0) - (b.category ?? 0));
+};
+
+export const deleteBucketItem = async (id: number) => {
+  try {
+    await prisma.budgetPlan.delete({
+      where: {
+        id: id,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error('아이템 삭제 중 오류 발생', error);
+    return false;
+  }
 };
