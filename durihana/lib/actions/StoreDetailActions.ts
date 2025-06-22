@@ -66,7 +66,8 @@ export const getStoreDetail = async (storeId: number) => {
 export const insertOptions = async (
   user_id: number,
   partner_service_id: number,
-  options?: Record<string, string>
+  options?: Record<string, string>,
+  state: number = 0
 ) => {
   return await prisma.budgetPlan.upsert({
     where: {
@@ -77,11 +78,13 @@ export const insertOptions = async (
     },
     update: {
       selected: options,
+      state: state,
     },
     create: {
       user_id,
       partner_service_id,
       selected: options,
+      state: state,
     },
   });
 };
