@@ -1,12 +1,7 @@
 import Txt from '@/components/atoms/Txt';
 import Image from 'next/image';
 
-type CompleteStepProps = {
-  accountType: number;
-  isLastAccount: boolean;
-};
-
-export default function CompleteStep({ isLastAccount }: CompleteStepProps) {
+export default function CompleteStep() {
   return (
     <div className='flex-1 px-6 py-8 flex flex-col items-center justify-center'>
       <div className='flex-1 flex flex-col items-center justify-center'>
@@ -19,7 +14,7 @@ export default function CompleteStep({ isLastAccount }: CompleteStepProps) {
         />
         <Txt
           size='text-[18px]'
-          weight='font-[600]'
+          weight='font-[500]'
           className='text-mainblack text-center mb-4'
         >
           상품 가입이 모두 완료됐습니다
