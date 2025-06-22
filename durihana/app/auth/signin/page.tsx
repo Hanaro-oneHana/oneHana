@@ -95,7 +95,7 @@ export default function SignInPage() {
           <Button type='submit'>로그인</Button>
         </div>
         <div>
-          <Button className='bg-transparent jus' onClick={goToSignUp}>
+          <Button className='bg-transparent' onClick={goToSignUp}>
             <Txt
               weight='font-[500]'
               color='text-textgray'
