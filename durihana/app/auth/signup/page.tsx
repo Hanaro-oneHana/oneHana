@@ -5,14 +5,13 @@ import { Button, Header, InputComponent, Txt } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { signInValidateAction } from '@/lib/actions/AuthActions';
+import { signInValidateAction, signUpAction } from '@/lib/actions/AuthActions';
 
 export default function Singup() {
-  const title = 'text-[16px] mt-[11px] font-[500]';
+  const title = 'text-[16px] font-[500]';
   const inputSet =
     'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
-  const errMasseage = 'text-red text-[8px] mt-[3px]';
-  const messageGap = '';
+  const errMasseage = 'text-red text-[10px] font-[500]';
 
   const phoneHyphen = (h: string) => {
     const digits = h.replace(/\D/g, '');
@@ -44,10 +43,12 @@ export default function Singup() {
     marriageDate: '',
   });
 
+  const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [checkError, setCheckError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [marriageDateError, setMarriageDateError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const router = useRouter();
@@ -57,12 +58,17 @@ export default function Singup() {
     router.push('/invite-code');
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleErrorReset = () => {
+    setNameError('');
     setEmailError('');
     setPasswordError('');
     setCheckError('');
-    setSuccess('');
+    setPhoneError('');
+    setMarriageDateError('');
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
 
     if (formData.password !== formData.passwordCheck) {
@@ -71,50 +77,44 @@ export default function Singup() {
       return;
     }
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-          marriageDate: formData.marriageDate,
-        }),
-      });
+      const result = await signUpAction(
+        formData.name,
+        formData.email,
+        formData.password,
+        formData.phone,
+        formData.marriageDate
+      );
 
-      const data = await response.json();
-
-      // 5) 서버 응답 검증 (서버에서 Zod를 쓰고 동일한 schema로 에러를 돌려준다고 가정)
-      if (!response.ok) {
-        if (data.error.validation === 'email') {
-          setEmailError(
-            data.error.message || '회원가입 중 오류가 발생했습니다.'
-          );
-        } else {
-          setPasswordError(
-            data.error.message || '회원가입 중 오류가 발생했습니다.'
+      if (!result.isSuccess) {
+        handleErrorReset();
+        if (result.type === 'email') {
+          setEmailError(result.error || '회원가입 중 오류가 발생했습니다.');
+        } else if (result.type === 'password') {
+          setPasswordError(result.error || '회원가입 중 오류가 발생했습니다.');
+        } else if (result.type === 'name') {
+          setNameError(result.error || '회원가입 중 오류가 발생했습니다.');
+        } else if (result.type === 'phone') {
+          setPhoneError(result.error || '회원가입 중 오류가 발생했습니다.');
+        } else if (result.type === 'marriageDate') {
+          setMarriageDateError(
+            result.error || '회원가입 중 오류가 발생했습니다.'
           );
         }
+        return;
       } else {
-        setSuccess('회원가입이 완료되었습니다.');
-
-        const result = await signInValidateAction(
-          data.user.email,
+        const signInResult = await signInValidateAction(
+          formData.email,
           formData.password
         );
-        console.log(result, data.user.email, formData.password);
-        if (result.isSuccess && result.data) {
+        if (signInResult.isSuccess && signInResult.data) {
           // 로그인 성공 시 NextAuth로 로그인 처리
           await signIn('credentials', {
             redirect: false,
             id: result.data?.id || '',
-            email: result.data.email,
-            password: result.data.password,
-            name: result.data?.name || '',
-            partnerCode: result.data?.mate_code || 0,
+            email: signInResult.data.email,
+            password: formData.password,
+            name: signInResult.data?.name || '',
+            partnerCode: signInResult.data?.mate_code || 0,
           });
           setSuccessModal(true);
         }
@@ -157,6 +157,7 @@ export default function Singup() {
             required
             maxLength={25}
           />
+          <Txt className={errMasseage}>{nameError}</Txt>
         </div>
 
         <div className='flex flex-col gap-[10px]'>
@@ -170,11 +171,10 @@ export default function Singup() {
             onChange={handleInput}
             required
           />
-          {/* {emailError && ( <Txt className={errMasseage}>{emailError}</Txt>)} */}
-          <Txt className={errMasseage}>{emailError || '\u00A0'}</Txt>
+          <Txt className={errMasseage}>{emailError}</Txt>
         </div>
 
-        <div className={messageGap}>
+        <div className='flex flex-col gap-[10px]'>
           <Txt className={title}>비밀번호</Txt>
           <InputComponent
             className={inputSet}
@@ -185,10 +185,10 @@ export default function Singup() {
             onChange={handleInput}
             required
           />
-          <Txt className={errMasseage}>{passwordError || '\u00A0'}</Txt>
+          <Txt className={errMasseage}>{passwordError}</Txt>
         </div>
 
-        <div className={messageGap}>
+        <div className='flex flex-col gap-[10px]'>
           <Txt className={title}>비밀번호 확인</Txt>
           <InputComponent
             className={inputSet}
@@ -199,10 +199,10 @@ export default function Singup() {
             onChange={handleInput}
             required
           />
-          <Txt className={errMasseage}>{checkError || '\u00A0'}</Txt>
+          <Txt className={errMasseage}>{checkError}</Txt>
         </div>
 
-        <div className={messageGap}>
+        <div className='flex flex-col gap-[10px]'>
           <Txt className={title}>전화번호</Txt>
           <InputComponent
             className={inputSet}
@@ -213,6 +213,7 @@ export default function Singup() {
             onChange={handleInput}
             required
           />
+          <Txt className={errMasseage}>{phoneError}</Txt>
         </div>
 
         <div className='flex flex-col gap-[10px]'>
@@ -226,6 +227,7 @@ export default function Singup() {
             onChange={handleInput}
             required
           />
+          <Txt className={errMasseage}>{marriageDateError}</Txt>
         </div>
 
         <div>
