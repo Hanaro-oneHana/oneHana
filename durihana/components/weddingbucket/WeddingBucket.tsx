@@ -48,7 +48,7 @@ export default function WeddingBucket({ items }: Props) {
               );
               return filteredItems && filteredItems.length > 0 ? (
                 filteredItems.map((item, idx) => (
-                  <WeddingBucketBox key={item.id} item={item} index={idx} />
+                  <WeddingBucketBox key={item.id} item={item} />
                 ))
               ) : (
                 <Txt className='text-[14px] text-textgray font-[500]'>
