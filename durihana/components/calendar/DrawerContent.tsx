@@ -37,6 +37,7 @@ export default function DrawerContent({
       <div className='space-y-4'>
         <div className='w-full max-w-sm mx-auto'>
           <CalendarComponent
+            variant='drawer'
             selectedDate={selectedDate}
             onDateSelect={onDateSelect}
             blockedDates={blockedDates}

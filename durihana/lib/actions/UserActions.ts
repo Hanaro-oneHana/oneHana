@@ -38,16 +38,18 @@ export const getInterestsByUserId = async (userId: number) => {
 
   const hasDeposit = accounts.some((account) => account.type === 1);
   const depositInterest = hasDeposit
-    ? await getDepositInterestRate(userId)
+    ? (await getDepositInterestRate(userId)) + '%'
     : 'X';
 
   const hasSavings = accounts.some((account) => account.type === 2);
   const savingsInterest = hasSavings
-    ? await getSavingsInterestRate(userId)
+    ? (await getSavingsInterestRate(userId)) + '%'
     : 'X';
 
   const hasLoan = accounts.some((account) => account.type === 3);
-  const loanInterest = hasLoan ? await getLoanInterestRate(userId) : 'X';
+  const loanInterest = hasLoan
+    ? (await getLoanInterestRate(userId)) + '%'
+    : 'X';
 
   return {
     예금: depositInterest,

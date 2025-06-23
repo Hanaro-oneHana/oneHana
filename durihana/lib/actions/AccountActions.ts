@@ -67,68 +67,110 @@ export const createMultipleAccounts = async (
       const createdAccounts = [];
       let totalSchedules = 0;
 
+      // 입출금 계좌 조회 (type=0)
+      const mainAccount = await tx.account.findFirst({
+        where: { user_id: userId, type: 0 },
+      });
+      if (!mainAccount) throw new Error('입출금 계좌가 존재하지 않습니다.');
+      let mainBalance = mainAccount.balance;
+
       for (const accountData of accountsData) {
-        const currentDate = new Date();
-        const expireDate = new Date();
+        const now = new Date();
+        const formattedNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const expireDate = new Date(now);
         expireDate.setFullYear(
-          currentDate.getFullYear() + Math.floor(accountData.period / 12) || 1
+          now.getFullYear() + Math.floor(accountData.period / 12) || 1
         );
 
         const dbAccountData: Prisma.AccountUncheckedCreateInput = {
-          account: `530-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
+          account: `530-${String(Math.floor(Math.random() * 1e6)).padStart(6, '0')}-${String(Math.floor(Math.random() * 1e5)).padStart(5, '0')}`,
           balance: accountData.amount,
           type: accountData.type,
           user_id: userId,
         };
 
-        // 계좌 타입별 설정
-        switch (accountData.type) {
-          case 0: // 입출금
-            break;
-          case 1: // 예금
-            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
-            break;
-          case 2: // 적금
-            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
-            dbAccountData.transfer_date = String(accountData.transferDay || 15);
-            dbAccountData.payment = accountData.amount;
-            break;
-          case 3: // 대출
-            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
-            dbAccountData.transfer_date = String(accountData.transferDay || 15);
-            const loanRateEntry = await tx.loanInterest.findUnique({
-              where: { step: 1 },
-            });
-            const annualRate = Number(loanRateEntry?.rate) || 0;
-            const monthlyRate = annualRate / 12 / 100;
+        // 계좌 생성 전 입출금 계좌 및 트랜잭션 처리
+        if (accountData.type === 1) {
+          // 예금: 만기일 설정 + 입출금 계좌에서 출금
+          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
 
-            const P = accountData.amount;
-            const n = accountData.period;
-            const payment = Math.round(
-              (P * monthlyRate * Math.pow(1 + monthlyRate, n)) /
-                (Math.pow(1 + monthlyRate, n) - 1)
-            );
+          mainBalance -= accountData.amount;
+          await tx.account.update({
+            where: { id: mainAccount.id },
+            data: { balance: mainBalance },
+          });
+          await tx.transaction.create({
+            data: {
+              account_id: mainAccount.id,
+              transaction_date: formattedNow,
+              amount: -accountData.amount,
+              balance: mainBalance,
+            },
+          });
+        }
+        if (accountData.type === 3) {
+          // 대출: 만기일 설정 + 입출금 계좌에 입금
+          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
+          dbAccountData.transfer_date = String(accountData.transferDay || 15);
+          const loanRateEntry = await tx.loanInterest.findUnique({
+            where: { step: 1 },
+          });
+          const annualRate = Number(loanRateEntry?.rate) || 0;
+          const monthlyRate = annualRate / 12 / 100;
+          const P = accountData.amount;
+          const n = accountData.period;
+          dbAccountData.payment = Math.round(
+            (P * monthlyRate * Math.pow(1 + monthlyRate, n)) /
+              (Math.pow(1 + monthlyRate, n) - 1)
+          );
 
-            dbAccountData.payment = payment;
-            break;
+          mainBalance += accountData.amount;
+          await tx.account.update({
+            where: { id: mainAccount.id },
+            data: { balance: mainBalance },
+          });
+          await tx.transaction.create({
+            data: {
+              account_id: mainAccount.id,
+              transaction_date: formattedNow,
+              amount: accountData.amount,
+              balance: mainBalance,
+            },
+          });
         }
 
-        // 계좌 생성
-        const account = await tx.account.create({
-          data: dbAccountData,
-        });
+        // 신규 계좌 생성
+        const newAccount = await tx.account.create({ data: dbAccountData });
+        createdAccounts.push(newAccount);
 
-        createdAccounts.push(account);
+        // 신규 계좌에도 트랜잭션 기록: 예금 및 대출 계좌에 금액 입출금 내역
+        if (accountData.type === 1 || accountData.type === 3) {
+          await tx.transaction.create({
+            data: {
+              account_id: newAccount.id,
+              transaction_date: formattedNow,
+              amount:
+                accountData.type === 1
+                  ? accountData.amount
+                  : -accountData.amount,
+              balance: newAccount.balance,
+            },
+          });
+        }
 
-        // 트랜잭션 내에서 일정 생성 (tx 클라이언트 전달)
-        const scheduleResult = await createAccountSchedules(account.id, tx);
+        // 적금 타입 세부 로직
+        if (accountData.type === 2) {
+          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
+          dbAccountData.transfer_date = String(accountData.transferDay || 15);
+          dbAccountData.payment = accountData.amount;
+        }
+
+        // 스케줄 생성
+        const scheduleResult = await createAccountSchedules(newAccount.id, tx);
         totalSchedules += scheduleResult.count;
       }
 
-      return {
-        accounts: createdAccounts,
-        totalSchedules,
-      };
+      return { accounts: createdAccounts, totalSchedules };
     });
 
     return {

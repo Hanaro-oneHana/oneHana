@@ -17,6 +17,7 @@ type CustomCalendarProps = {
   financeScheduleDates?: Date[];
   reservationScheduleDates?: Date[];
   showScheduleDots?: boolean;
+  variant?: 'page' | 'drawer';
 };
 
 export default function CalendarComponent({
@@ -31,6 +32,7 @@ export default function CalendarComponent({
   financeScheduleDates = [],
   reservationScheduleDates = [],
   showScheduleDots = false,
+  variant = 'page',
 }: CustomCalendarProps) {
   const {
     currentMonth,
@@ -51,10 +53,12 @@ export default function CalendarComponent({
     onYearChange,
     onDateSelect,
   });
+  const bgClass = variant === 'drawer' ? 'bg-mainwhite' : 'bg-background';
 
   return (
-    <div className={cn('w-full max-w-sm mx-auto', className)}>
+    <div className={cn('w-full max-w-sm mx-auto', bgClass, className)}>
       <CalendarHeader
+        variant={variant}
         currentMonth={currentMonth}
         currentYear={currentYear}
         onPreviousMonth={goToPreviousMonth}
@@ -63,6 +67,7 @@ export default function CalendarComponent({
         onYearSelect={handleYearSelect}
       />
       <CalendarGrid
+        variant={variant}
         calendarDays={calendarDays}
         selectedDate={internalSelectedDate}
         blockedDates={blockedDates}
