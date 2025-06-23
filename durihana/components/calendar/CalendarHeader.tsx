@@ -61,7 +61,7 @@ export default function CalendarHeader({
               {monthNames[currentMonth]}
             </Txt>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className='flex flex-col max-h-60 overflow-y-auto'>
             {monthNames.map((m, i) => (
               <DropdownMenuItem key={m} onClick={() => onMonthSelect(i)}>
                 {m}
@@ -75,7 +75,7 @@ export default function CalendarHeader({
               {currentYear}년
             </Txt>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='max-h-60 overflow-y-auto'>
+          <DropdownMenuContent className='flex flex-col max-h-60 overflow-y-auto'>
             {yearOptions.map((y) => (
               <DropdownMenuItem key={y} onClick={() => onYearSelect(y)}>
                 {y}년
