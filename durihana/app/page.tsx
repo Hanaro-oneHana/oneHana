@@ -19,9 +19,23 @@ export default async function Home() {
   const session = await auth();
   const userId = Number(session?.user?.id);
 
+  const commonComponents = (
+    <>
+      <div className='pt-[30px]'>
+        <MainDashBoard date='' category={['']} />
+      </div>
+      <div className='pt-[17px]'>
+        <HouseLoanCard />
+      </div>
+      <div className='pt-[40px] '>
+        <PopularPartner />
+      </div>
+    </>
+  );
+
   if (!session?.user) {
     return (
-      <div className='flex flex-col h-screen pt-[70px] px-[20px]'>
+      <div className='flex flex-col  pt-[70px] px-[20px] pb-[105px]'>
         <Header leftIcon='my' rightIcon='bell' />
         <BottomNavigation selectedItem='home' />
         <AccountCardDefault />
@@ -31,7 +45,7 @@ export default async function Home() {
         <div className='pt-[17px]'>
           <HouseLoanCard />
         </div>
-        <div className='pt-[40px] pb-[105px]'>
+        <div className='pt-[40px] '>
           <PopularPartner />
         </div>
       </div>
@@ -68,7 +82,7 @@ export default async function Home() {
   const completedCategory = await getCategoriesByUserId(userId);
 
   return (
-    <div className='flex flex-col h-screen pt-[70px] px-[20px]'>
+    <div className='flex flex-col  pt-[70px] px-[20px] pb-[105px] scrollbar-hide'>
       <Header leftIcon='my' rightIcon='bell' />
       <BottomNavigation selectedItem='home' />
       {isAccountEmpty || !mainAccountData ? (
@@ -102,7 +116,7 @@ export default async function Home() {
       <div className='pt-[17px]'>
         <HouseLoanCard />
       </div>
-      <div className='pt-[40px] pb-[105px]'>
+      <div className='pt-[40px]'>
         <PopularPartner />
       </div>
     </div>
