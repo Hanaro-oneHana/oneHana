@@ -81,6 +81,10 @@ export default async function Home() {
   const marriageDate = await getMarriageDate(userId);
   const completedCategory = await getCategoriesByUserId(userId);
 
+  function calBalance(id: number, arg1: number) {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <div className='flex flex-col  pt-[70px] px-[20px] pb-[105px] scrollbar-hide'>
       <Header leftIcon='my' rightIcon='bell' />
