@@ -80,7 +80,6 @@ export default async function Mypage() {
           </div>
         </div>
       </div>
-      <BottomNavigation />
     </>
   );
 }
