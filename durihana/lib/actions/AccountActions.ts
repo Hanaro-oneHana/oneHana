@@ -183,3 +183,30 @@ export async function getFirstAccountByUserId(userId: number) {
     type: account.type as AccountType,
   };
 }
+
+export async function getCoupleTotalBalance(userId: number) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { mate_code: true },
+  });
+
+  if (!user?.mate_code) return 0;
+
+  const couple = await prisma.user.findMany({
+    where: { code: user.mate_code },
+    select: { id: true },
+  });
+
+  const userIds = couple.map((u) => u.id).concat(userId);
+
+  const accounts = await prisma.account.findMany({
+    where: {
+      user_id: { in: userIds },
+      type: 0, // 입출금 계좌
+    },
+    select: { balance: true },
+  });
+
+  return accounts.reduce((sum, acc) => sum + acc.balance, 0);
+}
+

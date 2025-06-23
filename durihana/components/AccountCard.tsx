@@ -3,6 +3,9 @@
 import Txt from '@/components/atoms/Txt';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { socket } from '@/lib/socket-client';
 
 export type SubAccount = {
   type: 1 | 2 | 3; // 1:예금, 2:적금, 3:대출
@@ -19,6 +22,7 @@ type Props = {
   userId: number;
   mainAccount: MainAccount;
   subAccounts: SubAccount[];
+  coupleBalance: number;
 };
 
 // type에 따른 통장 이름 매핑
@@ -31,10 +35,63 @@ export const accountTypeLabelMap = {
 
 export default function AccountCard({
   userId,
-  mainAccount,
-  subAccounts,
+  mainAccount: initialMainAccount,
+  subAccounts: initialSubAccounts,
+  coupleBalance: initialCoupleBalance,
 }: Props) {
   const router = useRouter();
+  const [mainAccount, setMainAccount] = useState(initialMainAccount);
+  const [subAccounts, setSubAccounts] = useState(initialSubAccounts);
+  const [coupleBalance, setCoupleBalance] = useState(initialCoupleBalance);
+
+  useEffect(() => {
+    // Socket 연결 및 사용자 룸 참여
+    function onConnect() {
+      socket.emit('join-user-room', userId);
+    }
+
+    // 잔액 업데이트 이벤트 리스너
+    function onBalanceUpdated(data: {
+      accountId: number;
+      newBalance: number;
+      accountType: number;
+      coupleBalance: number;
+    }) {
+      console.log('Balance updated:', data);
+
+      setCoupleBalance(data.coupleBalance);
+
+      if (data.accountType === 0) {
+        // 메인 계좌 (입출금) 업데이트
+        setMainAccount((prev) => ({
+          ...prev,
+          balance: data.newBalance,
+        }));
+      } else {
+        // 서브 계좌 업데이트
+        setSubAccounts((prev) =>
+          prev.map((acc) =>
+            acc.type === data.accountType
+              ? { ...acc, balance: data.newBalance }
+              : acc
+          )
+        );
+      }
+    }
+
+    socket.on('connect', onConnect);
+    socket.on('balance-updated', onBalanceUpdated);
+
+    // 이미 연결되어 있다면 룸 참여
+    if (socket.connected) {
+      onConnect();
+    }
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('balance-updated', onBalanceUpdated);
+    };
+  }, [userId]);
 
   const onCardClick = () => {
     router.push(`/account/detail/${userId}`);
@@ -57,19 +114,11 @@ export default function AccountCard({
 
       <div>
         <Txt weight='font-[600]'>{accountTypeLabelMap[mainAccount.type]}</Txt>
-        <Txt
-          weight='font-[500]'
-          size='text-[13px]'
-          color='text-icon'
-          className='mb-2 block'
-        >
-          {mainAccount.account}
-        </Txt>
       </div>
 
       <div className='text-right'>
         <Txt size='text-[24px]' weight='font-[600]'>
-          {mainAccount.balance.toLocaleString()} 원
+          {coupleBalance.toLocaleString()} 원
         </Txt>
       </div>
 
