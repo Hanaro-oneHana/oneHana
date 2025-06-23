@@ -2,8 +2,8 @@
 
 import { Header, Button, Txt } from '@/components/atoms';
 import WeddingBucketBox from '@/components/weddingbucket/WeddingBucketBox';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import AlertModal from '../alert/AlertModal';
 
 export type Option = {
@@ -21,13 +21,14 @@ export type BucketItem = {
 };
 
 type Props = {
-  items?: BucketItem[];
+  items: BucketItem[];
 };
 
 export default function WeddingBucket({ items }: Props) {
   const router = useRouter();
   const categories = ['예식장', '스드메', '신혼여행', '가전·가구', '예물·예단'];
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const before = useSearchParams().get('before');
 
   return (
     <div className='flex flex-col items-center justify-start w-full pt-[60px]'>
@@ -51,7 +52,7 @@ export default function WeddingBucket({ items }: Props) {
                   <WeddingBucketBox key={item.id} item={item} />
                 ))
               ) : (
-                <Txt className='text-[14px] text-textgray font-[500]'>
+                <Txt className='text-[14px] text-textgray font-[500] rounded-[10px] px-[20px] py-[15px] bg-mainwhite shadow-[0px_0px_10px_0px_rgba(0,0,0,0.05)]'>
                   내용이 없습니다
                 </Txt>
               );
@@ -79,16 +80,18 @@ export default function WeddingBucket({ items }: Props) {
             원
           </Txt>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <Txt
-            size='text-[16px]'
-            weight='font-[500]'
-            color='text-mainwhite'
-            align='text-center'
-          >
-            완료
-          </Txt>
-        </Button>
+        {before && (
+          <Button onClick={() => setIsModalOpen(true)}>
+            <Txt
+              size='text-[16px]'
+              weight='font-[500]'
+              color='text-mainwhite'
+              align='text-center'
+            >
+              완료
+            </Txt>
+          </Button>
+        )}
       </div>
       {isModalOpen && (
         <AlertModal onClose={() => setIsModalOpen(false)}>
