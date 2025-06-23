@@ -3,6 +3,15 @@
 import { BucketItem } from '@/components/weddingbucket/WeddingBucket';
 import prisma from '../db';
 
+export interface UpdateBudgetPlanPayload {
+  state: number; // 0:예약, 1:예약완료, 2:결제, 3:결제완료
+  selected?: {
+    // 예약할 때만 채워줄 selected 옵션
+    date: string; // Calendar에서 선택한 date.toISOString()
+    time: string; // Calendar에서 선택한 “HH:mm” format
+  };
+}
+
 export type Store = {
   id: number;
   name: string;
@@ -137,4 +146,14 @@ export const deleteBucketItem = async (id: number) => {
     console.error('아이템 삭제 중 오류 발생', error);
     return false;
   }
+};
+
+export const updateBudgetPlan = async (
+  budgetPlanId: number,
+  state: number
+): Promise<void> => {
+  await prisma.budgetPlan.update({
+    where: { id: budgetPlanId },
+    data: { state },
+  });
 };
