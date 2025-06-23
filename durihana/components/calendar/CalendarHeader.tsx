@@ -50,7 +50,7 @@ export default function CalendarHeader({
     <div className='flex justify-between items-center mb-4 px-2'>
       <Button
         onClick={onPreviousMonth}
-        className='p-2 w-auto h-auto rounded-full bg-mainwhite text-mainblack'
+        className='p-2 w-auto h-auto rounded-full bg-background text-mainblack'
       >
         <ChevronLeft size={24} />
       </Button>
@@ -86,7 +86,7 @@ export default function CalendarHeader({
       </div>
       <Button
         onClick={onNextMonth}
-        className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-mainwhite'
+        className='p-2 w-auto h-auto rounded-full text-mainblack size-sm bg-background'
       >
         <ChevronRight size={24} />
       </Button>
