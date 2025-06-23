@@ -8,9 +8,9 @@ export default function NotFound() {
   const router = useRouter();
 
   return (
-    <div className='min-h-screen flex flex-col items-center justify-between bg-background text-center pt-[200px] px-[20px] pb-[40px]'>
+    <div className='h-dvh flex flex-col items-center justify-between bg-background text-center pt-[200px] px-[20px] pb-[40px]'>
       <Image
-        src='/asset/icons/page404.svg'
+        src='/asset/icons/page404.png'
         alt='Not Found'
         width={250}
         height={250}

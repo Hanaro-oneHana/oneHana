@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 export default function UnauthorizedPage() {
   const router = useRouter();
   return (
-    <div className='flex flex-col items-center justify-between h-screen bg-background pt-[200px] px-[20px] pb-[40px]'>
+    <div className='flex flex-col items-center justify-between h-dvh bg-background pt-[200px] px-[20px] pb-[40px]'>
       <Image
-        src='/asset/icons/unauthorized.svg'
+        src='/asset/icons/unauthorized.png'
         alt='Unauthorized Access'
         width={200}
         height={200}
