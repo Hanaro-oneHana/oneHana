@@ -4,12 +4,15 @@ import { Header, BottomNavigation } from '@/components/atoms';
 import HouseLoanCard from '@/components/main/HouseLoanCard';
 import MainDashBoard from '@/components/main/MainDashboard';
 import PopularPartner from '@/components/main/PopularPartner';
-import { getAccountsByUserId, getCoupleTotalBalance } from '@/lib/actions/AccountActions';
+import {
+  getAccountsByUserId,
+  getCoupleTotalBalance,
+} from '@/lib/actions/AccountActions';
 import {
   getCategoriesByUserId,
   getMarriageDate,
 } from '@/lib/actions/DashboardActions';
-import { plusBalance } from '@/lib/actions/plusBalance';
+import { plusBalance } from '@/lib/actions/calBalance';
 import { auth } from '@/lib/auth';
 
 export default async function Home() {
