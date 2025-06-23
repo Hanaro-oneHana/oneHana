@@ -5,6 +5,20 @@ import prisma from '@/lib/db';
 import { Prisma } from '../generated/prisma';
 import { createAccountSchedules } from './AccountCalendarActions';
 
+export async function getCheckingAccountByUserId(userId: number) {
+  try {
+    const checkingAccount = await prisma.account.findFirst({
+      where: { user_id: userId, type: 0 },
+    });
+
+    console.log(checkingAccount?.id);
+    return checkingAccount ? checkingAccount.id : 0;
+  } catch (error) {
+    console.error('getAccountsByUserId error:', error);
+    return 0;
+  }
+}
+
 export async function getAccountsByUserId(userId: number) {
   try {
     const accounts = await prisma.account.findMany({
