@@ -6,13 +6,14 @@ import StoreInfo from '@/components/store/StoreInfo';
 import StoreOption from '@/components/store/StoreOption';
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   insertOptions,
   StoreDetailProps,
@@ -28,6 +29,25 @@ export default function StoreDetail(details: StoreDetailProps) {
   const [modal, showModal] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
+
+  const userId = Number(session?.user?.id);
+
+  //캐러셀 슬라이드 위한 것
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   const handleAdd = async () => {
     const requiredKeys = Object.keys(details.options);
@@ -53,18 +73,23 @@ export default function StoreDetail(details: StoreDetailProps) {
   return (
     <div className=' pb-[100px]'>
       <div className='flex flex-col w-full items-center'>
-        <Carousel>
-          <CarouselContent>
-            {details.images?.map((src, index) => (
-              <CarouselItem
-                key={index}
-                className='relative flex w-full items-center'
-              >
-                <img src={src} alt={`image-${index}`} className='w-full' />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <div>
+          <Carousel setApi={setApi}>
+            <div className='absolute top-2 right-4 z-10 bg-icongray opacity-90 text-white text-[12px] px-2 py-1 rounded'>
+              {current}/{count}
+            </div>
+            <CarouselContent>
+              {details.images.map((src, index) => (
+                <CarouselItem
+                  key={index}
+                  className='relative flex w-full items-center'
+                >
+                  <img src={src} alt={`image-${index}`} className='w-full' />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </div>
       </div>
 
       <div className='flex flex-col px-[20px] pt-[25px] w-full'>
@@ -105,7 +130,8 @@ export default function StoreDetail(details: StoreDetailProps) {
           <StoreDrawer
             details={details}
             selectedOptions={selectedOptions}
-            unselectedOptions={() => showModal(true)}
+            onselectedOptions={() => showModal(true)}
+            userId={userId}
           />
         )}
         <Button className='h-[48px] w-full' onClick={handleAdd}>

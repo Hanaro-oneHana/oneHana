@@ -11,19 +11,39 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { useState } from 'react';
+import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
 import { StoreDetailProps } from '@/lib/actions/StoreDetailActions';
+import { minusBalance } from '@/lib/actions/calBalance';
 import { Button, Txt } from '../atoms';
 
 type StoreDrawerProps = {
   details: StoreDetailProps;
   selectedOptions: Record<string, string>;
-  unselectedOptions: () => void;
+  onselectedOptions: () => void;
+  userId: number;
 };
 
 export default function StoreDrawer(drawer: StoreDrawerProps) {
-  const { selectedOptions, unselectedOptions } = drawer;
+  const { selectedOptions, onselectedOptions } = drawer;
   const img = drawer.details.images;
   const [open, setOpen] = useState(false);
+
+  const price = parseInt(
+    drawer.details.info['가격'].replace(/[^0-9]/g, ''),
+    10
+  );
+
+  const handlePayment = async () => {
+    try {
+      const accountId = await getCheckingAccountByUserId(drawer.userId);
+      await minusBalance(accountId, price);
+    } catch (e) {
+      console.error('결제 실패', e);
+      alert('결제 중 오류가 발생했습니다.');
+    }
+
+    setOpen(false);
+  };
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (
@@ -31,8 +51,8 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
       Object.keys(selectedOptions).length !==
         Object.keys(drawer.details.options).length
     ) {
-      unselectedOptions();
-      return; // 열지 않고 모달 띄우기
+      onselectedOptions();
+      return;
     }
     setOpen(nextOpen);
   };
@@ -88,7 +108,7 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
           </div>
           <DrawerFooter className='flex justify-end gap-2'>
             <DrawerClose asChild>
-              <Button>결제하기</Button>
+              <Button onClick={handlePayment}>결제하기</Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
