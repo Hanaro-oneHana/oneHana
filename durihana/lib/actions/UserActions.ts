@@ -24,7 +24,7 @@ export const getUserInfo = async (userId: number) => {
     이름: user.name,
     이메일: user.email,
     전화번호: user.phone,
-    '예정 결혼일': user.marriage_date,
+    '결혼 예정일': user.marriage_date,
   };
 };
 
