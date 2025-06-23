@@ -175,7 +175,7 @@ export default function ElseAccount() {
       </div>
       <div className='w-full px-[20px] pb-[40px]'>
         <div className='flex justify-between gap-2'>
-          <Button
+          <Button bgColor='bg-icon'
             onClick={async () => {
               const amount = Number(initialDeposit);
               const { plusBalanceBySessionUser } = await import(
