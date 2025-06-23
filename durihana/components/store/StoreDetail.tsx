@@ -17,6 +17,7 @@ import {
   insertOptions,
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
+import StoreDrawer from './StoreDrawer';
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -38,17 +39,10 @@ export default function StoreDetail(details: StoreDetailProps) {
     }
 
     try {
-      const bucketState =
-        details.type === '가전·가구' || details.type === '예물' ? 2 : 0;
       const requestUser = session?.user?.isMain
         ? parseInt(session?.user?.id || '0', 10)
         : session?.user?.partnerId || 0;
-      await insertOptions(
-        requestUser || 0,
-        details.id,
-        selectedOptions,
-        bucketState
-      );
+      await insertOptions(requestUser || 0, details.id, selectedOptions);
       showModal(true);
     } catch (error) {
       console.error('옵션 저장 실패:', error);
@@ -103,9 +97,16 @@ export default function StoreDetail(details: StoreDetailProps) {
       />
 
       <div className='fixed max-w-[960px]  bottom-0 left-[50%] translate-x-[-50%] w-full h-[80px] bg-background z-50 flex items-center justify-between px-[20px] gap-[15px]'>
-        <Button className='bg-buttongray h-[48px] w-full'>
-          상담 일정 보기
-        </Button>
+        {details.categoryId < 4 ? (
+          <Button className='bg-buttongray h-[48px] w-full'>
+            상담일정 보기
+          </Button>
+        ) : (
+          <StoreDrawer
+            details={details} // 대표이미지 하나만 가져오기
+            selectedOptions={selectedOptions}
+          />
+        )}
         <Button className='h-[48px] w-full' onClick={handleAdd}>
           담기
         </Button>

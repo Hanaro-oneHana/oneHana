@@ -6,7 +6,8 @@ export type StoreDetailProps = {
   id: number;
   name: string;
   info: Record<string, string>;
-  type: string; // '예식장', '스드메', '여행'
+  categoryId: number;
+  // 1: 예식장 , 2: 스드메, 3: 신혼여행, 4: 가전가구 , 5: 예물
   options: Record<string, string>;
   images?: string[]; // 이미지 배열
 };
@@ -26,13 +27,21 @@ export const getStoreDetail = async (storeId: number) => {
           name: true,
           PartnerCategory: {
             select: {
-              type: true, // '예식장', '스드메', '여행' 중 하나
+              id: true, // categoryid
             },
           },
         },
       },
     },
   });
+
+  let images: string[] = [];
+  if (Array.isArray(detail?.image)) {
+    // detail.image가 JsonValue이지만 런타임엔 string[]이므로 타입 가드
+    images = detail.image.filter(
+      (item): item is string => typeof item === 'string'
+    );
+  }
 
   const info: Record<string, string> = {};
   const options: Record<string, string> = {};
@@ -55,7 +64,7 @@ export const getStoreDetail = async (storeId: number) => {
     id: detail?.id || 0,
     name: detail?.name || '',
     info,
-    type: detail?.Partner?.PartnerCategory?.type || '',
+    categoryId: detail?.Partner?.PartnerCategory?.id || 1,
     options,
     images: detail?.image ? detail.image.toString().split(',') : [],
   };
