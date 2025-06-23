@@ -17,6 +17,7 @@ import {
   insertOptions,
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
+import CalendarDrawer from '../calendar/CalendarDrawer';
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -25,6 +26,7 @@ export default function StoreDetail(details: StoreDetailProps) {
     Record<string, string>
   >({});
   const [modal, showModal] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -103,7 +105,10 @@ export default function StoreDetail(details: StoreDetailProps) {
       />
 
       <div className='fixed max-w-[960px]  bottom-0 left-[50%] translate-x-[-50%] w-full h-[80px] bg-background z-50 flex items-center justify-between px-[20px] gap-[15px]'>
-        <Button className='bg-buttongray h-[48px] w-full'>
+        <Button
+          className='bg-buttongray h-[48px] w-full'
+          onClick={() => setCalendarOpen(true)}
+        >
           상담 일정 보기
         </Button>
         <Button className='h-[48px] w-full' onClick={handleAdd}>
@@ -153,6 +158,12 @@ export default function StoreDetail(details: StoreDetailProps) {
           </div>
         </AlertModal>
       )}
+      <CalendarDrawer
+        partnerServiceId={details.id}
+        open={calendarOpen}
+        onOpenChange={setCalendarOpen}
+        viewOnly
+      />
     </div>
   );
 }

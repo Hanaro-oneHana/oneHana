@@ -31,6 +31,7 @@ export default function UserCalendar({ userId }: ScheduleProps) {
       {/* 달력 - 고정 영역 */}
       <div className='flex-shrink-0 p-4 mt-14'>
         <CalendarComponent
+          variant='page'
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           currentMonth={calendarMonth}
