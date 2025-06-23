@@ -103,8 +103,9 @@ export default function StoreDetail(details: StoreDetailProps) {
           </Button>
         ) : (
           <StoreDrawer
-            details={details} // 대표이미지 하나만 가져오기
+            details={details}
             selectedOptions={selectedOptions}
+            unselectedOptions={() => showModal(true)}
           />
         )}
         <Button className='h-[48px] w-full' onClick={handleAdd}>
