@@ -1,6 +1,7 @@
 'use client';
 
 import AlertModal from '@/components/alert/AlertModal';
+import { InputComponent } from '@/components/atoms';
 import AccountAgreement from '@/components/atoms/AccountAgreement';
 import Button from '@/components/atoms/Button';
 import DepositAgreement from '@/components/atoms/DepositAgreement';
@@ -33,10 +34,25 @@ export default function ElseAccount() {
 
   const [modal, showModal] = useState(false);
   const router = useRouter();
+  const [initialDeposit, setInitialDeposit] = useState('');
 
   return (
     <div className='relative flex flex-col shrink-0 w-full items-center justify-between h-dvh overflow-hidden'>
-      <div className='flex flex-col items-center h-full w-full overflow-y-scroll '>
+      <div className='flex flex-col gap-2 px-[25px] mt-[40px] w-full pt-[30px]'>
+        <Txt>입출금통장 초기 입금액</Txt>
+        <InputComponent
+          placeholder='입금할 금액을 입력하세요'
+          value={initialDeposit}
+          onChange={(e) => setInitialDeposit(e.target.value)}
+          className='text-[14px]'
+        />
+        <div>
+          <Txt size='text-[12px]' color='text-red'>
+            상품 가입을 원하지 않는 경우, '홈으로' 버튼을 눌러주세요.
+          </Txt>
+        </div>
+      </div>
+      <div className='flex flex-col items-center h-full w-full overflow-y-scroll'>
         <Header leftIcon='back' title='계좌개설' />
         <div className='flex flex-col pl-[25px] pr-[25px]'>
           <div className='flex pt-[40px] '>
@@ -47,7 +63,7 @@ export default function ElseAccount() {
               <AccordionItem value='item-1'>
                 <AccordionTrigger className='border-b border-primarycolor'>
                   <Txt className='text-[14px]'>
-                    비대면 계좌 개설 약관 동의서
+                    비대면 계좌 개설 가입 동의서
                     <Txt className='text-[8px] ml-1' color='text-red'>
                       (필수)
                     </Txt>
@@ -76,7 +92,7 @@ export default function ElseAccount() {
               <AccordionItem value='item-2'>
                 <AccordionTrigger className='border-b border-primarycolor'>
                   <Txt className='text-[14px]'>
-                    정기예금 상품 약관 동의서
+                    정기예금 상품 가입 동의서
                     <Txt className='text-[8px] ml-1' color='text-red'>
                       (선택)
                     </Txt>
@@ -103,7 +119,7 @@ export default function ElseAccount() {
               <AccordionItem value='item-3'>
                 <AccordionTrigger className='border-b border-primarycolor'>
                   <Txt className='text-[14px]'>
-                    정기적금 약관 동의서
+                    정기적금 가입 동의서
                     <Txt className='text-[8px] ml-1' color='text-red'>
                       (선택)
                     </Txt>
@@ -130,7 +146,7 @@ export default function ElseAccount() {
               <AccordionItem value='item-4'>
                 <AccordionTrigger className='border-b border-primarycolor'>
                   <Txt className='text-[14px]'>
-                    대출 상품 약관 동의서
+                    대출 상품 가입 동의서
                     <Txt className='text-[8px] ml-1' color='text-red'>
                       (선택)
                     </Txt>
@@ -158,24 +174,46 @@ export default function ElseAccount() {
         </div>
       </div>
       <div className='w-full px-[20px] pb-[40px]'>
-        <Button
-          onClick={() => {
-            if (!baseAgree) {
-              showModal(true);
-            } else {
-              // 여기에 다음 페이지로 넘어가는거 추가
+        <div className='flex justify-between gap-2'>
+          <Button
+            onClick={async () => {
+              const amount = Number(initialDeposit);
+              const { plusBalanceBySessionUser } = await import(
+                '@/lib/actions/calBalance'
+              );
+              await plusBalanceBySessionUser(amount);
+
+              router.push('/');
+            }}
+            className='w-1/2'
+          >
+            홈으로
+          </Button>
+          <Button
+            onClick={async () => {
+              if (!baseAgree) {
+                showModal(true);
+                return;
+              }
+
               const types: number[] = [];
               if (depositAgree) types.push(1); // 예금
               if (savingsAgree) types.push(2); // 적금
               if (loanAgree) types.push(3); // 대출
 
+              const amount = Number(initialDeposit);
+              const { plusBalanceBySessionUser } = await import(
+                '@/lib/actions/calBalance'
+              );
+              await plusBalanceBySessionUser(amount);
+
               router.push(`./create-account?types=${types.join(',')}`);
-            }
-          }}
-          className='flex justify-center w-full h-[48px] text-[16px]'
-        >
-          다음
-        </Button>
+            }}
+            className='w-1/2 h-[48px] text-[16px]'
+          >
+            다음
+          </Button>
+        </div>
       </div>
 
       {modal && (
