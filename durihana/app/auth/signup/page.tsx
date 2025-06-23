@@ -217,7 +217,7 @@ export default function Singup() {
         </div>
 
         <div className='flex flex-col gap-[10px]'>
-          <Txt className={title}>예정 결혼일</Txt>
+          <Txt className={title}>결혼 예정일</Txt>
           <InputComponent
             className={inputSet}
             type='text'
