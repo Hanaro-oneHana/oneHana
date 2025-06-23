@@ -16,7 +16,7 @@ export default function AccountCardDefault({ signUp }: AccountCardProps) {
   };
 
   return (
-    <div className='bg-lightmint rounded-[10px] border border-borderline px-6 py-6 flex flex-col items-center justify-center'>
+    <div className='bg-lightmint rounded-[10px] border border-linegray px-6 py-6 flex flex-col items-center justify-center'>
       <Txt color='text-icon' className='mb-[10px]'>
         하나은행 입출금 통장이 없다면?
       </Txt>
