@@ -15,8 +15,32 @@ type Props = {
 
 export default function WeddingBucketBox({ item }: Props) {
   const router = useRouter();
+  const [currentState, setCurrentState] = useState(item.state);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const bucketState = ['예약', '예약완료', '결제', '결제완료'];
+  // 캘린더에서 확인 눌렀을 때 호출되는 콜백
+  const handleReservation = async (date: Date, time: string) => {
+    try {
+      // 1) partnerCalendar에 일정 추가
+      await addPartnerCalendarEvent(item.id, { date, time });
+      // 2) 웨딩버켓 state 업데이트(API 호출 + 로컬 반영)
+      await updateBucketItemState(item.id, { state: 1 });
+      setCurrentState(1);
+      setCalendarOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 결제 버튼 눌렀을 때 호출
+  const handlePayment = async () => {
+    try {
+      await updateBucketItemState(item.id, { state: 3 });
+      setCurrentState(3);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const handleDelete = async () => {
     console.log(`Deleting item with id: ${item.id}`);
     try {
@@ -71,19 +95,23 @@ export default function WeddingBucketBox({ item }: Props) {
               {item.price?.toLocaleString()} 원
             </Txt>
             <Button
-              className='w-fit h-fit px-[10px] py-[9px] leading-[10px] '
               onClick={() => setCalendarOpen(true)}
               bgColor={
-                item.state === 0 || item.state === 2
+                currentState === 0 || currentState === 2
                   ? 'bg-mint'
                   : 'bg-accountgray'
               }
-              disabled={item.state === 1 || item.state === 3}
+              disabled={currentState === 1 || currentState === 3}
             >
-              <Txt size='text-[12px]' weight='font-[500]' align='text-center'>
-                {bucketState[item.state || 0]}
-              </Txt>
+              <Txt>{bucketLabels[currentState]}</Txt>
             </Button>
+
+            {/* 결제 모드(state=2)일 때만 */}
+            {currentState === 2 && (
+              <Button onClick={handlePayment} className='ml-2'>
+                결제완료 처리
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -91,6 +119,8 @@ export default function WeddingBucketBox({ item }: Props) {
         partnerServiceId={item.id}
         open={calendarOpen}
         onOpenChange={setCalendarOpen}
+        viewOnly={false}
+        onConfirm={handleReservation} // ← 여기 연결
       />
     </div>
   );
