@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { findPartnerId } from '@/lib/actions/AuthActions';
 import { updateRandomCode, tryMating } from '../lib/actions/InviteActions';
 import AlertModal from './alert/AlertModal';
 import Button from './atoms/Button';
@@ -27,7 +28,7 @@ export default function InviteCode() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
-  const { data: session } = useSession(); // ← 세션 및 로딩 상태
+  const { data: session, update } = useSession(); // ← 세션 및 로딩 상태
   const rawId = session?.user?.id as number | undefined;
   const userId = Number(rawId);
   const router = useRouter();
@@ -42,10 +43,20 @@ export default function InviteCode() {
   const tryConnecting = async (id: number, mate_code: string) => {
     if (!id) return;
     setLoading(true);
-    const mate = await tryMating(id, mateCode);
+    const mate = await tryMating(id, mate_code);
     setLoading(false);
 
     if (mate.status === 'success') {
+      const partnerId = await findPartnerId(mate_code);
+      update({
+        user: {
+          id: userId,
+          name: session?.user?.name || '',
+          email: session?.user?.email || '',
+          partnerId: partnerId.data,
+          isMain: userId && partnerId.data && userId < Number(partnerId.data),
+        },
+      });
       setModalMessage('연결 성공');
       setIsSuccess(true);
     } else {

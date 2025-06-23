@@ -1,6 +1,7 @@
 import { Header } from '@/components/atoms';
 import BottomNavigation from '@/components/atoms/BottomNavigation';
 import StoreComponent from '@/components/store/Store';
+import { use } from 'react';
 import { getStoreList } from '@/lib/actions/StoreActions';
 
 type SearchParams = Promise<{
@@ -8,19 +9,16 @@ type SearchParams = Promise<{
   category?: string;
 }>;
 
-export default async function StorePage({
+export default function StorePage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const { search, category } = await searchParams;
+  const { search, category } = use(searchParams);
 
-  const storeList = await getStoreList(
-    search || '',
-    parseInt(category || '1', 10)
+  const storeList = use(
+    getStoreList(search || '', parseInt(category || '1', 10))
   );
-
-  console.log('Store List:', storeList);
 
   return (
     <>

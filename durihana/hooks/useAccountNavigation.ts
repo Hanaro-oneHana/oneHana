@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import type { Stage } from './useAccountCreation';
 
 type NavigationProps = {
@@ -10,7 +11,7 @@ type NavigationProps = {
   types: number[];
   formStatesLength: number;
   createAccounts: () => Promise<void>;
-  router: any;
+  router: ReturnType<typeof useRouter>;
 };
 
 export function useAccountNavigation({

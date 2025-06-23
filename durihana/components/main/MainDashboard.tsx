@@ -30,8 +30,8 @@ const checklist = [
   },
   {
     keyword: '예물',
-    todoText: '예물 구매하기',
-    doneText: '예물 구매 완료',
+    todoText: '예물·예단 구매하기',
+    doneText: '예물·예단 구매 완료',
   },
 ];
 

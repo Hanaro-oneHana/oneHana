@@ -15,8 +15,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useRouter } from 'next/navigation';
 import { useAgreement } from '@/contexts/account/useAgreement';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function ElseAccount() {
@@ -75,7 +75,12 @@ export default function ElseAccount() {
 
               <AccordionItem value='item-2'>
                 <AccordionTrigger className='border-b border-primarycolor'>
-                  <Txt className='text-[14px]'>정기예금 상품 약관 동의서</Txt>
+                  <Txt className='text-[14px]'>
+                    정기예금 상품 약관 동의서
+                    <Txt className='text-[8px] ml-1' color='text-red'>
+                      (선택)
+                    </Txt>
+                  </Txt>
                 </AccordionTrigger>
                 <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
                   <DepositAgreement />
@@ -97,7 +102,12 @@ export default function ElseAccount() {
 
               <AccordionItem value='item-3'>
                 <AccordionTrigger className='border-b border-primarycolor'>
-                  <Txt className='text-[14px]'>정기적금 약관 동의서</Txt>
+                  <Txt className='text-[14px]'>
+                    정기적금 약관 동의서
+                    <Txt className='text-[8px] ml-1' color='text-red'>
+                      (선택)
+                    </Txt>
+                  </Txt>
                 </AccordionTrigger>
                 <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
                   <SavingsAgreement />
@@ -119,7 +129,12 @@ export default function ElseAccount() {
 
               <AccordionItem value='item-4'>
                 <AccordionTrigger className='border-b border-primarycolor'>
-                  <Txt className='text-[14px]'>대출 상품 약관 동의서</Txt>
+                  <Txt className='text-[14px]'>
+                    대출 상품 약관 동의서
+                    <Txt className='text-[8px] ml-1' color='text-red'>
+                      (선택)
+                    </Txt>
+                  </Txt>
                 </AccordionTrigger>
                 <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
                   <LoanAgreement />
