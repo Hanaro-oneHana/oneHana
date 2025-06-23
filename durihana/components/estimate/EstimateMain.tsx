@@ -24,7 +24,6 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Store } from '@/lib/actions/StoreActions';
-import AlertModal from '../alert/AlertModal';
 
 type Props = {
   storeList?: Store[];
