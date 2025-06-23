@@ -38,10 +38,17 @@ export default function StoreDetail(details: StoreDetailProps) {
     }
 
     try {
+      const bucketState =
+        details.type === '가전·가구' || details.type === '예물' ? 2 : 0;
       const requestUser = session?.user?.isMain
         ? parseInt(session?.user?.id || '0', 10)
         : session?.user?.partnerId || 0;
-      await insertOptions(requestUser || 0, details.id, selectedOptions);
+      await insertOptions(
+        requestUser || 0,
+        details.id,
+        selectedOptions,
+        bucketState
+      );
       showModal(true);
     } catch (error) {
       console.error('옵션 저장 실패:', error);

@@ -1,22 +1,36 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { deleteBucketItem } from '@/lib/actions/StoreActions';
 import { Button, Txt } from '../atoms';
 import { BucketItem } from './WeddingBucket';
 
 type Props = {
   item: BucketItem;
-  index: number;
 };
 
-export default function WeddingBucketBox({ item, index }: Props) {
+export default function WeddingBucketBox({ item }: Props) {
+  const router = useRouter();
   const bucketState = ['예약', '예약완료', '결제', '결제완료'];
+  const handleDelete = async () => {
+    console.log(`Deleting item with id: ${item.id}`);
+    try {
+      await deleteBucketItem(item.id);
+      router.refresh();
+    } catch (error) {
+      console.error('아이템 삭제 중 오류 발생', error);
+    }
+  };
 
   return (
     <div className='flex flex-col gap-[10px] rounded-[10px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.05)]'>
       <div className='relative flex items-center justify-between p-[20px] bg-mainwhite rounded-[10px]'>
-        <Button className='absolute bg-transparent p-0 top-[15px] right-[15px] w-fit h-fit leading-none'>
+        <Button
+          className='absolute bg-transparent p-0 top-[15px] right-[15px] w-fit h-fit leading-none'
+          onClick={handleDelete}
+        >
           <Image
             src={`/asset/icons/close.svg`}
             alt={`Close Icon`}
@@ -53,7 +67,15 @@ export default function WeddingBucketBox({ item, index }: Props) {
             >
               {item.price?.toLocaleString()} 원
             </Txt>
-            <Button className='w-fit h-fit px-[10px] py-[9px] bg-mint leading-[10px] '>
+            <Button
+              className='w-fit h-fit px-[10px] py-[9px] leading-[10px] '
+              bgColor={
+                item.state === 0 || item.state === 2
+                  ? 'bg-mint'
+                  : 'bg-accountgray'
+              }
+              disabled={item.state === 1 || item.state === 3}
+            >
               <Txt size='text-[12px]' weight='font-[500]' align='text-center'>
                 {bucketState[item.state || 0]}
               </Txt>

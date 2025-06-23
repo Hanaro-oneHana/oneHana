@@ -124,3 +124,17 @@ export const getBucketList = async (userId: number) => {
 
   return result.sort((a, b) => (a.category ?? 0) - (b.category ?? 0));
 };
+
+export const deleteBucketItem = async (id: number) => {
+  try {
+    await prisma.budgetPlan.delete({
+      where: {
+        id: id,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error('아이템 삭제 중 오류 발생', error);
+    return false;
+  }
+};

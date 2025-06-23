@@ -1,5 +1,6 @@
 'use client';
 
+import { boolean } from 'zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -72,9 +73,9 @@ export function useAccountCreation() {
   // 타입이 없으면 리다이렉트
   useEffect(() => {
     if (types.length === 0) {
-      router.push('/else-account');
+      router.push('./else-account');
     }
-  }, [types, router]);
+  }, [types]);
 
   // 폼 업데이트
   const updateForm = (updates: Partial<FormState>) => {

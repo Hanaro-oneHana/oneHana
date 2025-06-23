@@ -1,7 +1,7 @@
 import { hash } from 'bcryptjs';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { signUpAction } from '@/lib/actions/AuthActions';
 import prisma from '../db';
-import { createAction } from './CreateActions';
 
 // Prisma Mock 설정
 // prisma.user.create를 가짜함수 vi.fn()으로 바꾸기
@@ -24,13 +24,13 @@ vi.mock('bcryptjs', async () => {
   };
 });
 
-describe('createAction()', () => {
+describe('signUpAction()', () => {
   // 테스트할 데이터 두개
   const userInput = {
     name: '홍길동',
     email: 'hong@example.com',
     password: 'password123',
-    phone: '01012345678',
+    phone: '010-1234-5678',
     marriageDate: '2024-05-01',
   };
 
@@ -48,7 +48,7 @@ describe('createAction()', () => {
   it('비밀번호 가상 해시 처리 + 유저 생성', async () => {
     (prisma.user.create as any).mockResolvedValue(mockUserResult);
 
-    const result = await createAction(
+    const result = await signUpAction(
       userInput.name,
       userInput.email,
       userInput.password,
@@ -66,6 +66,6 @@ describe('createAction()', () => {
         marriage_date: userInput.marriageDate,
       },
     });
-    expect(result).toEqual(mockUserResult);
+    expect(result).toEqual({ isSuccess: true, data: mockUserResult });
   });
 });

@@ -29,12 +29,7 @@ export default function AccountCreationContent({
   }
 
   if (currentStage === 'complete') {
-    return (
-      <CompleteStep
-        accountType={current.type}
-        isLastAccount={step + 1 >= formStatesLength}
-      />
-    );
+    return <CompleteStep />;
   }
 
   return null;

@@ -7,7 +7,12 @@ type Props = {
   className?: string;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
-  bgColor?: 'bg-primarycolor' | 'bg-mint' | 'bg-icon' | 'bg-purple';
+  bgColor?:
+    | 'bg-primarycolor'
+    | 'bg-mint'
+    | 'bg-icon'
+    | 'bg-purple'
+    | 'bg-accountgray';
   textColor?: 'text-mainwhite' | 'text-mainblack';
   disabled?: boolean;
 };
