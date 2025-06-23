@@ -22,5 +22,6 @@ export const config = {
     '/estimate/:path*',
     '/invite-code/:path*',
     '/wedding-bucket/:path*',
+    '/my',
   ],
 };
