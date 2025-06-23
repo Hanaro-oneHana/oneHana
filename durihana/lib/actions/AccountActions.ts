@@ -53,33 +53,59 @@ export const createMultipleAccounts = async (
       const createdAccounts = [];
       let totalSchedules = 0;
 
+      // 입출금 계좌 조회 (type=0)
+      const mainAccount = await tx.account.findFirst({
+        where: { user_id: userId, type: 0 },
+      });
+      if (!mainAccount) throw new Error('입출금 계좌가 존재하지 않습니다.');
+      let currentBalance = mainAccount.balance;
+
       for (const accountData of accountsData) {
-        const currentDate = new Date();
-        const expireDate = new Date();
+        const now = new Date();
+        const expireDate = new Date(now);
         expireDate.setFullYear(
-          currentDate.getFullYear() + Math.floor(accountData.period / 12) || 1
+          now.getFullYear() + Math.floor(accountData.period / 12) || 1
         );
 
         const dbAccountData: Prisma.AccountUncheckedCreateInput = {
-          account: `530-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
+          account: `530-${String(Math.floor(Math.random() * 1e6)).padStart(6, '0')}-${String(Math.floor(Math.random() * 1e5)).padStart(5, '0')}`,
           balance: accountData.amount,
           type: accountData.type,
           user_id: userId,
         };
 
-        // 계좌 타입별 설정
         switch (accountData.type) {
-          case 0: // 입출금
+          case 0:
+            // 입출금: 일정 생성만
             break;
-          case 1: // 예금
+          case 1:
+            // 예금: 만기일 설정 + 금액만큼 입출금 계좌에서 차감
             dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
+            currentBalance -= accountData.amount;
+            await tx.account.update({
+              where: { id: mainAccount.id },
+              data: { balance: currentBalance },
+            });
+            await tx.transaction.create({
+              data: {
+                account_id: mainAccount.id,
+                transaction_date: now
+                  .toISOString()
+                  .slice(0, 16)
+                  .replace('T', ' '),
+                amount: -accountData.amount,
+                balance: currentBalance,
+              },
+            });
             break;
-          case 2: // 적금
+          case 2:
+            // 적금: 기존 로직
             dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             dbAccountData.transfer_date = String(accountData.transferDay || 15);
             dbAccountData.payment = accountData.amount;
             break;
-          case 3: // 대출
+          case 3:
+            // 대출: 만기일 설정 + 금액만큼 입출금 계좌에 더함
             dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
             dbAccountData.transfer_date = String(accountData.transferDay || 15);
             const loanRateEntry = await tx.loanInterest.findUnique({
@@ -87,34 +113,42 @@ export const createMultipleAccounts = async (
             });
             const annualRate = Number(loanRateEntry?.rate) || 0;
             const monthlyRate = annualRate / 12 / 100;
-
             const P = accountData.amount;
             const n = accountData.period;
             const payment = Math.round(
               (P * monthlyRate * Math.pow(1 + monthlyRate, n)) /
                 (Math.pow(1 + monthlyRate, n) - 1)
             );
-
             dbAccountData.payment = payment;
+
+            currentBalance += accountData.amount;
+            await tx.account.update({
+              where: { id: mainAccount.id },
+              data: { balance: currentBalance },
+            });
+            await tx.transaction.create({
+              data: {
+                account_id: mainAccount.id,
+                transaction_date: now
+                  .toISOString()
+                  .slice(0, 16)
+                  .replace('T', ' '),
+                amount: accountData.amount,
+                balance: currentBalance,
+              },
+            });
             break;
         }
 
-        // 계좌 생성
-        const account = await tx.account.create({
-          data: dbAccountData,
-        });
-
+        const account = await tx.account.create({ data: dbAccountData });
         createdAccounts.push(account);
 
-        // 트랜잭션 내에서 일정 생성 (tx 클라이언트 전달)
+        // 스케줄 생성
         const scheduleResult = await createAccountSchedules(account.id, tx);
         totalSchedules += scheduleResult.count;
       }
 
-      return {
-        accounts: createdAccounts,
-        totalSchedules,
-      };
+      return { accounts: createdAccounts, totalSchedules };
     });
 
     return {
@@ -209,4 +243,3 @@ export async function getCoupleTotalBalance(userId: number) {
 
   return accounts.reduce((sum, acc) => sum + acc.balance, 0);
 }
-
