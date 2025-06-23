@@ -89,8 +89,9 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   useEffect(() => {
     if (selectedRegions.length > 0) {
       const filteredItems =
-        storeList?.filter((item) => selectedRegions.includes(item.location)) ||
-        [];
+        storeList?.filter((item) =>
+          selectedRegions.some((region) => item.location.includes(region))
+        ) || [];
       setItems(filteredItems);
     } else {
       setItems(storeList || []);
