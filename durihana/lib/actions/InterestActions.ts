@@ -16,7 +16,7 @@ async function getStepByCount(
   });
 
   // 2) 기본 스텝(1)에 count를 더함
-  const desired = 1 + count;
+  const desired = count;
 
   // 3) 테이블 상 최대 스텝 조회
   const maxEntry = await model.findFirst({ orderBy: { step: 'desc' } });
