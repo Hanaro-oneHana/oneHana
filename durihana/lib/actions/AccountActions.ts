@@ -58,10 +58,11 @@ export const createMultipleAccounts = async (
         where: { user_id: userId, type: 0 },
       });
       if (!mainAccount) throw new Error('입출금 계좌가 존재하지 않습니다.');
-      let currentBalance = mainAccount.balance;
+      let mainBalance = mainAccount.balance;
 
       for (const accountData of accountsData) {
         const now = new Date();
+        const formattedNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         const expireDate = new Date(now);
         expireDate.setFullYear(
           now.getFullYear() + Math.floor(accountData.period / 12) || 1
@@ -74,77 +75,84 @@ export const createMultipleAccounts = async (
           user_id: userId,
         };
 
-        switch (accountData.type) {
-          case 0:
-            // 입출금: 일정 생성만
-            break;
-          case 1:
-            // 예금: 만기일 설정 + 금액만큼 입출금 계좌에서 차감
-            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
-            currentBalance -= accountData.amount;
-            await tx.account.update({
-              where: { id: mainAccount.id },
-              data: { balance: currentBalance },
-            });
-            await tx.transaction.create({
-              data: {
-                account_id: mainAccount.id,
-                transaction_date: now
-                  .toISOString()
-                  .slice(0, 16)
-                  .replace('T', ' '),
-                amount: -accountData.amount,
-                balance: currentBalance,
-              },
-            });
-            break;
-          case 2:
-            // 적금: 기존 로직
-            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
-            dbAccountData.transfer_date = String(accountData.transferDay || 15);
-            dbAccountData.payment = accountData.amount;
-            break;
-          case 3:
-            // 대출: 만기일 설정 + 금액만큼 입출금 계좌에 더함
-            dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
-            dbAccountData.transfer_date = String(accountData.transferDay || 15);
-            const loanRateEntry = await tx.loanInterest.findUnique({
-              where: { step: 1 },
-            });
-            const annualRate = Number(loanRateEntry?.rate) || 0;
-            const monthlyRate = annualRate / 12 / 100;
-            const P = accountData.amount;
-            const n = accountData.period;
-            const payment = Math.round(
-              (P * monthlyRate * Math.pow(1 + monthlyRate, n)) /
-                (Math.pow(1 + monthlyRate, n) - 1)
-            );
-            dbAccountData.payment = payment;
+        // 계좌 생성 전 입출금 계좌 및 트랜잭션 처리
+        if (accountData.type === 1) {
+          // 예금: 만기일 설정 + 입출금 계좌에서 출금
+          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
 
-            currentBalance += accountData.amount;
-            await tx.account.update({
-              where: { id: mainAccount.id },
-              data: { balance: currentBalance },
-            });
-            await tx.transaction.create({
-              data: {
-                account_id: mainAccount.id,
-                transaction_date: now
-                  .toISOString()
-                  .slice(0, 16)
-                  .replace('T', ' '),
-                amount: accountData.amount,
-                balance: currentBalance,
-              },
-            });
-            break;
+          mainBalance -= accountData.amount;
+          await tx.account.update({
+            where: { id: mainAccount.id },
+            data: { balance: mainBalance },
+          });
+          await tx.transaction.create({
+            data: {
+              account_id: mainAccount.id,
+              transaction_date: formattedNow,
+              amount: -accountData.amount,
+              balance: mainBalance,
+            },
+          });
+        }
+        if (accountData.type === 3) {
+          // 대출: 만기일 설정 + 입출금 계좌에 입금
+          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
+          dbAccountData.transfer_date = String(accountData.transferDay || 15);
+          const loanRateEntry = await tx.loanInterest.findUnique({
+            where: { step: 1 },
+          });
+          const annualRate = Number(loanRateEntry?.rate) || 0;
+          const monthlyRate = annualRate / 12 / 100;
+          const P = accountData.amount;
+          const n = accountData.period;
+          dbAccountData.payment = Math.round(
+            (P * monthlyRate * Math.pow(1 + monthlyRate, n)) /
+              (Math.pow(1 + monthlyRate, n) - 1)
+          );
+
+          mainBalance += accountData.amount;
+          await tx.account.update({
+            where: { id: mainAccount.id },
+            data: { balance: mainBalance },
+          });
+          await tx.transaction.create({
+            data: {
+              account_id: mainAccount.id,
+              transaction_date: formattedNow,
+              amount: accountData.amount,
+              balance: mainBalance,
+            },
+          });
         }
 
-        const account = await tx.account.create({ data: dbAccountData });
-        createdAccounts.push(account);
+        // 신규 계좌 생성
+        const newAccount = await tx.account.create({ data: dbAccountData });
+        createdAccounts.push(newAccount);
+
+        // 신규 계좌에도 트랜잭션 기록: 예금 및 대출 계좌에 금액 입출금 내역
+        if (accountData.type === 1 || accountData.type === 3) {
+          await tx.transaction.create({
+            data: {
+              account_id: newAccount.id,
+              transaction_date: formattedNow,
+              amount:
+                accountData.type === 1
+                  ? accountData.amount
+                  : -accountData.amount,
+              balance: newAccount.balance,
+            },
+          });
+        }
+
+        // 적금 타입 세부 로직
+        if (accountData.type === 2) {
+          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
+          dbAccountData.transfer_date = String(accountData.transferDay || 15);
+          dbAccountData.payment = accountData.amount;
+        }
 
         // 스케줄 생성
-        const scheduleResult = await createAccountSchedules(account.id, tx);
+        const scheduleResult = await createAccountSchedules(newAccount.id, tx);
         totalSchedules += scheduleResult.count;
       }
 
