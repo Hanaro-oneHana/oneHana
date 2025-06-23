@@ -2,6 +2,7 @@
 
 import { PrismaClient } from '@/lib/generated/prisma';
 import { getCoupleTotalBalance } from './AccountActions';
+import { getCoupleUserIds } from './getCoupleUserIds';
 
 const prisma = new PrismaClient();
 
@@ -33,25 +34,7 @@ export async function plusBalance(accountId: number, amount: number) {
     const coupleBalance = await getCoupleTotalBalance(user.id);
 
     // 3. 커플 유저 ID들 찾기
-    const coupleUsers = await prisma.user.findMany({
-      where: {
-        OR: [
-          {
-            code: user.code,
-            mate_code: user.mate_code,
-          },
-          {
-            code: user.mate_code,
-            mate_code: user.code,
-          },
-        ],
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const coupleUserIds = coupleUsers.map((u) => u.id);
+    const coupleUserIds = await getCoupleUserIds(user.id);
 
     // 4. socket.io로 커플 양쪽 모두에게 emit
     if (io) {
