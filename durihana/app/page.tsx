@@ -4,11 +4,15 @@ import { Header, BottomNavigation } from '@/components/atoms';
 import HouseLoanCard from '@/components/main/HouseLoanCard';
 import MainDashBoard from '@/components/main/MainDashboard';
 import PopularPartner from '@/components/main/PopularPartner';
-import { getAccountsByUserId } from '@/lib/actions/AccountActions';
+import {
+  getAccountsByUserId,
+  getCoupleTotalBalance,
+} from '@/lib/actions/AccountActions';
 import {
   getCategoriesByUserId,
   getMarriageDate,
 } from '@/lib/actions/DashboardActions';
+import { plusBalance } from '@/lib/actions/calBalance';
 import { auth } from '@/lib/auth';
 
 export default async function Home() {
@@ -35,10 +39,10 @@ export default async function Home() {
   }
 
   const accounts = await getAccountsByUserId(userId);
-
   const isAccountEmpty = !accounts || accounts.length === 0;
+  const coupleBalance = await getCoupleTotalBalance(userId);
 
-  let mainAccount: MainAccount | null = null;
+  let mainAccountData: (MainAccount & { id: number }) | null = null;
   let subAccounts: SubAccount[] = [];
 
   if (!isAccountEmpty) {
@@ -46,7 +50,8 @@ export default async function Home() {
     const subs = accounts.filter((acc) => acc.type !== 0);
 
     if (main) {
-      mainAccount = {
+      mainAccountData = {
+        id: main.id,
         type: 0,
         account: main.account,
         balance: main.balance,
@@ -61,19 +66,35 @@ export default async function Home() {
 
   const marriageDate = await getMarriageDate(userId);
   const completedCategory = await getCategoriesByUserId(userId);
-  console.log('🚀 ~ Home ~ completedCategory:', completedCategory);
+
   return (
     <div className='flex flex-col h-screen pt-[70px] px-[20px]'>
       <Header leftIcon='my' rightIcon='bell' />
       <BottomNavigation selectedItem='home' />
-      {isAccountEmpty || !mainAccount ? (
+      {isAccountEmpty || !mainAccountData ? (
         <AccountCardDefault />
       ) : (
-        <AccountCard
-          userId={userId}
-          mainAccount={mainAccount}
-          subAccounts={subAccounts}
-        />
+        <>
+          <AccountCard
+            userId={userId}
+            mainAccount={mainAccountData}
+            subAccounts={subAccounts}
+            coupleBalance={coupleBalance}
+          />
+          <form
+            action={async () => {
+              'use server';
+              await plusBalance(mainAccountData!.id, 10000);
+            }}
+          >
+            <button
+              type='submit'
+              className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'
+            >
+              테스트
+            </button>
+          </form>
+        </>
       )}
       <div className='pt-[30px]'>
         <MainDashBoard date={marriageDate} category={completedCategory} />
