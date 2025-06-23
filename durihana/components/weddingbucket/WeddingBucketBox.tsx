@@ -4,42 +4,53 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import { deleteBucketItem } from '@/lib/actions/StoreActions';
+import { addPartnerCalendarEvent } from '@/lib/actions/ReservationActions';
+import {
+  deleteBucketItem,
+  processBudgetPlanTransaction,
+  updateBudgetPlan,
+} from '@/lib/actions/StoreActions';
 import { Button, Txt } from '../atoms';
 import CalendarDrawer from '../calendar/CalendarDrawer';
 import { BucketItem } from './WeddingBucket';
 
-type Props = {
-  item: BucketItem;
-};
+type Props = { item: BucketItem };
 
 export default function WeddingBucketBox({ item }: Props) {
+  const { data: session } = useSession();
+  const userId = Number(session?.user?.id) ?? 0;
   const router = useRouter();
-  const [currentState, setCurrentState] = useState(item.state);
+
+  // 로컬 상태로 UI 즉시 갱신
+  const [currentState, setCurrentState] = useState<number>(item.state ?? 0);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const bucketState = ['예약', '예약완료', '결제', '결제완료'];
-  // 캘린더에서 확인 눌렀을 때 호출되는 콜백
+
+  const bucketLabels = ['예약', '예약완료', '결제', '결제완료'];
+
+  // 1) 달력에서 날짜·시간 선택 후 “예약하기” 클릭 시
   const handleReservation = async (date: Date, time: string) => {
-    try {
-      // 1) partnerCalendar에 일정 추가
-      await addPartnerCalendarEvent(item.id, { date, time });
-      // 2) 웨딩버켓 state 업데이트(API 호출 + 로컬 반영)
-      await updateBucketItemState(item.id, { state: 1 });
-      setCurrentState(1);
-      setCalendarOpen(false);
-    } catch (err) {
-      console.error(err);
-    }
+    await processBudgetPlanTransaction(userId, Number(item.price));
+    // 1-1) partnerCalendar에 예약 이벤트 기록
+    await addPartnerCalendarEvent(userId, item.id);
+
+    // 1-2) BudgetPlan 상태=1(예약완료), selected에 date/time 저장
+    await updateBudgetPlan(item.id, 1);
+
+    setCurrentState(1);
+    setCalendarOpen(false);
   };
 
-  // 결제 버튼 눌렀을 때 호출
+  // 2) “결제하기” 버튼 클릭 시
   const handlePayment = async () => {
-    try {
-      await updateBucketItemState(item.id, { state: 3 });
-      setCurrentState(3);
-    } catch (err) {
-      console.error(err);
-    }
+    await processBudgetPlanTransaction(userId, Number(item.price));
+
+    // 2-1) partnerCalendar에 결제 이벤트 기록
+    await addPartnerCalendarEvent(userId, item.id);
+
+    // 2-2) BudgetPlan 상태=3(결제완료), selected는 그대로 둠
+    await updateBudgetPlan(item.id, 3);
+
+    setCurrentState(3);
   };
   const handleDelete = async () => {
     console.log(`Deleting item with id: ${item.id}`);
@@ -95,7 +106,14 @@ export default function WeddingBucketBox({ item }: Props) {
               {item.price?.toLocaleString()} 원
             </Txt>
             <Button
-              onClick={() => setCalendarOpen(true)}
+              className='w-fit h-fit px-[10px] py-[9px] leading-[10px]'
+              onClick={() => {
+                if (currentState === 2) {
+                  handlePayment();
+                } else {
+                  setCalendarOpen(true);
+                }
+              }}
               bgColor={
                 currentState === 0 || currentState === 2
                   ? 'bg-mint'
@@ -103,15 +121,10 @@ export default function WeddingBucketBox({ item }: Props) {
               }
               disabled={currentState === 1 || currentState === 3}
             >
-              <Txt>{bucketLabels[currentState]}</Txt>
+              <Txt size='text-[12px]' weight='font-[500]' align='text-center'>
+                {bucketLabels[currentState]}
+              </Txt>
             </Button>
-
-            {/* 결제 모드(state=2)일 때만 */}
-            {currentState === 2 && (
-              <Button onClick={handlePayment} className='ml-2'>
-                결제완료 처리
-              </Button>
-            )}
           </div>
         </div>
       </div>
@@ -120,7 +133,7 @@ export default function WeddingBucketBox({ item }: Props) {
         open={calendarOpen}
         onOpenChange={setCalendarOpen}
         viewOnly={false}
-        onConfirm={handleReservation} // ← 여기 연결
+        onConfirm={handleReservation}
       />
     </div>
   );

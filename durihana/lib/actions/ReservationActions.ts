@@ -8,7 +8,6 @@ export const getReservedTimes = async (
   partnerServiceId: number,
   date: string
 ) => {
-
   const reservations = await prisma.partnerCalendar.findMany({
     where: {
       partner_service_id: partnerServiceId,
@@ -69,4 +68,26 @@ export const getFullyBookedDates = async (
   });
 
   return fullyBookedDates;
+};
+
+export const addPartnerCalendarEvent = async (
+  userId: number,
+  partnerServiceId: number
+): Promise<void> => {
+  // 날짜를 YYYY-MM-DD HH:mm 포맷으로 생성
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
+  const formattedDate = `${year}-${month}-${day} ${hour}:${minute}`;
+
+  await prisma.partnerCalendar.create({
+    data: {
+      user_id: userId,
+      partner_service_id: partnerServiceId,
+      reservation_date: formattedDate,
+    },
+  });
 };
