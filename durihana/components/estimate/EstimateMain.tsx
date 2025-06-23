@@ -39,7 +39,6 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   const [items, setItems] = useState<Store[]>(storeList || []);
   const [category, setCategory] = useState(categoryId || 1);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateSearchParam = (key: string[], value: string[]) => {
     const params = new URLSearchParams(searchParams);
@@ -180,7 +179,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
         <Button
           onClick={() => {
             if (categoryId === 5) {
-              router.push('/wedding-bucket');
+              router.push('/wedding-bucket?before=estimate');
             } else {
               updateSearchParam(
                 ['category', 'search'],

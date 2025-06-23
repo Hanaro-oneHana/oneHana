@@ -29,7 +29,7 @@ export default function PopularPartner() {
                 alt={partner.label}
                 width={90}
                 height={120}
-                className='mt-[4px]'
+                className='mt-[4px] rounded-[10px]'
               />
             </div>
           ))}

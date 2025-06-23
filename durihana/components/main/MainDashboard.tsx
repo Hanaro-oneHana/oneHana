@@ -1,4 +1,7 @@
+'use client';
+
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { calculateDday } from '@/lib/utils';
 import { Txt } from '../atoms';
 
@@ -36,12 +39,18 @@ const checklist = [
 ];
 
 export default function MainDashBoard({ date, category }: Props) {
+  const router = useRouter();
   const dDay = calculateDday(date);
 
   const isDone = (keyword: string) => category.some((c) => c.includes(keyword));
 
   return (
-    <>
+    <div
+      className='flex flex-col w-full'
+      onClick={() => {
+        router.push('/wedding-bucket');
+      }}
+    >
       <div className='flex flex-col w-full'>
         <Txt size='text-[18px]' weight='font-[500]' className='mb-[20px]'>
           나의 결혼 준비
@@ -91,6 +100,6 @@ export default function MainDashBoard({ date, category }: Props) {
           className='shrink-0 aspect-[118.25/118.25] rotate-[23.132deg] mr-[25px]'
         />
       </div>
-    </>
+    </div>
   );
 }

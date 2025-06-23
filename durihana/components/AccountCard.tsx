@@ -4,7 +4,6 @@ import Txt from '@/components/atoms/Txt';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
 import { socket } from '@/lib/socket-client';
 
 export type SubAccount = {
@@ -57,8 +56,6 @@ export default function AccountCard({
       accountType: number;
       coupleBalance: number;
     }) {
-      console.log('Balance updated:', data);
-
       setCoupleBalance(data.coupleBalance);
 
       if (data.accountType === 0) {
@@ -99,7 +96,7 @@ export default function AccountCard({
 
   return (
     <div
-      className='flex flex-col w-full relative bg-lightmint border border-borderline rounded-[10px] p-6 '
+      className='flex flex-col w-full relative bg-lightmint border border-linegray rounded-[10px] p-6 '
       onClick={onCardClick}
     >
       <div className='absolute right-5 '>
