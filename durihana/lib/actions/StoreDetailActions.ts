@@ -6,9 +6,10 @@ export type StoreDetailProps = {
   id: number;
   name: string;
   info: Record<string, string>;
-  type: string; // '예식장', '스드메', '여행'
+  categoryId: number;
+  // 1: 예식장 , 2: 스드메, 3: 신혼여행, 4: 가전가구 , 5: 예물
   options: Record<string, string>;
-  images?: string[]; // 이미지 배열
+  images: string[]; // 이미지 배열
 };
 
 export const getStoreDetail = async (storeId: number) => {
@@ -26,7 +27,7 @@ export const getStoreDetail = async (storeId: number) => {
           name: true,
           PartnerCategory: {
             select: {
-              type: true, // '예식장', '스드메', '여행' 중 하나
+              id: true, // categoryid
             },
           },
         },
@@ -34,18 +35,23 @@ export const getStoreDetail = async (storeId: number) => {
     },
   });
 
+  let images: string[] = [];
+  if (Array.isArray(detail?.image)) {
+    images = detail.image.filter(
+      (item): item is string => typeof item === 'string'
+    );
+  }
+
   const info: Record<string, string> = {};
   const options: Record<string, string> = {};
 
   if (typeof detail?.content === 'object' && detail.content !== null) {
     for (const [key, value] of Object.entries(detail.content)) {
       if (typeof value === 'string') {
-        //나중에 value 도 다 string 되면 type number 제거
         info[key] = String(value);
       } else if (typeof value === 'number') {
         info[key] = `${value.toLocaleString('ko-KR')} 원`; // 숫자 형식으로 변환
       } else if (Array.isArray(value)) {
-        //배열인 JSON 만 옵션으로 처리
         options[key] = JSON.stringify(value); // 문자열로 변환해서 저장
       }
     }
@@ -55,7 +61,7 @@ export const getStoreDetail = async (storeId: number) => {
     id: detail?.id || 0,
     name: detail?.name || '',
     info,
-    type: detail?.Partner?.PartnerCategory?.type || '',
+    categoryId: detail?.Partner?.PartnerCategory?.id || 1,
     options,
     images: detail?.image ? detail.image.toString().split(',') : [],
   };
