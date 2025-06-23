@@ -86,7 +86,7 @@ export default function CalendarDrawer({
                 disabled={!selectedDate || !selectedTime}
                 onClick={handleReservationConfirm}
               >
-                확인
+                예약하기
               </Button>
             )}
           </DrawerClose>

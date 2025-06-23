@@ -3,8 +3,10 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { deleteBucketItem } from '@/lib/actions/StoreActions';
 import { Button, Txt } from '../atoms';
+import CalendarDrawer from '../calendar/CalendarDrawer';
 import { BucketItem } from './WeddingBucket';
 
 type Props = {
@@ -13,6 +15,7 @@ type Props = {
 
 export default function WeddingBucketBox({ item }: Props) {
   const router = useRouter();
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const bucketState = ['예약', '예약완료', '결제', '결제완료'];
   const handleDelete = async () => {
     console.log(`Deleting item with id: ${item.id}`);
@@ -69,6 +72,7 @@ export default function WeddingBucketBox({ item }: Props) {
             </Txt>
             <Button
               className='w-fit h-fit px-[10px] py-[9px] leading-[10px] '
+              onClick={() => setCalendarOpen(true)}
               bgColor={
                 item.state === 0 || item.state === 2
                   ? 'bg-mint'
@@ -83,6 +87,11 @@ export default function WeddingBucketBox({ item }: Props) {
           </div>
         </div>
       </div>
+      <CalendarDrawer
+        partnerServiceId={item.id}
+        open={calendarOpen}
+        onOpenChange={setCalendarOpen}
+      />
     </div>
   );
 }
