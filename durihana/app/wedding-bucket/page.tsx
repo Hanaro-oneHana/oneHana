@@ -8,13 +8,12 @@ export default function WeddingBucketPage() {
   if (!session || !session.user) {
     return <div>로그인이 필요해요</div>;
   }
+
   const bucketList = use(
     getBucketList(
       session.user.isMain ? Number(session.user.id) : session.user.partnerId
     )
   );
-
-  console.log(session.user);
 
   return (
     <div>

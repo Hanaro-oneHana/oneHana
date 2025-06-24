@@ -3,17 +3,52 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { deleteBucketItem } from '@/lib/actions/StoreActions';
+import { useState } from 'react';
+import { addPartnerCalendarEvent } from '@/lib/actions/ReservationActions';
+import { deleteBucketItem, updateBudgetPlan } from '@/lib/actions/StoreActions';
+import { processBudgetPlanTransaction } from '@/lib/actions/TransactionActions';
 import { Button, Txt } from '../atoms';
+import CalendarDrawer from '../calendar/CalendarDrawer';
 import { BucketItem } from './WeddingBucket';
 
-type Props = {
-  item: BucketItem;
-};
+type Props = { item: BucketItem };
 
 export default function WeddingBucketBox({ item }: Props) {
+  const { data: session } = useSession();
+  const userId = Number(session?.user?.id) ?? 0;
   const router = useRouter();
-  const bucketState = ['예약', '예약완료', '결제', '결제완료'];
+
+  // 로컬 상태로 UI 즉시 갱신
+  const [currentState, setCurrentState] = useState<number>(item.state ?? 0);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const bucketLabels = ['예약', '예약완료', '결제', '결제완료'];
+
+  // 1) 달력에서 날짜·시간 선택 후 “예약하기” 클릭 시
+  const handleReservation = async (date: Date, time: string) => {
+    await processBudgetPlanTransaction(userId, Number(item.price));
+    // 1-1) partnerCalendar에 예약 이벤트 기록
+    await addPartnerCalendarEvent(userId, item.id);
+
+    // 1-2) BudgetPlan 상태=1(예약완료), selected에 date/time 저장
+    await updateBudgetPlan(item.id, 1);
+
+    setCurrentState(1);
+    setCalendarOpen(false);
+  };
+
+  // 2) “결제하기” 버튼 클릭 시
+  const handlePayment = async () => {
+    await processBudgetPlanTransaction(userId, Number(item.price));
+
+    // 2-1) partnerCalendar에 결제 이벤트 기록
+    await addPartnerCalendarEvent(userId, item.id);
+
+    // 2-2) BudgetPlan 상태=3(결제완료), selected는 그대로 둠
+    await updateBudgetPlan(item.id, 3);
+
+    setCurrentState(3);
+  };
   const handleDelete = async () => {
     console.log(`Deleting item with id: ${item.id}`);
     try {
@@ -68,21 +103,35 @@ export default function WeddingBucketBox({ item }: Props) {
               {item.price?.toLocaleString()} 원
             </Txt>
             <Button
-              className='w-fit h-fit px-[10px] py-[9px] leading-[10px] '
+              className='w-fit h-fit px-[10px] py-[9px] leading-[10px]'
+              onClick={() => {
+                if (currentState === 2) {
+                  handlePayment();
+                } else {
+                  setCalendarOpen(true);
+                }
+              }}
               bgColor={
-                item.state === 0 || item.state === 2
+                currentState === 0 || currentState === 2
                   ? 'bg-mint'
                   : 'bg-accountgray'
               }
-              disabled={item.state === 1 || item.state === 3}
+              disabled={currentState === 1 || currentState === 3}
             >
               <Txt size='text-[12px]' weight='font-[500]' align='text-center'>
-                {bucketState[item.state || 0]}
+                {bucketLabels[currentState]}
               </Txt>
             </Button>
           </div>
         </div>
       </div>
+      <CalendarDrawer
+        partnerServiceId={item.id}
+        open={calendarOpen}
+        onOpenChange={setCalendarOpen}
+        viewOnly={false}
+        onConfirm={handleReservation}
+      />
     </div>
   );
 }

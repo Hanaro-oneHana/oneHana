@@ -56,7 +56,7 @@ export default function BottomNavigation({
     router.push(`/${name}`);
   };
   return (
-    <div className='fixed bottom-0 left-[50%] translate-x-[-50%] max-w-[960px] flex w-dvw bg-mainwhite  items-center justify-around l'>
+    <div className='fixed bottom-0 left-[50%] translate-x-[-50%] max-w-[960px] flex w-dvw bg-mainwhite  items-center justify-around z-100'>
       {navigationItems.map((item) => (
         <button
           key={item.name}

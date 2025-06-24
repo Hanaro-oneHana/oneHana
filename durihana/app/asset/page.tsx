@@ -1,7 +1,10 @@
 import AccountCard, { MainAccount, SubAccount } from '@/components/AccountCard';
 import AssetOverview from '@/components/asset/AssetOverview';
 import { BottomNavigation, Header } from '@/components/atoms';
-import { getAccountsByUserId } from '@/lib/actions/AccountActions';
+import {
+  getAccountsByUserId,
+  getCoupleTotalBalance,
+} from '@/lib/actions/AccountActions';
 import {
   getBucketTotalAmount,
   getTypeAmounts,
@@ -33,6 +36,8 @@ export default async function Asset() {
     balance: acc.balance,
   }));
 
+  const coupleBalance = await getCoupleTotalBalance(userId);
+
   const data = await getTypeAmounts(userId);
 
   const total = await getBucketTotalAmount(userId);
@@ -46,6 +51,7 @@ export default async function Asset() {
             userId={userId}
             mainAccount={mainAccount}
             subAccounts={subAccounts}
+            coupleBalance={coupleBalance}
           />
         </div>
         <div className='mb-[75px]'>

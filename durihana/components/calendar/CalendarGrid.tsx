@@ -9,6 +9,7 @@ type CalendarGridProps = {
   showScheduleDots: boolean;
   onDateSelect: (date: Date) => void;
   isSameDay: (d1: Date, d2: Date) => boolean;
+  variant?: 'page' | 'drawer';
 };
 
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -22,6 +23,7 @@ export default function CalendarGrid({
   showScheduleDots,
   onDateSelect,
   isSameDay,
+  variant = 'page',
 }: CalendarGridProps) {
   const hasFinanceSchedule = (date: Date) => {
     return financeScheduleDates.some((scheduleDate) =>
@@ -62,6 +64,7 @@ export default function CalendarGrid({
 
           return (
             <CalendarDay
+              variant={variant}
               key={idx}
               date={date}
               isCurrentMonth={isCurrentMonth}

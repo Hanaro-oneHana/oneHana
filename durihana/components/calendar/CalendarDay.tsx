@@ -12,6 +12,7 @@ type CalendarDayProps = {
   hasReservationSchedule: boolean;
   showScheduleDots: boolean;
   onDateSelect: (date: Date) => void;
+  variant?: 'page' | 'drawer';
 };
 
 export default function CalendarDay({
@@ -23,7 +24,12 @@ export default function CalendarDay({
   hasReservationSchedule,
   showScheduleDots,
   onDateSelect,
+  variant = 'page',
 }: CalendarDayProps) {
+  const baseBg = variant === 'drawer' ? 'bg-mainwhite' : 'bg-background';
+  const selectedBg = 'bg-primaryhalf text-mainblack';
+  const disabledBg = `${baseBg} opacity-50 cursor-not-allowed`;
+  const normalBg = `${baseBg} text-mainblack`;
   return (
     <div className='relative flex justify-center'>
       <Button
@@ -32,11 +38,7 @@ export default function CalendarDay({
         className={cn(
           'h-[37px] w-[37px] flex items-center justify-center rounded-full text-[18px] font-[400] p-0',
           !isCurrentMonth && 'opacity-50',
-          isBlocked
-            ? 'bg-background text-mainblack opacity-50 cursor-not-allowed'
-            : isSelected
-              ? 'bg-primaryhalf text-mainblack'
-              : 'bg-background text-mainblack'
+          isBlocked ? disabledBg : isSelected ? selectedBg : normalBg
         )}
       >
         {date.getDate()}
