@@ -43,7 +43,12 @@ export default function ElseAccount() {
         <InputComponent
           placeholder='입금할 금액을 입력하세요'
           value={initialDeposit}
-          onChange={(e) => setInitialDeposit(e.target.value)}
+          onChange={(e) => {
+            const raw = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 남김
+            const formatted = raw ? Number(raw).toLocaleString() : '';
+            setInitialDeposit(formatted);
+          }}
+          inputMode='numeric'
           className='text-[14px]'
         />
         <div>
@@ -175,9 +180,10 @@ export default function ElseAccount() {
       </div>
       <div className='w-full px-[20px] pb-[40px]'>
         <div className='flex justify-between gap-2'>
-          <Button bgColor='bg-icon'
+          <Button
+            bgColor='bg-icon'
             onClick={async () => {
-              const amount = Number(initialDeposit);
+              const amount = Number(initialDeposit.replace(/,/g, ''));
               const { plusBalanceBySessionUser } = await import(
                 '@/lib/actions/calBalance'
               );
