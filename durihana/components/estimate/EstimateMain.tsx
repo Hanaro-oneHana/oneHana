@@ -83,7 +83,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
         setSortOptionList([]);
         break;
     }
-  }, [category]);
+  }, [category, updateSearchParam]);
 
   useEffect(() => {
     if (selectedRegions.length > 0) {
@@ -95,7 +95,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
     } else {
       setItems(storeList || []);
     }
-  }, [selectedRegions]);
+  }, [selectedRegions, storeList]);
 
   return (
     <div className='relative flex flex-col items-center justify-center h-dvh'>

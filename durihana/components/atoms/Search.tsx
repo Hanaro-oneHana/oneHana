@@ -20,7 +20,7 @@ export default function Search({
   useEffect(() => {
     const trimmed = debouncedValue.trim();
     onSearch(trimmed);
-  }, [debouncedValue]);
+  }, [debouncedValue, onSearch]);
   return (
     <div
       className={`

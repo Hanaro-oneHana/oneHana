@@ -9,13 +9,13 @@ const meta: Meta = {
 
 type Story = StoryObj<typeof meta>;
 
-export const homeNavi: Story = {
+export const HomeNavi: Story = {
   args: {
     selectedItem: 'home',
   },
 };
 
-export const storeNavi: Story = {
+export const StoreNavi: Story = {
   args: {
     selectedItem: 'store',
   },

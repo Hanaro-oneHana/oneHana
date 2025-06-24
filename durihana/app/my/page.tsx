@@ -1,4 +1,4 @@
-import { BottomNavigation, Button, Header, Txt } from '@/components/atoms';
+import { Button, Header, Txt } from '@/components/atoms';
 import { getInterestsByUserId, getUserInfo } from '@/lib/actions/UserActions';
 import { auth } from '@/lib/auth';
 

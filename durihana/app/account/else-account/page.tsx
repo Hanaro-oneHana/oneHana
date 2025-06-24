@@ -53,7 +53,7 @@ export default function ElseAccount() {
         />
         <div>
           <Txt size='text-[12px]' color='text-red'>
-            상품 가입을 원하지 않는 경우, '홈으로' 버튼을 눌러주세요.
+            {"상품 가입을 원하지 않는 경우, '홈으로' 버튼을 눌러주세요."}
           </Txt>
         </div>
       </div>

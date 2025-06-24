@@ -1,6 +1,5 @@
 import Txt from '@/components/atoms/Txt';
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { AlignCenter, SignalZero } from 'lucide-react';
 
 const meta: Meta = {
   title: 'atoms/Txt',
