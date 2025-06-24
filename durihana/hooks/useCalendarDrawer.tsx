@@ -6,7 +6,6 @@ import {
   getFullyBookedDates,
 } from '@/lib/actions/ReservationActions';
 import { TIMES } from '@/lib/times';
-import { formatDate } from '@/lib/utils';
 
 type UseCalendarDrawerProps = {
   partnerServiceId: number;
@@ -26,12 +25,12 @@ export function useCalendarDrawer({
   const [blockedDates, setBlockedDates] = useState<Date[]>([]);
   const [reservedTimes, setReservedTimes] = useState<string[]>([]);
   const [availableTimes, setAvailableTimes] = useState<string[]>(times);
+
+  // 단일 상태로 년/월 관리
   const [currentCalendarMonth, setCurrentCalendarMonth] = useState({
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
   });
-  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
-  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
   // 전체 예약된 날짜들을 가져오는 함수
   const loadBlockedDates = async (year: number, month: number) => {
@@ -41,9 +40,6 @@ export function useCalendarDrawer({
         year,
         month
       );
-      if (!viewOnly) {
-        console.log('🚀 ~ loadBlockedDates ~ fullyBooked:', fullyBooked);
-      }
       setBlockedDates(fullyBooked);
     } catch (error) {
       console.error('Failed to load blocked dates:', error);
@@ -53,7 +49,12 @@ export function useCalendarDrawer({
   // 선택된 날짜의 예약된 시간들을 가져오는 함수
   const loadReservedTimes = async (date: Date) => {
     try {
-      const dateStr = formatDate(date); // '2025-01-15'
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const dateStr = `${yyyy}-${mm}-${dd}`; // 'YYYY-MM-DD'
+      console.log('🚀 @@@@@@@@@@@@@@@@ ~ dateStr:', dateStr);
+
       const reserved = await getReservedTimes(partnerServiceId, dateStr);
       setReservedTimes(reserved);
 
@@ -77,19 +78,14 @@ export function useCalendarDrawer({
     setCurrentCalendarMonth({ year, month });
   };
 
-  // 컴포넌트 마운트 시 현재 월의 블록된 날짜들 로드
-  useEffect(() => {
-    loadBlockedDates(calendarYear, calendarMonth);
-  }, [partnerServiceId, calendarMonth, calendarYear]);
-
-  // 달력 월이 변경될 때마다 해당 월의 블록된 날짜들 로드 (예약 모드에서만)
+  // 달력이 변경될 때마다 블록된 날짜 로드 (예약 모드에서만)
   useEffect(() => {
     if (!viewOnly) {
       loadBlockedDates(currentCalendarMonth.year, currentCalendarMonth.month);
     }
-  }, [currentCalendarMonth, partnerServiceId, viewOnly]);
+  }, [partnerServiceId, viewOnly, currentCalendarMonth]);
 
-  // 선택된 날짜가 변경될 때 해당 날짜의 예약된 시간들 로드
+  // 선택된 날짜가 변경될 때 예약된 시간 로드
   useEffect(() => {
     if (selectedDate) {
       loadReservedTimes(selectedDate);
@@ -99,7 +95,7 @@ export function useCalendarDrawer({
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     if (!viewOnly) {
-      setSelectedTime(undefined); // 날짜 변경 시 선택된 시간 초기화
+      setSelectedTime(undefined);
     }
   };
 
@@ -116,10 +112,13 @@ export function useCalendarDrawer({
     blockedDates,
     reservedTimes,
     availableTimes,
-    calendarMonth,
-    calendarYear,
-    setCalendarMonth,
-    setCalendarYear,
+    // 날짜/월 상태와 변경 함수를 반환
+    calendarYear: currentCalendarMonth.year,
+    calendarMonth: currentCalendarMonth.month,
+    setCalendarYear: (year: number) =>
+      handleMonthChange(year, currentCalendarMonth.month),
+    setCalendarMonth: (month: number) =>
+      handleMonthChange(currentCalendarMonth.year, month),
     handleDateSelect,
     handleTimeSelect,
   };
