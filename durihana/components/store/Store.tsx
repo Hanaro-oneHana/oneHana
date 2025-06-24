@@ -83,7 +83,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
         setSortOptionList([]);
         break;
     }
-  }, [category]);
+  }, [category, updateSearchParam]);
 
   useEffect(() => {
     if (selectedRegions.length > 0) {
@@ -95,7 +95,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
     } else {
       setItems(storeList || []);
     }
-  }, [selectedRegions]);
+  }, [selectedRegions, storeList]);
 
   return (
     <>

@@ -1,9 +1,9 @@
 'use server';
 
 import { PrismaClient } from '@/lib/generated/prisma';
+import { auth } from '../auth';
 import { getCoupleTotalBalance } from './AccountActions';
 import { getCoupleUserIds } from './getCoupleUserIds';
-import { auth } from '../auth';
 
 const prisma = new PrismaClient();
 
@@ -29,7 +29,7 @@ export async function plusBalance(accountId: number, amount: number) {
     });
 
     const user = updated.User;
-    const io = (globalThis as any).io as import('socket.io').Server;
+    const io = globalThis.io as import('socket.io').Server;
 
     // 2. 커플의 총 잔액 조회
     const coupleBalance = await getCoupleTotalBalance(user.id);
@@ -78,7 +78,7 @@ export async function minusBalance(accountId: number, amount: number) {
     });
 
     const user = updated.User;
-    const io = (globalThis as any).io as import('socket.io').Server;
+    const io = globalThis.io as import('socket.io').Server;
 
     // 2. 커플의 총 잔액 조회
     const coupleBalance = await getCoupleTotalBalance(user.id);

@@ -25,7 +25,7 @@ export default function WeddingBucketBox({ item }: Props) {
   const bucketLabels = ['예약', '예약완료', '결제', '결제완료'];
 
   // 1) 달력에서 날짜·시간 선택 후 “예약하기” 클릭 시
-  const handleReservation = async (date: Date, time: string) => {
+  const handleReservation = async () => {
     await processBudgetPlanTransaction(userId, Number(item.price));
     // 1-1) partnerCalendar에 예약 이벤트 기록
     await addPartnerCalendarEvent(userId, item.id);

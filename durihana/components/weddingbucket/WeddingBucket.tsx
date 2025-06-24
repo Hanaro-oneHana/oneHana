@@ -3,7 +3,7 @@
 import { Header, Button, Txt } from '@/components/atoms';
 import WeddingBucketBox from '@/components/weddingbucket/WeddingBucketBox';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import AlertModal from '../alert/AlertModal';
 
 export type Option = {
@@ -48,7 +48,7 @@ export default function WeddingBucket({ items }: Props) {
                 (item) => item.category === index + 1
               );
               return filteredItems && filteredItems.length > 0 ? (
-                filteredItems.map((item, idx) => (
+                filteredItems.map((item) => (
                   <WeddingBucketBox key={item.id} item={item} />
                 ))
               ) : (
