@@ -39,6 +39,11 @@ export type AccountCreationData = {
   period: number;
   transferDay?: number;
 };
+const descriptions: Record<number, string> = {
+  1: '예금', // deposit
+  2: '적금', // savings
+  3: '대출', // loan
+};
 export const createOneAccount = async (userId: number) => {
   const accountNumber = [
     '530',
@@ -104,6 +109,28 @@ export const createMultipleAccounts = async (
               account_id: mainAccount.id,
               transaction_date: formattedNow,
               amount: -accountData.amount,
+              description: descriptions[1],
+              balance: mainBalance,
+            },
+          });
+        }
+        if (accountData.type === 2) {
+          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
+          dbAccountData.transfer_date = String(accountData.transferDay || 15);
+          dbAccountData.payment = accountData.amount;
+
+          // ─── 입출금 계좌에서 출금 처리 ───
+          mainBalance -= accountData.amount;
+          await tx.account.update({
+            where: { id: mainAccount.id },
+            data: { balance: mainBalance },
+          });
+          await tx.transaction.create({
+            data: {
+              account_id: mainAccount.id,
+              transaction_date: formattedNow,
+              amount: -accountData.amount,
+              description: descriptions[2],
               balance: mainBalance,
             },
           });
@@ -134,6 +161,7 @@ export const createMultipleAccounts = async (
               account_id: mainAccount.id,
               transaction_date: formattedNow,
               amount: accountData.amount,
+              description: descriptions[3],
               balance: mainBalance,
             },
           });
@@ -144,26 +172,26 @@ export const createMultipleAccounts = async (
         createdAccounts.push(newAccount);
 
         // 신규 계좌에도 트랜잭션 기록: 예금 및 대출 계좌에 금액 입출금 내역
-        if (accountData.type === 1 || accountData.type === 3) {
+        if (
+          accountData.type === 1 ||
+          accountData.type === 2 ||
+          accountData.type === 3
+        ) {
           await tx.transaction.create({
             data: {
               account_id: newAccount.id,
               transaction_date: formattedNow,
+              // 예금(type=1) / 적금(type=2): +amount, 대출(type=3): -amount
               amount:
-                accountData.type === 1
-                  ? accountData.amount
-                  : -accountData.amount,
+                accountData.type === 3
+                  ? -accountData.amount
+                  : accountData.amount,
               balance: newAccount.balance,
             },
           });
         }
 
         // 적금 타입 세부 로직
-        if (accountData.type === 2) {
-          dbAccountData.expire_date = expireDate.toISOString().split('T')[0];
-          dbAccountData.transfer_date = String(accountData.transferDay || 15);
-          dbAccountData.payment = accountData.amount;
-        }
 
         // 스케줄 생성
         const scheduleResult = await createAccountSchedules(newAccount.id, tx);

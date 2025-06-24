@@ -102,16 +102,12 @@ export function useAccountCreation() {
       );
 
       if (result.success) {
-        alert(
-          `${result.accounts.length}개 계좌 생성 완료! ${result.totalSchedules}개 일정이 추가되었습니다.`
-        );
         router.push('/calendar');
       } else {
         throw new Error('계좌 생성 실패');
       }
     } catch (error) {
       console.error('계좌 생성 실패:', error);
-      alert('계좌 생성에 실패했습니다.');
     } finally {
       setLoading(false);
     }

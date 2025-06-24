@@ -130,6 +130,7 @@ export default function LoanForm({
           <div className='flex items-end gap-2 mb-[20px]'>
             <ExpandingInput
               value={monthlyPayment}
+              readOnly={true}
               onChange={(e) => onMonthlyPaymentChange?.(e.target.value)}
               placeholder={`예상 ${estimatedPayment}원`}
               className='text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0'
