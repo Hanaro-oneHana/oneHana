@@ -9,7 +9,7 @@ export default function Onboarding() {
   const router = useRouter();
 
   return (
-    <div className='flex flex-col min-h-screen justify-center items-center'>
+    <div className='flex flex-col h-dvh justify-center items-center'>
       <div className='flex flex-col items-center'>
         <Txt className='self-start'>두 사람, 하나의 여정</Txt>
         <div className='mb-2'>
@@ -18,7 +18,7 @@ export default function Onboarding() {
           </Txt>
         </div>
         <Image
-          src='/asset/icons/onboarding.svg'
+          src='/asset/icons/onboarding.png'
           alt='두리하나 온보딩'
           width={180}
           height={180}
@@ -26,7 +26,9 @@ export default function Onboarding() {
           priority
         />
         <Button onClick={() => router.push('/')}>
-          <Txt size='text-[20px]' color='text-mainwhite'>시작하기</Txt>
+          <Txt size='text-[20px]' align='text-center' color='text-mainwhite'>
+            시작하기
+          </Txt>
         </Button>
       </div>
     </div>

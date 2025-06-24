@@ -6,15 +6,14 @@ export default function CompleteStep() {
     <div className='flex-1 px-6 py-8 flex flex-col items-center justify-center'>
       <div className='flex-1 flex flex-col items-center justify-center'>
         <Image
-          className='mb-[84px]'
-          src='/asset/icons/create-account-complete.svg'
+          src='/asset/icons/create-account-complete.png'
           alt='location'
           width={200}
           height={200}
         />
         <Txt
-          size='text-[18px]'
-          weight='font-[500]'
+          size='text-[16px]'
+          weight='font-[400]'
           className='text-mainblack text-center mb-4'
         >
           상품 가입이 모두 완료됐습니다
