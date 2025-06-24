@@ -7,6 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
+import Image from 'next/image';
 import { useState } from 'react';
 import AccountCardDetail from './AccountCardDetail';
 
@@ -71,6 +72,11 @@ export default function AccountDetail({
     return timeStr.substring(0, 5);
   };
 
+  // 중복된 type 제거 (Set으로 처리)
+  const uniqueAccountTypes = Array.from(
+    new Set(allAccounts.map((acc) => acc.type))
+  ) as AccountType[];
+
   return (
     <div className='flex flex-col h-[calc(100vh-60px)]'>
       <AccountCardDetail
@@ -81,25 +87,38 @@ export default function AccountDetail({
             ? currentTransactions[0].balance
             : currentAccount.balance
         }
+        accountId={currentAccount.id}
       />
 
       <div className='flex justify-end py-2'>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className='cursor-pointer border px-2 py-[2px] rounded-[10px] text-textgray border-linegray'>
+            <div className='cursor-pointer border px-2 py-[2px] rounded-[10px] text-textgray border-linegray flex items-center'>
               <Txt size='text-[15px]' weight='font-[500]' color='text-icon'>
                 {accountTypeLabelMap[selectedType]}
               </Txt>
+              <Image
+                src='/asset/icons/down-shevron.svg'
+                alt='DownShevron'
+                width={20}
+                height={20}
+                className='ml-1'
+              />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            {Object.entries(accountTypeLabelMap).map(([key, label]) => (
+            {uniqueAccountTypes.map((type) => (
               <DropdownMenuItem
-                key={key}
-                onClick={() => setSelectedType(Number(key) as AccountType)}
+                key={type}
+                onClick={() => setSelectedType(type)}
               >
-                <Txt size='text-[15px]' weight='font-[500]' color='text-icon' className='tet-right w-full'>
-                  {label}
+                <Txt
+                  size='text-[15px]'
+                  weight='font-[500]'
+                  color='text-icon'
+                  className='text-right w-full'
+                >
+                  {accountTypeLabelMap[type]}
                 </Txt>
               </DropdownMenuItem>
             ))}
