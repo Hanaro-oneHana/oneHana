@@ -7,9 +7,13 @@ import { getCoupleUserIds } from './getCoupleUserIds';
 
 const prisma = new PrismaClient();
 
-export async function plusBalance(accountId: number, amount: number) {
+export async function plusBalance(
+  accountId: number,
+  amount: number,
+  description?: string
+) {
   try {
-    // 1. 해당 계좌의 잔액을 증가
+    // 1. 잔액 증가 및 사용자 정보 포함
     const updated = await prisma.account.update({
       where: { id: accountId },
       data: {
@@ -29,15 +33,33 @@ export async function plusBalance(accountId: number, amount: number) {
     });
 
     const user = updated.User;
-    const io = globalThis.io as import('socket.io').Server;
 
-    // 2. 커플의 총 잔액 조회
+    // 2. 거래 내역 생성
+    const now = new Date();
+    const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+      now.getDate()
+    ).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(
+      now.getMinutes()
+    ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+    await prisma.transaction.create({
+      data: {
+        account_id: updated.id,
+        transaction_date: formatted,
+        amount: amount,
+        balance: updated.balance,
+        description: description ?? '입금',
+      },
+    });
+
+    // 3. 커플 총 잔액 조회
     const coupleBalance = await getCoupleTotalBalance(user.id);
 
-    // 3. 커플 유저 ID들 찾기
+    // 4. 커플 ID들 추출
     const coupleUserIds = await getCoupleUserIds(user.id);
 
-    // 4. socket.io로 커플 양쪽 모두에게 emit
+    // 5. 소켓 전송
+    const io = (globalThis as any).io as import('socket.io').Server;
     if (io) {
       for (const uid of coupleUserIds) {
         io.to(`user-${uid}`).emit('balance-updated', {
@@ -51,14 +73,18 @@ export async function plusBalance(accountId: number, amount: number) {
 
     return { success: true, newBalance: updated.balance };
   } catch (err) {
-    console.error('Failed to update balance:', err);
+    console.error('Failed to decrease balance:', err);
     return { success: false };
   }
 }
 
-export async function minusBalance(accountId: number, amount: number) {
+export async function minusBalance(
+  accountId: number,
+  amount: number,
+  description?: string
+) {
   try {
-    // 1. 해당 계좌의 잔액을 감소
+    // 1. 잔액 차감 및 사용자 정보 포함
     const updated = await prisma.account.update({
       where: { id: accountId },
       data: {
@@ -78,15 +104,33 @@ export async function minusBalance(accountId: number, amount: number) {
     });
 
     const user = updated.User;
-    const io = globalThis.io as import('socket.io').Server;
 
-    // 2. 커플의 총 잔액 조회
+    // 2. 거래 내역 생성
+    const now = new Date();
+    const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+      now.getDate()
+    ).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(
+      now.getMinutes()
+    ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+    await prisma.transaction.create({
+      data: {
+        account_id: updated.id,
+        transaction_date: formatted,
+        amount: -amount,
+        balance: updated.balance,
+        description: description ?? '출금',
+      },
+    });
+
+    // 3. 커플 총 잔액 조회
     const coupleBalance = await getCoupleTotalBalance(user.id);
 
-    // 3. 커플 유저 ID들 찾기
+    // 4. 커플 ID들 추출
     const coupleUserIds = await getCoupleUserIds(user.id);
 
-    // 4. socket.io로 커플 양쪽 모두에게 emit
+    // 5. 소켓 전송
+    const io = (globalThis as any).io as import('socket.io').Server;
     if (io) {
       for (const uid of coupleUserIds) {
         io.to(`user-${uid}`).emit('balance-updated', {
@@ -100,7 +144,7 @@ export async function minusBalance(accountId: number, amount: number) {
 
     return { success: true, newBalance: updated.balance };
   } catch (err) {
-    console.error('Failed to update balance:', err);
+    console.error('Failed to decrease balance:', err);
     return { success: false };
   }
 }

@@ -81,19 +81,6 @@ export default async function Home() {
             subAccounts={subAccounts}
             coupleBalance={coupleBalance}
           />
-          <form
-            action={async () => {
-              'use server';
-              await plusBalance(mainAccountData!.id, 10000);
-            }}
-          >
-            <button
-              type='submit'
-              className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'
-            >
-              테스트
-            </button>
-          </form>
         </>
       )}
       <div className='pt-[30px]'>

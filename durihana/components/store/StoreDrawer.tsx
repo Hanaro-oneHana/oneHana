@@ -13,8 +13,8 @@ import {
 import { useState } from 'react';
 import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
 import { StoreDetailProps } from '@/lib/actions/StoreDetailActions';
-import { minusBalance } from '@/lib/actions/calBalance';
 import { Button, Txt } from '../atoms';
+import { minusBalance } from '@/lib/actions/calBalance';
 
 type StoreDrawerProps = {
   details: StoreDetailProps;
@@ -35,8 +35,14 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
 
   const handlePayment = async () => {
     try {
+      console.log('결제 시작')
       const accountId = await getCheckingAccountByUserId(drawer.userId);
-      await minusBalance(accountId, price);
+      console.log('현재 아이디 : ', accountId)
+      
+      const description = drawer.details.name;
+
+      const result = await minusBalance(accountId, price, description);
+      console.log('minusBalance 결과 : ', result)
     } catch (e) {
       console.error('결제 실패', e);
       alert('결제 중 오류가 발생했습니다.');

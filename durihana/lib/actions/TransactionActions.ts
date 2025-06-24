@@ -3,7 +3,10 @@ import prisma from '@/lib/db';
 export async function getTransactionsByAccountId(accountId: number) {
   try {
     const result = await prisma.transaction.findMany({
-      where: { account_id: accountId },
+      where: {
+        account_id: accountId,
+        amount: { gt: 0 }, // 양수만 필터링 (입금만)
+      },
       orderBy: { transaction_date: 'desc' },
     });
 
@@ -13,8 +16,8 @@ export async function getTransactionsByAccountId(accountId: number) {
         id: tx.id,
         date,
         time,
-        description: '자동이체', // 기본값으로 넣어둠
-        type: tx.amount > 0 ? '입금' : '출금',
+        description: '입금', // 고정
+        type: '입금',
         amount: tx.amount,
         balance: tx.balance,
       };
@@ -59,3 +62,31 @@ export const processBudgetPlanTransaction = async (
     },
   });
 };
+
+export async function getMinusTransactionsByAccountId(accountId: number) {
+  try {
+    const result = await prisma.transaction.findMany({
+      where: {
+        account_id: accountId,
+        amount: { lt: 0 }, // 음수만 필터링 (출금만)
+      },
+      orderBy: { transaction_date: 'desc' },
+    });
+
+    return result.map((tx) => {
+      const [date, time] = tx.transaction_date.split(' ');
+      return {
+        id: tx.id,
+        date,
+        time,
+        description: tx.description ?? '출금',
+        type: '출금',
+        amount: tx.amount,
+        balance: tx.balance,
+      };
+    });
+  } catch (error) {
+    console.error('getMinusTransactionsByAccountId error:', error);
+    return [];
+  }
+}
