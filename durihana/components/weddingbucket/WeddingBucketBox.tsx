@@ -4,9 +4,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
 import { addPartnerCalendarEvent } from '@/lib/actions/ReservationActions';
 import { deleteBucketItem, updateBudgetPlan } from '@/lib/actions/StoreActions';
 import { processBudgetPlanTransaction } from '@/lib/actions/TransactionActions';
+import { minusBalance } from '@/lib/actions/calBalance';
 import { Button, Txt } from '../atoms';
 import CalendarDrawer from '../calendar/CalendarDrawer';
 import { BucketItem } from './WeddingBucket';
@@ -26,7 +28,9 @@ export default function WeddingBucketBox({ item }: Props) {
 
   // 1) 달력에서 날짜·시간 선택 후 “예약하기” 클릭 시
   const handleReservation = async () => {
-    await processBudgetPlanTransaction(userId, Number(item.price));
+    const accountId = await getCheckingAccountByUserId(userId);
+
+    await minusBalance(accountId, Number(item.price), item.store);
     // 1-1) partnerCalendar에 예약 이벤트 기록
     await addPartnerCalendarEvent(userId, item.id);
 
@@ -39,7 +43,8 @@ export default function WeddingBucketBox({ item }: Props) {
 
   // 2) “결제하기” 버튼 클릭 시
   const handlePayment = async () => {
-    await processBudgetPlanTransaction(userId, Number(item.price));
+    const accountId = await getCheckingAccountByUserId(userId);
+    await minusBalance(accountId, Number(item.price), item.store);
 
     // 2-1) partnerCalendar에 결제 이벤트 기록
     await addPartnerCalendarEvent(userId, item.id);
