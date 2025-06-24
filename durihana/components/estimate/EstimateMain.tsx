@@ -24,7 +24,6 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Store } from '@/lib/actions/StoreActions';
-import AlertModal from '../alert/AlertModal';
 
 type Props = {
   storeList?: Store[];
@@ -39,7 +38,6 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   const [items, setItems] = useState<Store[]>(storeList || []);
   const [category, setCategory] = useState(categoryId || 1);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateSearchParam = (key: string[], value: string[]) => {
     const params = new URLSearchParams(searchParams);
@@ -90,8 +88,9 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   useEffect(() => {
     if (selectedRegions.length > 0) {
       const filteredItems =
-        storeList?.filter((item) => selectedRegions.includes(item.location)) ||
-        [];
+        storeList?.filter((item) =>
+          selectedRegions.some((region) => item.location.includes(region))
+        ) || [];
       setItems(filteredItems);
     } else {
       setItems(storeList || []);
@@ -180,7 +179,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
         <Button
           onClick={() => {
             if (categoryId === 5) {
-              router.push('/wedding-bucket');
+              router.push('/wedding-bucket?before=estimate');
             } else {
               updateSearchParam(
                 ['category', 'search'],

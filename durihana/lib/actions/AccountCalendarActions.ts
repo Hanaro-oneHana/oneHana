@@ -70,7 +70,7 @@ export const createAccountSchedules = async (
       // 매달 상환일 생성 (만료일까지)
       const currentDate = new Date(
         startDate.getFullYear(),
-        startDate.getMonth(),
+        startDate.getMonth() + 1,
         transferDay
       );
 

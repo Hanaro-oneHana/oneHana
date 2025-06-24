@@ -16,8 +16,6 @@ type Props = {
 export default function AccountCreationContent({
   currentStage,
   current,
-  step,
-  formStatesLength,
   onChange,
 }: Props) {
   if (currentStage === 'form') {
