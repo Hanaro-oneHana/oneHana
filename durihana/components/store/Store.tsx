@@ -102,7 +102,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   }, [selectedRegions, storeList]);
 
   return (
-    <div className='flex flex-col items-center justify-start h-svh pt-[65px] mb-[72.5px] overflow-hidden relative'>
+    <div className='flex flex-col items-center justify-start h-dvh pt-[65px] pb-[72.5px] overflow-hidden relative'>
       <div className='flex flex-col w-full px-[20px] gap-[25px]'>
         <ProgressBarButton
           selectedItem={category}
