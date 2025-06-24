@@ -22,7 +22,7 @@ import {
 } from '@/constants/filtering';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Store } from '@/lib/actions/StoreActions';
 
 type Props = {
@@ -83,7 +83,11 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
         setSortOptionList([]);
         break;
     }
-  }, [category, updateSearchParam]);
+  }, [category]);
+
+  const handleSearch = useCallback((query: string) => {
+    updateSearchParam(['search'], [query]);
+  }, []);
 
   useEffect(() => {
     if (selectedRegions.length > 0) {
@@ -98,86 +102,84 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   }, [selectedRegions, storeList]);
 
   return (
-    <>
-      <div className='flex flex-col items-center justify-start h-dvh pt-[65px] pb-[72.5px] '>
-        <div className='flex flex-col w-full px-[20px] gap-[25px]'>
-          <ProgressBarButton
-            selectedItem={category}
-            setSelectedItem={setCategory}
-            progress={false}
-          />
-          <Search
-            onSearch={(query: string) => {
-              updateSearchParam(['search'], [query]);
-            }}
-          />
-        </div>
-        {category !== 4 && category !== 5 && (
-          <div className='flex flex-col w-full pt-[20px]'>
-            <Filtering
-              selectedRegions={selectedRegions}
-              setSelectedRegions={setSelectedRegions}
-              regions={
-                category === 1 || category === 2
-                  ? domesticRegions
-                  : foreignRegions
-              }
-            />
-          </div>
-        )}
-
-        <div className='flex  items-center justify-end w-full px-[20px]'>
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className=' mt-[20px]'>
-              <div className='flex items-center justify-center gap-[-2px] focus:outline-none  m-0 p-0'>
-                <Txt size='text-[12px]' color='text-textgray'>
-                  {sortOption ? sortOption.label : '전체'}
-                </Txt>
-                <Image
-                  src='/asset/icons/down-shevron.svg'
-                  alt='DownShevron'
-                  width={20}
-                  height={20}
-                />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='flex flex-col items-end min-w-auto'>
-              {sortOptionList.map((option, index) => (
-                <DropdownMenuItem
-                  key={index}
-                  onSelect={() => {
-                    if (option.value === 0) {
-                      setItems(storeList || []);
-                      setSortOption(sortOptionList[0]);
-                      updateSearchParam(['search'], ['']);
-                    } else {
-                      setSortOption(option);
-                      handlePriceFilter(
-                        option.value,
-                        index === sortOptionList.length - 1
-                      );
-                    }
-                  }}
-                >
-                  <Txt
-                    size='text-[12px]'
-                    color='text-textgray'
-                    align='text-center'
-                  >
-                    {option.label}
-                  </Txt>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <div className='flex flex-col flex-1 items-center justify-start w-full overflow-y-scroll px-[20px] py-[20px] gap-[10px] '>
-          {items.map((item, index) => (
-            <StoreCard key={index} store={item} />
-          ))}
-        </div>
+    <div className='flex flex-col items-center justify-start h-svh pt-[65px] mb-[72.5px] overflow-hidden relative'>
+      <div className='flex flex-col w-full px-[20px] gap-[25px]'>
+        <ProgressBarButton
+          selectedItem={category}
+          setSelectedItem={setCategory}
+          progress={false}
+        />
+        <Search onSearch={handleSearch} />
       </div>
-      <button className='absolute bottom-[92.5px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
+      {category !== 4 && category !== 5 && (
+        <div className='flex flex-col w-full pt-[20px]'>
+          <Filtering
+            selectedRegions={selectedRegions}
+            setSelectedRegions={setSelectedRegions}
+            regions={
+              category === 1 || category === 2
+                ? domesticRegions
+                : foreignRegions
+            }
+          />
+        </div>
+      )}
+
+      <div className='flex  items-center justify-end w-full px-[20px]'>
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger className=' mt-[20px]'>
+            <div className='flex items-center justify-center gap-[-2px] focus:outline-none  m-0 p-0'>
+              <Txt size='text-[12px]' color='text-textgray'>
+                {sortOption ? sortOption.label : '전체'}
+              </Txt>
+              <Image
+                src='/asset/icons/down-shevron.svg'
+                alt='DownShevron'
+                width={20}
+                height={20}
+              />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className='flex flex-col items-end min-w-auto'>
+            {sortOptionList.map((option, index) => (
+              <DropdownMenuItem
+                key={index}
+                onSelect={() => {
+                  if (option.value === 0) {
+                    setItems(storeList || []);
+                    setSortOption(sortOptionList[0]);
+                    updateSearchParam(['search'], ['']);
+                  } else {
+                    setSortOption(option);
+                    handlePriceFilter(
+                      option.value,
+                      index === sortOptionList.length - 1
+                    );
+                  }
+                }}
+              >
+                <Txt
+                  size='text-[12px]'
+                  color='text-textgray'
+                  align='text-center'
+                >
+                  {option.label}
+                </Txt>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div className='flex flex-col items-center justify-start w-full overflow-y-auto  px-[20px] py-[20px] gap-[10px] '>
+        {items.length === 0 ? (
+          <Txt size='text-[14px]' className='text-icongray' align='text-center'>
+            해당되는 매장이 없습니다.
+          </Txt>
+        ) : (
+          items.map((item, index) => <StoreCard key={index} store={item} />)
+        )}
+      </div>
+      <button className='fixed bottom-[92.5px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
         <Image
           src='/asset/icons/bucket.svg'
           alt='Bucket'
@@ -188,6 +190,6 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
           }}
         />
       </button>
-    </>
+    </div>
   );
 }

@@ -1,3 +1,5 @@
+'use server';
+
 import prisma from '@/lib/db';
 
 export async function getTransactionsByAccountId(accountId: number) {
