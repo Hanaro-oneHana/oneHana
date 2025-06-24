@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { formatDisplayDate } from '@/lib/utils';
 import AlertModal from '../alert/AlertModal';
 import { Button, Txt } from '../atoms';
-import { CalendarDrawer } from '../calendar/CalendarDrawer';
+import CalendarDrawer from '../calendar/CalendarDrawer';
 
 type Props = {
   partnerServiceId: number;
@@ -16,6 +16,7 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
     date: Date;
     time: string;
   } | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleReservationConfirm = (date: Date, time: string) => {
     console.log('예약 정보:', {
@@ -32,7 +33,8 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
     <>
       <CalendarDrawer
         partnerServiceId={partnerServiceId}
-        triggerLabel='예약하기'
+        open={isOpen}
+        onOpenChange={setIsOpen}
         onConfirm={handleReservationConfirm}
       />
 
