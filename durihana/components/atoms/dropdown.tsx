@@ -1,10 +1,16 @@
 'use client';
 
-import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import React, { useReducer, useState, useRef, useEffect, Fragment, PropsWithChildren,} from 'react';
-import Button from './Button';
 import { Color } from '@/app/theme';
-import { cn } from "@/lib/utils"
+import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import React, {
+  useReducer,
+  useState,
+  useRef,
+  useEffect,
+  Fragment,
+  PropsWithChildren,
+} from 'react';
+import Button from './Button';
 
 type Props = {
   items?: string[];
@@ -20,7 +26,7 @@ type Props = {
   textSize?: `text-[${number}px]`;
   textColor?: `text-${Color}`;
 
-  onSelect?: (list:string) => void;
+  onSelect?: (list: string) => void;
 };
 
 export default function Dropdown({
@@ -32,7 +38,7 @@ export default function Dropdown({
   bgColor = 'bg-primarycolor',
   textSize = 'text-[10px]',
   textColor = 'text-mainblack',
-  
+
   borderStyle = 'border-none',
   underlineBorder = 'border-none',
 
@@ -58,7 +64,8 @@ export default function Dropdown({
 
   const content = selected ?? defaultTitle;
 
-  return <>
+  return (
+    <>
       <div className='relative inline-block' ref={dropdownRef}>
         <Button
           onClick={toggleOpen}
@@ -96,5 +103,6 @@ export default function Dropdown({
         )}
         {children}
       </div>
-    </>;
+    </>
+  );
 }
