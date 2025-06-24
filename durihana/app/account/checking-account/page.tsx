@@ -12,7 +12,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useAgreement } from '@/contexts/account/useAgreement';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -25,7 +24,6 @@ export default function CheckingAccount() {
   const rawId = session?.user?.id as number | undefined;
   const userId = Number(rawId);
   const router = useRouter();
-  const { baseAgree } = useAgreement();
 
   const handleNext = async () => {
     if (!agree) {

@@ -48,7 +48,7 @@ export default function ElseAccount() {
         />
         <div>
           <Txt size='text-[12px]' color='text-red'>
-            상품 가입을 원하지 않는 경우, '홈으로' 버튼을 눌러주세요.
+            {"상품 가입을 원하지 않는 경우, '홈으로' 버튼을 눌러주세요."}
           </Txt>
         </div>
       </div>
@@ -175,7 +175,8 @@ export default function ElseAccount() {
       </div>
       <div className='w-full px-[20px] pb-[40px]'>
         <div className='flex justify-between gap-2'>
-          <Button bgColor='bg-icon'
+          <Button
+            bgColor='bg-icon'
             onClick={async () => {
               const amount = Number(initialDeposit);
               const { plusBalanceBySessionUser } = await import(
