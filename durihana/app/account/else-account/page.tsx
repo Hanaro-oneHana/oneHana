@@ -207,7 +207,7 @@ export default function ElseAccount() {
               if (savingsAgree) types.push(2); // 적금
               if (loanAgree) types.push(3); // 대출
 
-              const amount = Number(initialDeposit);
+              const amount = Number(initialDeposit.replace(/,/g, ''));
               const { plusBalanceBySessionUser } = await import(
                 '@/lib/actions/calBalance'
               );
