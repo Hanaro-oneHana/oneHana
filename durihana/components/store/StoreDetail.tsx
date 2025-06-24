@@ -21,7 +21,6 @@ import {
 import CalendarDrawer from '../calendar/CalendarDrawer';
 import StoreDrawer from './StoreDrawer';
 
-
 /* eslint-disable @next/next/no-img-element */
 
 export default function StoreDetail(details: StoreDetailProps) {
@@ -127,9 +126,9 @@ export default function StoreDetail(details: StoreDetailProps) {
       <div className='fixed max-w-[960px]  bottom-0 left-[50%] translate-x-[-50%] w-full h-[80px] bg-background z-50 flex items-center justify-between px-[20px] gap-[15px]'>
         {details.categoryId < 4 ? (
           <Button
-          className='bg-buttongray h-[48px] w-full'
-          onClick={() => setCalendarOpen(true)}
-        >
+            className='bg-buttongray h-[48px] w-full'
+            onClick={() => setCalendarOpen(true)}
+          >
             상담일정 보기
           </Button>
         ) : (
@@ -175,11 +174,14 @@ export default function StoreDetail(details: StoreDetailProps) {
             <Button
               onClick={() => {
                 showModal(false);
-                Object.keys(details.options).length > 0 &&
+                if (
+                  Object.keys(details.options).length > 0 &&
                   !Object.keys(details.options).some(
                     (key) => !selectedOptions[key]
-                  ) &&
+                  )
+                ) {
                   router.back();
+                }
               }}
             >
               확인
