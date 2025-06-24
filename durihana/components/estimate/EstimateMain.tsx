@@ -98,8 +98,8 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   }, [selectedRegions, storeList]);
 
   return (
-    <div className='relative flex flex-col items-center justify-center h-dvh'>
-      <div className='flex flex-col items-center justify-start w-full flex-none'>
+    <div className='relative flex flex-col items-center justify-center h-dvh overflow-hidden'>
+      <div className='flex flex-col items-center justify-start w-full '>
         <div className='flex flex-col w-full items-center justify-start gap-[30px] pt-[25px] px-[20px]'>
           <ProgressBarButton
             selectedItem={category}
@@ -175,7 +175,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
         ))}
       </div>
 
-      <div className='flex flex-row flex-none items-center bg-transparent justify-center w-full px-[20px] mt-[20px] mb-[40px]'>
+      <div className='flex flex-row items-center bg-transparent justify-center w-full px-[20px] pt-[20px] pb-[20px]'>
         <Button
           onClick={() => {
             if (categoryId === 5) {
@@ -191,7 +191,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           {categoryId === 5 ? '완료' : '다음'}
         </Button>
       </div>
-      <button className='absolute bottom-[108px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
+      <button className='absolute bottom-[88px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
         <Image
           src='/asset/icons/bucket.svg'
           alt='Bucket'

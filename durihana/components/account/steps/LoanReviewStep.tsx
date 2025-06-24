@@ -10,7 +10,7 @@ export default function LoanReviewStep() {
 
       <div className='flex-1 flex flex-col items-center justify-center'>
         <Image
-          src='/asset/icons/loan.svg'
+          src='/asset/icons/loan.png'
           alt='location'
           width={200}
           height={200}
