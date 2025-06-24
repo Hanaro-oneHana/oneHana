@@ -12,37 +12,61 @@ import {
 } from '@/components/ui/drawer';
 import { useState } from 'react';
 import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
-import { StoreDetailProps } from '@/lib/actions/StoreDetailActions';
-import { Button, Txt } from '../atoms';
+import { addPartnerCalendarEvent } from '@/lib/actions/ReservationActions';
+import {
+  insertOptions,
+  StoreDetailProps,
+} from '@/lib/actions/StoreDetailActions';
 import { minusBalance } from '@/lib/actions/calBalance';
+import { Button, Txt } from '../atoms';
+import { modalMent } from './StoreDetail';
 
 type StoreDrawerProps = {
   details: StoreDetailProps;
   selectedOptions: Record<string, string>;
   onselectedOptions: () => void;
   userId: number;
+  onSelectModalMent: (select: (typeof modalMent)[number]) => void;
 };
 
 export default function StoreDrawer(drawer: StoreDrawerProps) {
-  const { selectedOptions, onselectedOptions } = drawer;
-  const img = drawer.details.images;
+  const {
+    selectedOptions,
+    onselectedOptions,
+    details,
+    userId,
+    onSelectModalMent,
+  } = drawer;
+  const img = details.images;
   const [open, setOpen] = useState(false);
 
-  const price = parseInt(
-    drawer.details.info['가격'].replace(/[^0-9]/g, ''),
-    10
-  );
+  const price = parseInt(details.info['가격'].replace(/[^0-9]/g, ''), 10);
+  console.log('🚀 ~ StoreDrawer ~ price:', price);
 
   const handlePayment = async () => {
     try {
-      console.log('결제 시작')
-      const accountId = await getCheckingAccountByUserId(drawer.userId);
-      console.log('현재 아이디 : ', accountId)
-      
-      const description = drawer.details.name;
+      console.log('결제 시작');
+      const accountId = await getCheckingAccountByUserId(userId);
+      console.log('현재 아이디 : ', accountId);
+
+      const description = details.name;
 
       const result = await minusBalance(accountId, price, description);
-      console.log('minusBalance 결과 : ', result)
+      await addPartnerCalendarEvent(userId, details.id);
+      // Storedrawer 는 가전가구, 예물예단이니까 결제 완료 되면 budgetPlan 의 state 가 3으로 변경
+      if (result.success) {
+        const insertResult = await insertOptions(
+          userId,
+          details.id,
+          selectedOptions,
+          3
+        );
+        if (insertResult) {
+          onSelectModalMent(modalMent[2]);
+          onselectedOptions();
+        }
+      }
+      console.log('minusBalance 결과 : ', result);
     } catch (e) {
       console.error('결제 실패', e);
       alert('결제 중 오류가 발생했습니다.');
@@ -55,7 +79,7 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
     if (
       nextOpen &&
       Object.keys(selectedOptions).length !==
-        Object.keys(drawer.details.options).length
+        Object.keys(details.options).length
     ) {
       onselectedOptions();
       return;
@@ -82,9 +106,7 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
                     height={60}
                     className='object-cover rounded-lg'
                   />
-                  <Txt className='text-[15px] mt-[25px]'>
-                    {drawer.details.name}
-                  </Txt>
+                  <Txt className='text-[15px] mt-[25px]'>{details.name}</Txt>
                 </div>
               )}
             </DrawerTitle>
@@ -109,7 +131,7 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
           </div>
           <div className='flex justify-end pr-[20px]'>
             <Txt color='text-primarycolor' weight='font-[600]'>
-              {drawer.details.info['가격']}
+              {details.info['가격']}
             </Txt>
           </div>
           <DrawerFooter className='flex justify-end gap-2'>

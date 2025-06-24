@@ -69,6 +69,7 @@ export const getStoreDetail = async (storeId: number) => {
   return result;
 };
 
+//선택한 옵션을 budgetPlan 에 upsert
 export const insertOptions = async (
   user_id: number,
   partner_service_id: number,
@@ -84,13 +85,13 @@ export const insertOptions = async (
     },
     update: {
       selected: options,
-      state: state,
+      state,
     },
     create: {
       user_id,
       partner_service_id,
       selected: options,
-      state: state,
+      state,
     },
   });
 };
