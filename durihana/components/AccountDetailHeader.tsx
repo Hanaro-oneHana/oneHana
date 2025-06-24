@@ -11,7 +11,7 @@ export default function AccountDetailHeader() {
       leftIcon='back'
       rightIcon='close'
       title='내역'
-      onBackClick={() => router.push('/')}
+      onLeftClick={() => router.push('/')}
       onRightClick={() => router.push('/')}
     />
   );

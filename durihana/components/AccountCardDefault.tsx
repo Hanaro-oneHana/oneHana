@@ -4,11 +4,7 @@ import Button from '@/components/atoms/Button';
 import Txt from '@/components/atoms/Txt';
 import { useRouter } from 'next/navigation';
 
-type AccountCardProps = {
-  signUp?: () => void;
-};
-
-export default function AccountCardDefault({ signUp }: AccountCardProps) {
+export default function AccountCardDefault() {
   const router = useRouter();
 
   const goToSignUp = () => {

@@ -35,12 +35,12 @@ export const getStoreDetail = async (storeId: number) => {
     },
   });
 
-  let images: string[] = [];
-  if (Array.isArray(detail?.image)) {
-    images = detail.image.filter(
-      (item): item is string => typeof item === 'string'
-    );
-  }
+  // let images: string[] = [];
+  // if (Array.isArray(detail?.image)) {
+  //   images = detail.image.filter(
+  //     (item): item is string => typeof item === 'string'
+  //   );
+  // }
 
   const info: Record<string, string> = {};
   const options: Record<string, string> = {};

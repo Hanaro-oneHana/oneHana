@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { findUserByEmail, signInValidateAction } from './AuthActions';
-import * as validatorModule from '../validator';
-import prisma from '@/lib/db';
 import * as bcrypt from 'bcryptjs';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { ZodError } from 'zod';
+import prisma from '@/lib/db';
+import * as validatorModule from '../validator';
+import { findUserByEmail, signInValidateAction } from './AuthActions';
 
 // Prisma Mock 설정
 // findUnique 가짜함수
@@ -30,6 +30,9 @@ vi.mock('../validator', () => ({
     safeParse: vi.fn(),
   },
 }));
+
+const mockFindUnique = prisma.user.findUnique as Mock; // prisma.user.findUnique를 Mock으로 인식
+const mockCompare = bcrypt.compare as Mock; // bcrypt.compare를 Mock으로 인식
 
 // 테스트용 가짜 데이터
 const mockUser = {
@@ -71,7 +74,7 @@ describe('signInValidateAction()', () => {
       data: { email: 'notfound@example.com', password: '123456' },
     });
 
-    (prisma.user.findUnique as any).mockResolvedValue(null);
+    mockFindUnique.mockResolvedValue(null);
 
     const result = await signInValidateAction('notfound@example.com', '123456');
     expect(result).toEqual({
@@ -86,10 +89,13 @@ describe('signInValidateAction()', () => {
       data: { email: 'hong@example.com', password: 'wrong-password' },
     });
 
-    (prisma.user.findUnique as any).mockResolvedValue(mockUser);
-    (bcrypt.compare as any).mockResolvedValue(false); // 비밀번호 불일치
+    mockFindUnique.mockResolvedValue(mockUser);
+    mockCompare.mockResolvedValue(false); // 비밀번호 불일치
 
-    const result = await signInValidateAction('hong@example.com', 'wrong-password');
+    const result = await signInValidateAction(
+      'hong@example.com',
+      'wrong-password'
+    );
     expect(result).toEqual({
       isSuccess: false,
       error: '비밀번호가 올바르지 않습니다',
@@ -102,10 +108,13 @@ describe('signInValidateAction()', () => {
       data: { email: 'hong@example.com', password: 'correct-password' },
     });
 
-    (prisma.user.findUnique as any).mockResolvedValue(mockUser);
-    (bcrypt.compare as any).mockResolvedValue(true); // 비밀번호 일치
+    mockFindUnique.mockResolvedValue(mockUser);
+    mockCompare.mockResolvedValue(true); // 비밀번호 일치
 
-    const result = await signInValidateAction('hong@example.com', 'correct-password');
+    const result = await signInValidateAction(
+      'hong@example.com',
+      'correct-password'
+    );
     expect(result).toEqual({
       isSuccess: true,
       data: mockUser,
@@ -121,7 +130,7 @@ describe('findUserByEmail()', () => {
   });
 
   it('DB에서 유저 찾으면 성공', async () => {
-    (prisma.user.findUnique as any).mockResolvedValue(mockUser);
+    mockFindUnique.mockResolvedValue(mockUser);
 
     const result = await findUserByEmail('hong@example.com');
     expect(prisma.user.findUnique).toHaveBeenCalledWith({
@@ -134,7 +143,7 @@ describe('findUserByEmail()', () => {
   });
 
   it('DB 에러 발생 시 실패', async () => {
-    (prisma.user.findUnique as any).mockRejectedValue(new Error('DB error'));
+    mockFindUnique.mockRejectedValue(new Error('DB error'));
 
     const result = await findUserByEmail('error@example.com');
     expect(result).toEqual({

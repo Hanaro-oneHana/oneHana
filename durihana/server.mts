@@ -19,7 +19,7 @@ nextApp.prepare().then(() => {
   });
 
   // Socket.IO 인스턴스를 전역으로 저장. 다른 server-action들을 사용하려면 필요
-  (globalThis as any).io = io;
+  globalThis.io = io;
 
   io.on('connection', (socket) => {
     // 사용자 고유 방 참가

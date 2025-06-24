@@ -85,6 +85,7 @@ model Transaction {
   transaction_date String  @db.VarChar(31)
   amount           Int
   balance          Int
+  description      String? @db.VarChar(255)
   Account          Account @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_account")
 
   @@index([account_id], map: "fk_transaction_account")

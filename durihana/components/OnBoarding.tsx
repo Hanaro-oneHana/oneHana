@@ -26,7 +26,7 @@ export default function Onboarding() {
           priority
         />
         <Button onClick={() => router.push('/')}>
-          <Txt size='text-[20px]'>시작하기</Txt>
+          <Txt size='text-[20px]' color='text-mainwhite'>시작하기</Txt>
         </Button>
       </div>
     </div>

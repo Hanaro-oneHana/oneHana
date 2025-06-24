@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { findPartnerId } from '@/lib/actions/AuthActions';
@@ -25,6 +25,7 @@ export default function InviteCode() {
   const [randomCode, setRandomCode] = useState('');
   const [mateCode, setMateCode] = useState('');
   const [loading, setLoading] = useState(false);
+  console.log('🚀 ~ InviteCode ~ loading:', loading);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
