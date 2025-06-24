@@ -22,7 +22,7 @@ import {
 } from '@/constants/filtering';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Store } from '@/lib/actions/StoreActions';
 
 type Props = {
@@ -83,7 +83,11 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
         setSortOptionList([]);
         break;
     }
-  }, [category, updateSearchParam]);
+  }, [category]);
+
+  const handleSearch = useCallback((query: string) => {
+    updateSearchParam(['search'], [query]);
+  }, []);
 
   useEffect(() => {
     if (selectedRegions.length > 0) {
@@ -106,11 +110,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
             setSelectedItem={setCategory}
             progress={true}
           />
-          <Search
-            onSearch={(query: string) => {
-              updateSearchParam(['search'], [query]);
-            }}
-          />
+          <Search onSearch={handleSearch} />
         </div>
         {category !== 4 && category !== 5 && (
           <div className='flex flex-col w-full pt-[20px]'>
