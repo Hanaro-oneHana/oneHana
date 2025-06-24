@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
 import { addPartnerCalendarEvent } from '@/lib/actions/ReservationActions';
 import { deleteBucketItem, updateBudgetPlan } from '@/lib/actions/StoreActions';
-import { processBudgetPlanTransaction } from '@/lib/actions/TransactionActions';
 import { minusBalance } from '@/lib/actions/calBalance';
 import { Button, Txt } from '../atoms';
 import CalendarDrawer from '../calendar/CalendarDrawer';
@@ -19,6 +18,7 @@ export default function WeddingBucketBox({ item }: Props) {
   const { data: session } = useSession();
   const userId = Number(session?.user?.id) ?? 0;
   const router = useRouter();
+  console.log('f;asdkjf;lksdjf;', item);
 
   // 로컬 상태로 UI 즉시 갱신
   const [currentState, setCurrentState] = useState<number>(item.state ?? 0);
@@ -142,7 +142,7 @@ export default function WeddingBucketBox({ item }: Props) {
         </div>
       </div>
       <CalendarDrawer
-        partnerServiceId={item.id}
+        partnerServiceId={item.partnerServiceId}
         open={calendarOpen}
         onOpenChange={setCalendarOpen}
         viewOnly={false}
