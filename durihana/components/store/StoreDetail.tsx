@@ -18,10 +18,17 @@ import {
   insertOptions,
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
+import { processBudgetPlanTransaction } from '@/lib/actions/TransactionActions';
 import CalendarDrawer from '../calendar/CalendarDrawer';
 import StoreDrawer from './StoreDrawer';
 
 /* eslint-disable @next/next/no-img-element */
+
+export const modalMent = [
+  '모든 옵션을 선택해 주세요',
+  '웨딩버켓 담기완료!',
+  '결제완료!',
+];
 
 export default function StoreDetail(details: StoreDetailProps) {
   const [selectedOptions, setSelectedOptions] = useState<
@@ -32,7 +39,15 @@ export default function StoreDetail(details: StoreDetailProps) {
   const router = useRouter();
   const { data: session } = useSession();
 
+  //categoryid 가 1,2,3 (예식장, 스드메, 신혼여행) state : 0 <- 예약해야함 / 1 <- 예약완료
+  // 4, 5 가 (가전가구, 예물예단) state: 2 <- 결제해야함 / state: 3 <- 결제완료
+  const state = details.categoryId < 4 ? 0 : 2;
+
   const userId = Number(session?.user?.id);
+
+  const [selectedModalMent, setSelectedModalMent] = useState<
+    (typeof modalMent)[number]
+  >(modalMent[0]);
 
   //캐러셀 슬라이드 위한 것
   const [api, setApi] = useState<CarouselApi>();
@@ -52,8 +67,11 @@ export default function StoreDetail(details: StoreDetailProps) {
   }, [api]);
 
   const handleAdd = async () => {
+    // 담기 선택했을 때의 함수
     const requiredKeys = Object.keys(details.options);
     const hasUnselected = requiredKeys.some((key) => !selectedOptions[key]);
+    const isSelectOption =
+      Object.keys(details.options).length > 0 && hasUnselected;
 
     if (hasUnselected && details.options) {
       showModal(true);
@@ -64,7 +82,12 @@ export default function StoreDetail(details: StoreDetailProps) {
       const requestUser = session?.user?.isMain
         ? parseInt(session?.user?.id || '0', 10)
         : session?.user?.partnerId || 0;
-      await insertOptions(requestUser || 0, details.id, selectedOptions);
+
+      //insertOptions 에서 categoryId 에 따라 budgetPlan 의 state 들어가는거 다름
+      await insertOptions(requestUser || 0, details.id, selectedOptions, state);
+      isSelectOption
+        ? setSelectedModalMent(modalMent[0])
+        : setSelectedModalMent(modalMent[1]);
       showModal(true);
     } catch (error) {
       console.error('옵션 저장 실패:', error);
@@ -137,6 +160,7 @@ export default function StoreDetail(details: StoreDetailProps) {
             selectedOptions={selectedOptions}
             onselectedOptions={() => showModal(true)}
             userId={userId}
+            onSelectModalMent={setSelectedModalMent}
           />
         )}
         <Button className='h-[48px] w-full' onClick={handleAdd}>
@@ -148,15 +172,9 @@ export default function StoreDetail(details: StoreDetailProps) {
         <AlertModal
           onClose={() => {
             showModal(false);
-            router.back();
           }}
         >
-          <Txt align='text-center'>
-            {Object.keys(details.options).length > 0 &&
-            Object.keys(details.options).some((key) => !selectedOptions[key])
-              ? '모든 옵션을 선택해주세요'
-              : '웨딩버켓에 담기 완료!'}
-          </Txt>
+          <Txt align='text-center'>{selectedModalMent}</Txt>
           <div className='flex flex-row gap-[15px] mt-5 w-full'>
             {!Object.keys(details.options).some(
               (key) => !selectedOptions[key]
@@ -168,17 +186,25 @@ export default function StoreDetail(details: StoreDetailProps) {
                   router.push('/wedding-bucket');
                 }}
               >
-                장바구니 가기
+                웨딩버켓 가기
               </Button>
             )}
             <Button
               onClick={() => {
                 showModal(false);
+                // 예시: handleAdd 내부 혹은 해당 로직이 위치한 곳에 적용
+                const optionKeys = Object.keys(details.options);
+
+                // 1) categoryId 가 3 이면 즉시 뒤로가기
+                if (details.categoryId === 3) {
+                  router.back();
+                  return;
+                }
+
+                // 2) 아니면 옵션이 있고, 모든 옵션이 선택되었을 때만 뒤로가기
                 if (
-                  Object.keys(details.options).length > 0 &&
-                  !Object.keys(details.options).some(
-                    (key) => !selectedOptions[key]
-                  )
+                  optionKeys.length > 0 &&
+                  optionKeys.every((key) => !!selectedOptions[key])
                 ) {
                   router.back();
                 }

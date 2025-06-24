@@ -2,6 +2,7 @@
 
 import { Header, Button, Txt } from '@/components/atoms';
 import WeddingBucketBox from '@/components/weddingbucket/WeddingBucketBox';
+import { CloudCog } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import AlertModal from '../alert/AlertModal';
@@ -29,6 +30,8 @@ export default function WeddingBucket({ items }: Props) {
   const categories = ['예식장', '스드메', '신혼여행', '가전·가구', '예물·예단'];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const before = useSearchParams().get('before');
+
+  console.log(items);
 
   return (
     <div className='flex flex-col items-center justify-start w-full pt-[60px]'>
