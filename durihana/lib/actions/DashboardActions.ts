@@ -10,7 +10,11 @@ export const getMarriageDate = async (userId: number) => {
   return user?.marriage_date ?? '';
 };
 
-export const getCategoriesByUserId = async (userId: number) => {
+export const getCategoriesByUserId = async (userId?: number) => {
+  if (!userId) {
+    return [];
+  }
+
   const calendars = await prisma.partnerCalendar.findMany({
     where: { user_id: userId },
     select: {
