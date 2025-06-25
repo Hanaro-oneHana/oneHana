@@ -1,21 +1,6 @@
+import { DrawerContentProps } from '@/types/Calendar';
 import CalendarComponent from '../atoms/CalendarComponent';
 import TimeSlotList from './TimeSlotList';
-
-type DrawerContentProps = {
-  selectedDate?: Date;
-  blockedDates: Date[];
-  calendarMonth: number;
-  calendarYear: number;
-  times: string[];
-  reservedTimes: string[];
-  availableTimes: string[];
-  selectedTime?: string;
-  viewOnly: boolean;
-  onDateSelect: (date: Date) => void;
-  onMonthChange: (month: number) => void;
-  onYearChange: (year: number) => void;
-  onTimeSelect: (time: string) => void;
-};
 
 export default function DrawerContent({
   selectedDate,

@@ -7,19 +7,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { monthNames } from '@/constants/calendar';
+import { CalendarHeaderProps } from '@/types/Calendar';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button, Txt } from '../atoms';
-
-type CalendarHeaderProps = {
-  currentMonth: number;
-  currentYear: number;
-  onPreviousMonth: () => void;
-  onNextMonth: () => void;
-  onMonthSelect: (month: number) => void;
-  onYearSelect: (year: number) => void;
-  variant?: 'page' | 'drawer';
-};
 
 export default function CalendarHeader({
   currentMonth,

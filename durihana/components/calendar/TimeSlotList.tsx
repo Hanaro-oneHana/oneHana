@@ -1,16 +1,8 @@
 'use client';
 
+import { TimeSlotListProps } from '@/types/Calendar';
 import { Button, Txt } from '../atoms';
 import HorizontalSlider from '../atoms/HorizontalSlider';
-
-type TimeSlotListProps = {
-  times: string[];
-  reservedTimes: string[];
-  availableTimes: string[];
-  selectedTime?: string;
-  viewOnly: boolean;
-  onTimeSelect: (time: string) => void;
-};
 
 export default function TimeSlotList({
   times,

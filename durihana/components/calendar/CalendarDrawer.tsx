@@ -10,16 +10,9 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { useCalendarDrawer } from '@/hooks/useCalendarDrawer';
+import { CalendarDrawerProps } from '@/types/Calendar';
 import Button from '../atoms/Button';
 import CalendarDrawerContent from './DrawerContent';
-
-export interface CalendarDrawerProps {
-  partnerServiceId: number;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  viewOnly?: boolean; // 조회 전용 모드
-  onConfirm?: (date: Date, time: string) => void; // 예약 모드일 때 콜백
-}
 
 export default function CalendarDrawer({
   partnerServiceId,

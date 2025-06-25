@@ -1,19 +1,8 @@
 'use client';
 
+import { CalendarDayProps } from '@/types/Calendar';
 import { cn } from '@/lib/utils';
 import Button from '../atoms/Button';
-
-type CalendarDayProps = {
-  date: Date;
-  isCurrentMonth: boolean;
-  isSelected: boolean;
-  isBlocked: boolean;
-  hasFinanceSchedule: boolean;
-  hasReservationSchedule: boolean;
-  showScheduleDots: boolean;
-  onDateSelect: (date: Date) => void;
-  variant?: 'page' | 'drawer';
-};
 
 export default function CalendarDay({
   date,

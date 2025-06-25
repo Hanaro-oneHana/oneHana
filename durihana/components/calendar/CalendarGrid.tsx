@@ -1,17 +1,6 @@
+import { CalendarDay } from '@/components/calendar';
 import { weekDays } from '@/constants/calendar';
-import CalendarDay from './CalendarDay';
-
-type CalendarGridProps = {
-  calendarDays: Array<{ date: Date; isCurrentMonth: boolean }>;
-  selectedDate: Date;
-  blockedDates: Date[];
-  financeScheduleDates: Date[];
-  reservationScheduleDates: Date[];
-  showScheduleDots: boolean;
-  onDateSelect: (date: Date) => void;
-  isSameDay: (d1: Date, d2: Date) => boolean;
-  variant?: 'page' | 'drawer';
-};
+import { CalendarGridProps } from '@/types/Calendar';
 
 export default function CalendarGrid({
   calendarDays,
