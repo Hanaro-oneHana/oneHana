@@ -1,5 +1,5 @@
-import AccountDetail, { Transaction } from '@/components/AccountDetail';
-import AccountDetailHeader from '@/components/AccountDetailHeader';
+import AccountDetail, { Transaction } from '@/components/account/AccountDetail';
+import AccountDetailHeader from '@/components/account/AccountDetailHeader';
 import {
   getAllAccountsByUserId,
   getFirstAccountByUserId,
@@ -38,7 +38,7 @@ export default async function AccountDetailPage({ params }: Props) {
   return (
     <>
       <AccountDetailHeader />
-      <div className='flex flex-col p-[20px] mt-[60px]'>
+      <div className='mt-[60px] flex flex-col p-[20px]'>
         <AccountDetail
           account={firstAccount}
           allAccounts={allAccounts}

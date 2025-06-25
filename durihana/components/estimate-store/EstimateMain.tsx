@@ -1,8 +1,8 @@
 'use client';
 
-import ProgressBarButton from '@/components/ProgressBarButton';
 import { Txt, Search, Button } from '@/components/atoms';
-import StoreCard from '@/components/estimate/StoreCard';
+import ProgressBarButton from '@/components/estimate-store/ProgressBarButton';
+import StoreCard from '@/components/estimate-store/StoreCard';
 import Filtering from '@/components/filtering/Filtering';
 import {
   DropdownMenu,
@@ -102,9 +102,9 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   }, [selectedRegions, storeList]);
 
   return (
-    <div className='relative flex flex-col items-center justify-center h-dvh overflow-hidden'>
-      <div className='flex flex-col items-center justify-start w-full '>
-        <div className='flex flex-col w-full items-center justify-start gap-[30px] pt-[25px] px-[20px]'>
+    <div className='relative flex h-dvh flex-col items-center justify-center overflow-hidden'>
+      <div className='flex w-full flex-col items-center justify-start'>
+        <div className='flex w-full flex-col items-center justify-start gap-[30px] px-[20px] pt-[25px]'>
           <ProgressBarButton
             selectedItem={category}
             setSelectedItem={setCategory}
@@ -113,7 +113,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           <Search onSearch={handleSearch} />
         </div>
         {category !== 4 && category !== 5 && (
-          <div className='flex flex-col w-full pt-[20px]'>
+          <div className='flex w-full flex-col pt-[20px]'>
             <Filtering
               selectedRegions={selectedRegions}
               setSelectedRegions={setSelectedRegions}
@@ -125,10 +125,10 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
             />
           </div>
         )}
-        <div className='flex flex-row items-center justify-end w-full px-[20px]'>
+        <div className='flex w-full flex-row items-center justify-end px-[20px]'>
           <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className=' mt-[20px]'>
-              <div className='flex items-center justify-center gap-[-2px] focus:outline-none  m-0 p-0'>
+            <DropdownMenuTrigger className='mt-[20px]'>
+              <div className='m-0 flex items-center justify-center gap-[-2px] p-0 focus:outline-none'>
                 <Txt size='text-[12px]' color='text-textgray'>
                   {sortOptionList.length > 0 ? sortOptionList[0].label : '전체'}
                 </Txt>
@@ -140,7 +140,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
                 />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='flex flex-col items-end min-w-auto'>
+            <DropdownMenuContent className='flex min-w-auto flex-col items-end'>
               {sortOptionList.map((option, index) => (
                 <DropdownMenuItem
                   key={index}
@@ -169,13 +169,13 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           </DropdownMenu>
         </div>
       </div>
-      <div className='flex flex-col flex-1 items-center justify-start w-full overflow-y-scroll px-[20px] pt-[20px] gap-[10px] '>
+      <div className='flex w-full flex-1 flex-col items-center justify-start gap-[10px] overflow-y-scroll px-[20px] pt-[20px]'>
         {items.map((item, index) => (
           <StoreCard key={index} store={item} />
         ))}
       </div>
 
-      <div className='flex flex-row items-center bg-transparent justify-center w-full px-[20px] pt-[20px] pb-[20px]'>
+      <div className='flex w-full flex-row items-center justify-center bg-transparent px-[20px] pt-[20px] pb-[20px]'>
         <Button
           onClick={() => {
             if (categoryId === 5) {
@@ -191,7 +191,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           {categoryId === 5 ? '완료' : '다음'}
         </Button>
       </div>
-      <button className='absolute bottom-[88px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
+      <button className='bg-mint absolute right-[20px] bottom-[88px] cursor-pointer rounded-full p-[10px] shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)]'>
         <Image
           src='/asset/icons/bucket.svg'
           alt='Bucket'

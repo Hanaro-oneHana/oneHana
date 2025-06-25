@@ -1,9 +1,13 @@
-import AccountCard, { SubAccount, MainAccount } from '@/components/AccountCard';
-import AccountCardDefault from '@/components/AccountCardDefault';
+import { AccountCard, AccountCardDefault } from '@/components/account';
 import { Header, BottomNavigation } from '@/components/atoms';
-import HouseLoanCard from '@/components/main/HouseLoanCard';
-import MainDashBoard from '@/components/main/MainDashboard';
-import PopularPartner from '@/components/main/PopularPartner';
+import Container from '@/components/containers/Container';
+import {
+  HouseLoanCard,
+  MainDashBoard,
+  PopularPartner,
+} from '@/components/home';
+import { MainAccount, SubAccount } from '@/types/Account';
+import { use } from 'react';
 import {
   getAccountsByUserId,
   getCoupleTotalBalance,
@@ -12,86 +16,56 @@ import {
   getCategoriesByUserId,
   getMarriageDate,
 } from '@/lib/actions/DashboardActions';
-import { plusBalance } from '@/lib/actions/calBalance';
 import { auth } from '@/lib/auth';
 
-export default async function Home() {
-  const session = await auth();
+export default function Home() {
+  const session = use(auth());
   const userId = Number(session?.user?.id);
 
-  if (!session?.user) {
-    return (
-      <div className='flex flex-col  pt-[70px] px-[20px] pb-[105px]'>
-        <Header leftIcon='my' rightIcon='bell' />
-        <BottomNavigation selectedItem='home' />
-        <AccountCardDefault />
-        <div className='pt-[30px]'>
-          <MainDashBoard date='' category={['']} />
-        </div>
-        <div className='pt-[17px]'>
-          <HouseLoanCard />
-        </div>
-        <div className='pt-[40px] '>
-          <PopularPartner />
-        </div>
-      </div>
-    );
-  }
+  const accounts = use(getAccountsByUserId(userId));
+  const coupleBalance = use(getCoupleTotalBalance(userId));
+  const main = accounts.data.find((acc) => acc.type === 0);
+  const subs = accounts.data.filter((acc) => acc.type !== 0);
 
-  const accounts = await getAccountsByUserId(userId);
-  const isAccountEmpty = !accounts || accounts.length === 0;
-  const coupleBalance = await getCoupleTotalBalance(userId);
+  const mainAccountData: (MainAccount & { id: number }) | undefined = main && {
+    id: main.id,
+    type: 0,
+    account: main.account,
+    balance: main.balance,
+  };
 
-  let mainAccountData: (MainAccount & { id: number }) | null = null;
-  let subAccounts: SubAccount[] = [];
-
-  if (!isAccountEmpty) {
-    const main = accounts.find((acc) => acc.type === 0);
-    const subs = accounts.filter((acc) => acc.type !== 0);
-
-    if (main) {
-      mainAccountData = {
-        id: main.id,
-        type: 0,
-        account: main.account,
-        balance: main.balance,
-      };
-    }
-
-    subAccounts = subs.map((acc) => ({
+  const subAccounts: SubAccount[] =
+    subs &&
+    subs.map((acc) => ({
       type: acc.type as 1 | 2 | 3,
       balance: acc.balance,
     }));
-  }
 
-  const marriageDate = await getMarriageDate(userId);
-  const completedCategory = await getCategoriesByUserId(userId);
+  const marriageDate = use(getMarriageDate(userId));
+  const completedCategory = use(getCategoriesByUserId(userId));
 
   return (
-    <div className='flex flex-col  pt-[70px] px-[20px] pb-[105px] scrollbar-hide'>
-      <Header leftIcon='my' rightIcon='bell' />
-      <BottomNavigation selectedItem='home' />
-      {isAccountEmpty || !mainAccountData ? (
+    <Container
+      className='gap-[20px] pt-[70px] pb-[82.5px]'
+      header={<Header leftIcon='my' rightIcon='bell' />}
+      footer={<BottomNavigation selectedItem='home' />}
+    >
+      {!userId || !mainAccountData ? (
         <AccountCardDefault />
       ) : (
-        <>
-          <AccountCard
-            userId={userId}
-            mainAccount={mainAccountData}
-            subAccounts={subAccounts}
-            coupleBalance={coupleBalance}
-          />
-        </>
+        <AccountCard
+          userId={userId}
+          coupleBalance={coupleBalance.data}
+          mainAccount={mainAccountData || { type: 0, account: '', balance: 0 }}
+          subAccounts={subAccounts}
+        />
       )}
-      <div className='pt-[30px]'>
-        <MainDashBoard date={marriageDate} category={completedCategory} />
-      </div>
-      <div className='pt-[17px]'>
-        <HouseLoanCard />
-      </div>
-      <div className='pt-[40px]'>
-        <PopularPartner />
-      </div>
-    </div>
+      <MainDashBoard
+        date={marriageDate || ''}
+        category={completedCategory || ['']}
+      />
+      <HouseLoanCard />
+      <PopularPartner />
+    </Container>
   );
 }

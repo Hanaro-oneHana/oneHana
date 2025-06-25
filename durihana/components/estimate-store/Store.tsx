@@ -1,8 +1,7 @@
 'use client';
 
-import ProgressBarButton from '@/components/ProgressBarButton';
 import { Search, Txt } from '@/components/atoms';
-import StoreCard from '@/components/estimate/StoreCard';
+import { StoreCard, ProgressBarButton } from '@/components/estimate-store';
 import Filtering from '@/components/filtering/Filtering';
 import {
   DropdownMenu,
@@ -56,6 +55,10 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
     setItems(filteredItems);
   };
 
+  const handleSearch = useCallback((query: string) => {
+    updateSearchParam(['search'], [query]);
+  }, []);
+
   useEffect(() => {
     setItems(storeList || []);
     setCategory(categoryId || 1);
@@ -85,10 +88,6 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
     }
   }, [category]);
 
-  const handleSearch = useCallback((query: string) => {
-    updateSearchParam(['search'], [query]);
-  }, []);
-
   useEffect(() => {
     if (selectedRegions.length > 0) {
       const filteredItems =
@@ -102,8 +101,8 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   }, [selectedRegions, storeList]);
 
   return (
-    <div className='flex flex-col items-center justify-start h-dvh pt-[65px] pb-[72.5px] overflow-hidden relative'>
-      <div className='flex flex-col w-full px-[20px] gap-[25px]'>
+    <>
+      <div className='flex w-full flex-col gap-[25px] px-[20px]'>
         <ProgressBarButton
           selectedItem={category}
           setSelectedItem={setCategory}
@@ -112,7 +111,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
         <Search onSearch={handleSearch} />
       </div>
       {category !== 4 && category !== 5 && (
-        <div className='flex flex-col w-full pt-[20px]'>
+        <div className='flex w-full flex-col pt-[20px]'>
           <Filtering
             selectedRegions={selectedRegions}
             setSelectedRegions={setSelectedRegions}
@@ -125,10 +124,10 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
         </div>
       )}
 
-      <div className='flex  items-center justify-end w-full px-[20px]'>
+      <div className='flex w-full items-center justify-end px-[20px]'>
         <DropdownMenu modal={false}>
-          <DropdownMenuTrigger className=' mt-[20px]'>
-            <div className='flex items-center justify-center gap-[-2px] focus:outline-none  m-0 p-0'>
+          <DropdownMenuTrigger className='mt-[20px]'>
+            <div className='m-0 flex items-center justify-center gap-[-2px] p-0 focus:outline-none'>
               <Txt size='text-[12px]' color='text-textgray'>
                 {sortOption ? sortOption.label : '전체'}
               </Txt>
@@ -140,7 +139,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
               />
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='flex flex-col items-end min-w-auto'>
+          <DropdownMenuContent className='flex min-w-auto flex-col items-end'>
             {sortOptionList.map((option, index) => (
               <DropdownMenuItem
                 key={index}
@@ -170,7 +169,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className='flex flex-col items-center justify-start w-full overflow-y-auto  px-[20px] py-[20px] gap-[10px] '>
+      <div className='scrollbar-hide flex w-full flex-col items-center justify-start gap-[10px] overflow-y-auto px-[20px] py-[20px]'>
         {items.length === 0 ? (
           <Txt size='text-[14px]' className='text-icongray' align='text-center'>
             해당되는 매장이 없습니다.
@@ -179,7 +178,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
           items.map((item, index) => <StoreCard key={index} store={item} />)
         )}
       </div>
-      <button className='fixed bottom-[92.5px] right-[20px] p-[10px] rounded-full bg-mint shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)] cursor-pointer'>
+      <button className='bg-mint fixed right-[20px] bottom-[92.5px] cursor-pointer rounded-full p-[10px] shadow-[2px_4px_6px_0px_rgba(0,0,0,0.10)]'>
         <Image
           src='/asset/icons/bucket.svg'
           alt='Bucket'
@@ -190,6 +189,6 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
           }}
         />
       </button>
-    </div>
+    </>
   );
 }

@@ -1,6 +1,9 @@
-import AccountCard, { MainAccount, SubAccount } from '@/components/AccountCard';
-import AssetOverview from '@/components/asset/AssetOverview';
+import { AccountCard } from '@/components/account';
+import { AssetOverview } from '@/components/asset';
 import { BottomNavigation, Header } from '@/components/atoms';
+import Container from '@/components/containers/Container';
+import { MainAccount, SubAccount } from '@/types/Account';
+import { use } from 'react';
 import {
   getAccountsByUserId,
   getCoupleTotalBalance,
@@ -11,19 +14,13 @@ import {
 } from '@/lib/actions/AssetActions';
 import { auth } from '@/lib/auth';
 
-export default async function Asset() {
-  const session = await auth();
+export default function Asset() {
+  const session = use(auth());
   const userId = Number(session?.user?.id);
 
-  // 로그인 유저 없을 때 임시 처리. 추후 미들웨어 처리 예정
-  if (!session?.user) {
-    return <>사용자가 없습니다</>;
-  }
-
-  const accounts = await getAccountsByUserId(userId);
-  console.log('🚀 ~ Asset ~ accounts:', accounts);
-  const main = accounts.find((acc) => acc.type === 0)!;
-  const subs = accounts.filter((acc) => acc.type !== 0);
+  const accounts = use(getAccountsByUserId(userId));
+  const main = accounts.data.find((acc) => acc.type === 0)!;
+  const subs = accounts.data.filter((acc) => acc.type !== 0);
 
   const mainAccount: MainAccount = {
     type: 0,
@@ -36,30 +33,25 @@ export default async function Asset() {
     balance: acc.balance,
   }));
 
-  const coupleBalance = await getCoupleTotalBalance(userId);
+  const coupleBalance = use(getCoupleTotalBalance(userId));
 
-  const data = await getTypeAmounts(userId);
+  const data = use(getTypeAmounts(userId));
 
-  const total = await getBucketTotalAmount(userId);
+  const total = use(getBucketTotalAmount(userId));
 
   return (
-    <>
-      <Header leftIcon='my' rightIcon='bell' />
-      <div className='flex flex-col px-[20px]'>
-        <div className='mt-[70px]'>
-          <AccountCard
-            userId={userId}
-            mainAccount={mainAccount}
-            subAccounts={subAccounts}
-            coupleBalance={coupleBalance}
-          />
-        </div>
-        <div className='mb-[75px]'>
-          <AssetOverview data={data} balance={total} />
-        </div>
-      </div>
-
-      <BottomNavigation selectedItem='asset' />
-    </>
+    <Container
+      className='gap-[70px] pt-[70px] pb-[82.5px]'
+      header={<Header leftIcon='my' rightIcon='bell' />}
+      footer={<BottomNavigation selectedItem='asset' />}
+    >
+      <AccountCard
+        userId={userId}
+        mainAccount={mainAccount}
+        subAccounts={subAccounts}
+        coupleBalance={coupleBalance.data}
+      />
+      <AssetOverview data={data} balance={total} />
+    </Container>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { Txt } from '@/components/atoms';
 import {
   Accordion,
   AccordionContent,
@@ -7,7 +8,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useState } from 'react';
-import { Txt } from '../atoms';
 
 type Props = {
   options: Record<string, string>;
@@ -35,13 +35,13 @@ export default function StoreOption({ options, onSelectChange }: Props) {
       <AccordionItem
         key={valueKey}
         value={valueKey}
-        className='border rounded-[10px] last:border-b-[1px] '
+        className='w-full rounded-[10px] border last:border-b-[1px]'
       >
-        <AccordionTrigger className='px-[10px] w-full'>
-          <div className='flex justify-between w-full'>
+        <AccordionTrigger className='w-full px-[10px]'>
+          <div className='flex w-full justify-between'>
             <Txt size='text-[15px]'>{label}</Txt>
             {selected[valueKey] && (
-              <span className='text-[13px] text-textgray'>
+              <span className='text-textgray text-[13px]'>
                 {selected[valueKey]}
               </span>
             )}
@@ -51,7 +51,7 @@ export default function StoreOption({ options, onSelectChange }: Props) {
           {values.map((item, idx) => (
             <p
               key={idx}
-              className='px-[15px] py-[12px] border-t cursor-pointer'
+              className='cursor-pointer border-t px-[15px] py-[12px]'
               onClick={() => {
                 updateSelected(valueKey, item);
                 setOpenItems((prev) => prev.filter((v) => v !== valueKey));
@@ -66,14 +66,14 @@ export default function StoreOption({ options, onSelectChange }: Props) {
   };
 
   return (
-    <div>
+    <>
       {Object.keys(options).length > 0 && (
         <Txt size='text-[15px]' weight='font-[500]' className='flex px-[20px]'>
           옵션
         </Txt>
       )}
 
-      <div className='flex flex-col gap-[10px] px-[20px] py-[15px]'>
+      <div className='flex w-full flex-col gap-[10px] px-[20px] py-[15px]'>
         <Accordion
           type='multiple'
           value={openItems}
@@ -93,6 +93,6 @@ export default function StoreOption({ options, onSelectChange }: Props) {
           })}
         </Accordion>
       </div>
-    </div>
+    </>
   );
 }

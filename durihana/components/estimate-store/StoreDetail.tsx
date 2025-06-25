@@ -2,8 +2,10 @@
 
 import AlertModal from '@/components/alert/AlertModal';
 import { Button, Txt } from '@/components/atoms';
-import StoreInfo from '@/components/store/StoreInfo';
-import StoreOption from '@/components/store/StoreOption';
+import CalendarDrawer from '@/components/calendar/CalendarDrawer';
+import StoreDrawer from '@/components/estimate-store/StoreDrawer';
+import StoreInfo from '@/components/estimate-store/StoreInfo';
+import StoreOption from '@/components/estimate-store/StoreOption';
 import {
   Carousel,
   CarouselApi,
@@ -18,9 +20,6 @@ import {
   insertOptions,
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
-import { processBudgetPlanTransaction } from '@/lib/actions/TransactionActions';
-import CalendarDrawer from '../calendar/CalendarDrawer';
-import StoreDrawer from './StoreDrawer';
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -85,9 +84,11 @@ export default function StoreDetail(details: StoreDetailProps) {
 
       //insertOptions 에서 categoryId 에 따라 budgetPlan 의 state 들어가는거 다름
       await insertOptions(requestUser || 0, details.id, selectedOptions, state);
-      isSelectOption
-        ? setSelectedModalMent(modalMent[0])
-        : setSelectedModalMent(modalMent[1]);
+      if (isSelectOption) {
+        setSelectedModalMent(modalMent[0]);
+      } else {
+        setSelectedModalMent(modalMent[1]);
+      }
       showModal(true);
     } catch (error) {
       console.error('옵션 저장 실패:', error);
@@ -96,11 +97,11 @@ export default function StoreDetail(details: StoreDetailProps) {
   };
 
   return (
-    <div className=' pb-[100px]'>
-      <div className='flex flex-col w-full items-center'>
+    <>
+      <div className='flex w-full flex-col items-center'>
         <div>
           <Carousel setApi={setApi}>
-            <div className='absolute top-2 right-4 z-10 bg-icongray opacity-90 text-white text-[12px] px-2 py-1 rounded'>
+            <div className='bg-icongray absolute top-2 right-4 z-10 rounded px-2 py-1 text-[12px] text-white opacity-90'>
               {current}/{count}
             </div>
             <CarouselContent>
@@ -117,13 +118,13 @@ export default function StoreDetail(details: StoreDetailProps) {
         </div>
       </div>
 
-      <div className='flex flex-col px-[20px] pt-[25px] w-full'>
+      <div className='flex w-full flex-col px-[20px] pt-[25px]'>
         <Txt size='text-[20px]' weight='font-[500]'>
           {details?.name}
         </Txt>
 
         {'위치' in details.info && (
-          <div className='flex items-center gap-[4px] mt-[5px]'>
+          <div className='mt-[5px] flex items-center gap-[4px]'>
             <Image
               src='/asset/icons/mapmarker.svg'
               alt='맵마커'
@@ -146,7 +147,7 @@ export default function StoreDetail(details: StoreDetailProps) {
         onSelectChange={(opts) => setSelectedOptions(opts)}
       />
 
-      <div className='fixed max-w-[960px]  bottom-0 left-[50%] translate-x-[-50%] w-full h-[80px] bg-background z-50 flex items-center justify-between px-[20px] gap-[15px]'>
+      <div className='bg-background fixed bottom-0 left-[50%] z-50 flex h-[80px] w-full max-w-[960px] translate-x-[-50%] items-center justify-between gap-[15px] px-[20px]'>
         {details.categoryId < 4 ? (
           <Button
             className='bg-buttongray h-[48px] w-full'
@@ -175,7 +176,7 @@ export default function StoreDetail(details: StoreDetailProps) {
           }}
         >
           <Txt align='text-center'>{selectedModalMent}</Txt>
-          <div className='flex flex-row gap-[15px] mt-5 w-full'>
+          <div className='mt-5 flex w-full flex-row gap-[15px]'>
             {!Object.keys(details.options).some(
               (key) => !selectedOptions[key]
             ) && (
@@ -221,6 +222,6 @@ export default function StoreDetail(details: StoreDetailProps) {
         onOpenChange={setCalendarOpen}
         viewOnly
       />
-    </div>
+    </>
   );
 }

@@ -1,9 +1,10 @@
 'use server';
 
-import { AccountType } from '@/components/AccountDetail';
+import { AccountType } from '@/components/account/AccountDetail';
 import prisma from '@/lib/db';
 import { Prisma } from '../generated/prisma';
 import { createAccountSchedules } from './AccountCalendarActions';
+import { getCoupleUserIds } from './getCoupleUserIds';
 
 export async function getCheckingAccountByUserId(userId: number) {
   try {
@@ -20,16 +21,19 @@ export async function getCheckingAccountByUserId(userId: number) {
 }
 
 export async function getAccountsByUserId(userId: number) {
+  if (!userId) {
+    return { isSuccess: false, data: [] };
+  }
   try {
     const accounts = await prisma.account.findMany({
       where: { user_id: userId },
       orderBy: { type: 'asc' },
     });
 
-    return accounts;
+    return { isSuccess: true, data: accounts };
   } catch (error) {
     console.error('getAccountsByUserId error:', error);
-    return [];
+    return { isSuccess: false, data: [] };
   }
 }
 
@@ -81,7 +85,17 @@ export const createMultipleAccounts = async (
 
       for (const accountData of accountsData) {
         const now = new Date();
-        const formattedNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const formattedNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+          now.getDate()
+        ).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes()
+        ).padStart(
+          2,
+          '0'
+        )}:${String(now.getSeconds()).padStart(2, '0')}.${String(
+          now.getMilliseconds()
+        ).padStart(3, '0')}`;
+
         const expireDate = new Date(now);
         expireDate.setFullYear(
           now.getFullYear() + Math.floor(accountData.period / 12) || 1
@@ -190,9 +204,6 @@ export const createMultipleAccounts = async (
             },
           });
         }
-
-        // 적금 타입 세부 로직
-
         // 스케줄 생성
         const scheduleResult = await createAccountSchedules(newAccount.id, tx);
         totalSchedules += scheduleResult.count;
@@ -200,6 +211,41 @@ export const createMultipleAccounts = async (
 
       return { accounts: createdAccounts, totalSchedules };
     });
+
+    const updatedMain = await prisma.account.findFirst({
+      where: { user_id: userId, type: 0 },
+    });
+    const coupleBalance = await getCoupleTotalBalance(userId);
+
+    // 3) 커플 멤버들 ID
+    const coupleUserIds = await getCoupleUserIds(userId);
+
+    // 4) emit
+    const io = (globalThis as any).io as import('socket.io').Server;
+    if (io) {
+      for (const uid of coupleUserIds) {
+        if (updatedMain) {
+          // — 메인 계좌 업데이트 (공통)
+          io.to(`user-${uid}`).emit('balance-updated', {
+            accountId: updatedMain.id,
+            newBalance: updatedMain.balance,
+            accountType: 0,
+            coupleBalance:coupleBalance.data,
+          });
+        }
+        if (uid === userId) {
+          // — 본인에게만: 서브 계좌들도 emit
+          for (const acc of result.accounts) {
+            io.to(`user-${uid}`).emit('balance-updated', {
+              accountId: acc.id,
+              newBalance: acc.balance,
+              accountType: acc.type,
+              coupleBalance:coupleBalance.data,
+            });
+          }
+        }
+      }
+    }
 
     return {
       success: true,
@@ -269,12 +315,13 @@ export async function getFirstAccountByUserId(userId: number) {
 }
 
 export async function getCoupleTotalBalance(userId: number) {
+  if (!userId) return { isSuccess: false, data: 0 };
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { mate_code: true },
   });
 
-  if (!user?.mate_code) return 0;
+  if (!user?.mate_code) return { isSuccess: false, data: 0 };
 
   const couple = await prisma.user.findMany({
     where: { code: user.mate_code },
@@ -291,5 +338,8 @@ export async function getCoupleTotalBalance(userId: number) {
     select: { balance: true },
   });
 
-  return accounts.reduce((sum, acc) => sum + acc.balance, 0);
+  return {
+    isSuccess: true,
+    data: accounts.reduce((sum, acc) => sum + acc.balance, 0),
+  };
 }

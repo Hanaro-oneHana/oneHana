@@ -1,10 +1,10 @@
+import { Txt } from '@/components/atoms';
 import Image from 'next/image';
-import { Txt } from '../atoms';
 
 export default function HouseLoanCard() {
   return (
-    <div className='bg-purple rounded-xl h-[71px] flex justify-center'>
-      <div className='flex flex-col justify-center gap-[4px] mr-5'>
+    <div className='bg-purple flex h-[71px] w-full justify-center rounded-xl'>
+      <div className='mr-5 flex flex-col justify-center gap-[4px]'>
         <Txt size='text-[10px]' weight='font-[350]'>
           신혼집 자금이 걱정되면?
         </Txt>
@@ -17,7 +17,7 @@ export default function HouseLoanCard() {
         alt='전세대출 이미지'
         width={90}
         height={90}
-        className='ml-4 mr-[-13px]'
+        className='mr-[-13px] ml-4'
       />
     </div>
   );
