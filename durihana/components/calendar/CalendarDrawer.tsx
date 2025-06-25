@@ -46,6 +46,15 @@ export default function CalendarDrawer({
 
   const handleReservationConfirm = () => {
     if (!viewOnly && selectedDate && selectedTime && onConfirm) {
+      console.log(
+        '🚀 ~ handleReservationConfirm ~ selectedTime:',
+        selectedTime
+      );
+      console.log(
+        '🚀 ~ handleReservationConfirm ~ selectedDate:',
+        selectedDate
+      );
+
       onConfirm(selectedDate, selectedTime);
       onOpenChange(false);
     }
