@@ -18,7 +18,6 @@ import {
   insertOptions,
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
-import { processBudgetPlanTransaction } from '@/lib/actions/TransactionActions';
 import CalendarDrawer from '../calendar/CalendarDrawer';
 import StoreDrawer from './StoreDrawer';
 
@@ -85,9 +84,11 @@ export default function StoreDetail(details: StoreDetailProps) {
 
       //insertOptions 에서 categoryId 에 따라 budgetPlan 의 state 들어가는거 다름
       await insertOptions(requestUser || 0, details.id, selectedOptions, state);
-      isSelectOption
-        ? setSelectedModalMent(modalMent[0])
-        : setSelectedModalMent(modalMent[1]);
+      if (isSelectOption) {
+        setSelectedModalMent(modalMent[0]);
+      } else {
+        setSelectedModalMent(modalMent[1]);
+      }
       showModal(true);
     } catch (error) {
       console.error('옵션 저장 실패:', error);

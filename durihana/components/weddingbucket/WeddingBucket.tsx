@@ -2,7 +2,6 @@
 
 import { Header, Button, Txt } from '@/components/atoms';
 import WeddingBucketBox from '@/components/weddingbucket/WeddingBucketBox';
-import { CloudCog } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import AlertModal from '../alert/AlertModal';
@@ -19,6 +18,7 @@ export type BucketItem = {
   price?: number;
   state?: number;
   category?: number;
+  partnerServiceId: number;
 };
 
 type Props = {

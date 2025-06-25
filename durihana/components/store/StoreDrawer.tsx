@@ -10,6 +10,7 @@ import {
   DrawerTrigger,
   DrawerClose,
 } from '@/components/ui/drawer';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
 import { addPartnerCalendarEvent } from '@/lib/actions/ReservationActions';
@@ -37,17 +38,15 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
     userId,
     onSelectModalMent,
   } = drawer;
+  const { data: session } = useSession();
   const img = details.images;
   const [open, setOpen] = useState(false);
 
   const price = parseInt(details.info['가격'].replace(/[^0-9]/g, ''), 10);
-  console.log('🚀 ~ StoreDrawer ~ price:', price);
 
   const handlePayment = async () => {
     try {
-      console.log('결제 시작');
       const accountId = await getCheckingAccountByUserId(userId);
-      console.log('현재 아이디 : ', accountId);
 
       const description = details.name;
 
@@ -55,8 +54,12 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
       await addPartnerCalendarEvent(userId, details.id);
       // Storedrawer 는 가전가구, 예물예단이니까 결제 완료 되면 budgetPlan 의 state 가 3으로 변경
       if (result.success) {
+        const requestUser = session?.user?.isMain
+          ? parseInt(session?.user?.id || '0', 10)
+          : session?.user?.partnerId || 0;
+
         const insertResult = await insertOptions(
-          userId,
+          requestUser,
           details.id,
           selectedOptions,
           3
@@ -66,7 +69,6 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
           onselectedOptions();
         }
       }
-      console.log('minusBalance 결과 : ', result);
     } catch (e) {
       console.error('결제 실패', e);
       alert('결제 중 오류가 발생했습니다.');
