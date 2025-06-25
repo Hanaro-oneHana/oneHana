@@ -4,7 +4,7 @@ import AlertModal from '@/components/alert/AlertModal';
 import { Button, Header, InputComponent, Txt } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, use, useState } from 'react';
 import { signInValidateAction, signUpAction } from '@/lib/actions/AuthActions';
 
 export default function Singup() {
@@ -67,7 +67,7 @@ export default function Singup() {
     setMarriageDateError('');
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -77,13 +77,13 @@ export default function Singup() {
       return;
     }
     try {
-      const result = await signUpAction(
+      const result = use(signUpAction(
         formData.name,
         formData.email,
         formData.password,
         formData.phone,
         formData.marriageDate
-      );
+      ));
 
       if (!result.isSuccess) {
         handleErrorReset();
@@ -102,20 +102,20 @@ export default function Singup() {
         }
         return;
       } else {
-        const signInResult = await signInValidateAction(
+        const signInResult = use(signInValidateAction(
           formData.email,
           formData.password
-        );
+        ));
         if (signInResult.isSuccess && signInResult.data) {
           // 로그인 성공 시 NextAuth로 로그인 처리
-          await signIn('credentials', {
+          use(signIn('credentials', {
             redirect: false,
             id: result.data?.id || '',
             email: signInResult.data.email,
             password: formData.password,
             name: signInResult.data?.name || '',
             partnerCode: signInResult.data?.mate_code || 0,
-          });
+          }));
           setSuccessModal(true);
         }
       }
