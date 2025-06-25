@@ -13,10 +13,12 @@ export default function Singup() {
   const inputSet =
     'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
   const errMasseage = 'text-red text-[10px] font-[500]';
+  const divClass = 'flex flex-col gap-[10px]';
   // const title = 'text-[16px] font-[500]';
   // const inputSet =
   //   'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
   // const errMasseage = 'text-red text-[10px] font-[500]';
+  // const divClass = 'flex flex-col gap-[10px]';
 
   const phoneHyphen = (h: string) => {
     const digits = h.replace(/\D/g, '');
@@ -147,9 +149,9 @@ export default function Singup() {
 
   return (
     // <div className='flex flex-col pb-[40px] pt-[80px] px-[20px]'>
-    <Container header={<Header title='회원가입' leftIcon='back'/>}>
+    <Container header={<Header title='회원가입' leftIcon='back'/>} className='pt-[100px]'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-[15px]'>
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>이름</Txt>
           <InputComponent
             className={inputSet}
@@ -164,7 +166,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{nameError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>이메일</Txt>
           <InputComponent
             className={inputSet}
@@ -178,7 +180,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{emailError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>비밀번호</Txt>
           <InputComponent
             className={inputSet}
@@ -192,7 +194,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{passwordError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>비밀번호 확인</Txt>
           <InputComponent
             className={inputSet}
@@ -206,7 +208,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{checkError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>전화번호</Txt>
           <InputComponent
             className={inputSet}
@@ -220,7 +222,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{phoneError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>결혼 예정일</Txt>
           <InputComponent
             className={inputSet}
