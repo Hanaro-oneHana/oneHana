@@ -11,14 +11,9 @@ import Container from '@/components/containers/Container';
 export default function Singup() {
   const title = 'text-[16px] font-[500]';
   const inputSet =
-    'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
+    'text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
   const errMasseage = 'text-red text-[10px] font-[500]';
   const divClass = 'flex flex-col gap-[10px]';
-  // const title = 'text-[16px] font-[500]';
-  // const inputSet =
-  //   'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
-  // const errMasseage = 'text-red text-[10px] font-[500]';
-  // const divClass = 'flex flex-col gap-[10px]';
 
   const phoneHyphen = (h: string) => {
     const digits = h.replace(/\D/g, '');
@@ -148,8 +143,7 @@ export default function Singup() {
   };
 
   return (
-    // <div className='flex flex-col pb-[40px] pt-[80px] px-[20px]'>
-    <Container header={<Header title='회원가입' leftIcon='back'/>} className='pt-[100px]'>
+    <Container header={<Header title='회원가입' leftIcon='back'/>} className='pt-[80px]'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-[15px]'>
         <div className={divClass}>
           <Txt className={title}>이름</Txt>
@@ -239,7 +233,7 @@ export default function Singup() {
         <div>
           <Button
             type='submit'
-            className='block w-full mt-[40px]'
+            className='mt-[40px]'
             disabled={isLoading}
           >
             {isLoading ? '가입중' : '완료'}
@@ -252,7 +246,7 @@ export default function Singup() {
           <Txt size='text-[16px]' className='text-mainblack text-center'>
             회원가입이 완료되었습니다.
           </Txt>
-          <Button className='mt-[20px] w-full' onClick={handleModalClose}>
+          <Button  onClick={handleModalClose}>
             초대코드 받으러가기
           </Button>
         </AlertModal>
