@@ -36,7 +36,7 @@ export default function WeddingBucketBox({ item }: Props) {
 
     await minusBalance(accountId, Number(item.price), item.store);
     // 1-1) partnerCalendar에 예약 이벤트 기록
-    await addPartnerCalendarEvent(userId, item.id, dateStr, time);
+    await addPartnerCalendarEvent(userId, item.partnerServiceId, dateStr, time);
 
     // 1-2) BudgetPlan 상태=1(예약완료), selected에 date/time 저장
     await updateBudgetPlan(item.id, 1);
@@ -58,7 +58,12 @@ export default function WeddingBucketBox({ item }: Props) {
     await minusBalance(accountId, Number(item.price), item.store);
 
     // 2-1) partnerCalendar에 결제 이벤트 기록
-    await addPartnerCalendarEvent(userId, item.id, dateStr, timeStr);
+    await addPartnerCalendarEvent(
+      userId,
+      item.partnerServiceId,
+      dateStr,
+      timeStr
+    );
 
     // 2-2) BudgetPlan 상태=3(결제완료), selected는 그대로 둠
     await updateBudgetPlan(item.id, 3);
