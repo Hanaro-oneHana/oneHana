@@ -20,7 +20,7 @@ import {
 } from '@/lib/actions/StoreDetailActions';
 import { minusBalance } from '@/lib/actions/calBalance';
 import { Button, Txt } from '../atoms';
-import { modalMent } from './StoreDetail';
+import { modalMent } from '../estimate-store/StoreDetail';
 
 type StoreDrawerProps = {
   details: StoreDetailProps;
@@ -99,15 +99,15 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
           <DrawerHeader>
             <DrawerTitle>
               {img && (
-                <div className='w-full flex gap-[20px] relative mb-[20px]'>
+                <div className='relative mb-[20px] flex w-full gap-[20px]'>
                   <img
                     src={img[0]}
                     alt='Store image'
                     width={60}
                     height={60}
-                    className='object-cover rounded-lg'
+                    className='rounded-lg object-cover'
                   />
-                  <Txt className='text-[15px] mt-[25px]'>{details.name}</Txt>
+                  <Txt className='mt-[25px] text-[15px]'>{details.name}</Txt>
                 </div>
               )}
             </DrawerTitle>
@@ -121,7 +121,7 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
               <DrawerDescription className='pb-[10px]'>
                 선택한 옵션
               </DrawerDescription>
-              <ul className='list-none list-inside '>
+              <ul className='list-inside list-none'>
                 {Object.entries(selectedOptions).map(([key, val]) => (
                   <li key={key} className='pb-[5px]'>
                     {key}: {val}

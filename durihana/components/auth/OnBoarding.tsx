@@ -1,15 +1,15 @@
 'use client';
 
+import { Txt } from '@/components/atoms';
 import Button from '@/components/atoms/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Txt from './atoms/Txt';
 
 export default function Onboarding() {
   const router = useRouter();
 
   return (
-    <div className='flex flex-col h-dvh justify-center items-center'>
+    <div className='flex h-dvh flex-col items-center justify-center'>
       <div className='flex flex-col items-center'>
         <Txt className='self-start'>두 사람, 하나의 여정</Txt>
         <div className='mb-2'>

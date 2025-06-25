@@ -1,21 +1,11 @@
 'use client';
 
 import Txt from '@/components/atoms/Txt';
+import { MainAccount, SubAccount } from '@/types/Account';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { socket } from '@/lib/socket-client';
-
-export type SubAccount = {
-  type: 1 | 2 | 3; // 1:예금, 2:적금, 3:대출
-  balance: number;
-};
-
-export type MainAccount = {
-  type: 0;
-  account: string;
-  balance: number;
-};
 
 type Props = {
   userId: number;
@@ -96,10 +86,10 @@ export default function AccountCard({
 
   return (
     <div
-      className='flex flex-col w-full relative bg-lightmint border border-linegray rounded-[10px] p-6 '
+      className='bg-lightmint border-linegray relative flex w-full flex-col rounded-[10px] border p-6'
       onClick={onCardClick}
     >
-      <div className='absolute right-5 '>
+      <div className='absolute right-5'>
         <Image
           src='/asset/icons/info.svg'
           alt='info'
@@ -119,10 +109,10 @@ export default function AccountCard({
         </Txt>
       </div>
 
-      <div className='flex flex-col gap-2 mt-3'>
+      <div className='mt-3 flex flex-col gap-2'>
         {subAccounts.map((item) => (
-          <div key={item.type} className='flex justify-between items-center'>
-            <div className='bg-primarycolor px-[7px] py-[2px] rounded-[10px] flex items-center'>
+          <div key={item.type} className='flex items-center justify-between'>
+            <div className='bg-primarycolor flex items-center rounded-[10px] px-[7px] py-[2px]'>
               <Txt
                 color='text-mainwhite'
                 size='text-[10px]'

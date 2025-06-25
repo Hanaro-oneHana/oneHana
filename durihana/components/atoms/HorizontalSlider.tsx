@@ -14,7 +14,7 @@ export default function HorizontalSlider({
   return (
     <div
       className={cn(
-        'overflow-x-auto scrollbar-hide scroll-smooth w-full',
+        'scrollbar-hide w-full overflow-x-auto scroll-smooth',
         className
       )}
     >

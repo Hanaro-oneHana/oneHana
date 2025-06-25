@@ -34,60 +34,58 @@ export default function Header({
   }, [leftIcon, rightIcon]);
 
   return (
-    <>
-      <header className='fixed top-0 left-[50%] translate-x-[-50%] max-w-[960px] flex w-dvw items-center justify-between h-[60px] bg-background z-50 px-[20px]'>
-        <div className='flex items-center justify-center  gap-[10px] bg-transparent '>
-          <button
-            className='flex items-center justify-center w-[24px] h-[24px] shrink-0 cursor-pointer'
-            onClick={
-              onLeftClick
-                ? onLeftClick
-                : () => {
-                    if (isLeftBack) {
-                      router.back();
-                    } else {
-                      router.push('/my');
-                    }
-                  }
-            }
-          >
-            <Image
-              src={imageLeftUrl}
-              alt={isLeftBack ? '뒤로가기' : '마이'}
-              width={isLeftBack ? 20 : 24}
-              height={isLeftBack ? 20 : 24}
-              className='bg-transparent'
-            />
-          </button>
-          {leftIcon === 'my' && (
-            <Button
-              className='flex text-[11px] py-[4px] px-[8px] rounded-[8px] '
-              onClick={session?.user ? () => signOut() : () => signIn()}
-            >
-              {session?.user ? '로그아웃' : '로그인'}
-            </Button>
-          )}
-        </div>
-
-        <Txt align='text-center' size='text-[16px]' weight='font-[500]'>
-          {title}
-        </Txt>
-
+    <header className='bg-background flex h-[60px] w-full items-center justify-between px-[20px]'>
+      <div className='flex items-center justify-center gap-[10px] bg-transparent'>
         <button
-          className='w-[24px] h-[24px]cursor-pointer bg-transparent'
-          onClick={onRightClick}
+          className='flex h-[24px] w-[24px] shrink-0 cursor-pointer items-center justify-center'
+          onClick={
+            onLeftClick
+              ? onLeftClick
+              : () => {
+                  if (isLeftBack) {
+                    router.back();
+                  } else {
+                    router.push('/my');
+                  }
+                }
+          }
         >
-          {rightIcon && (
-            <Image
-              src={imageRightUrl}
-              alt={isRightClose ? '닫기' : '알림'}
-              width={24}
-              height={24}
-              className='bg-transparent'
-            />
-          )}
+          <Image
+            src={imageLeftUrl}
+            alt={isLeftBack ? '뒤로가기' : '마이'}
+            width={isLeftBack ? 20 : 24}
+            height={isLeftBack ? 20 : 24}
+            className='bg-transparent'
+          />
         </button>
-      </header>
-    </>
+        {leftIcon === 'my' && (
+          <Button
+            className='flex rounded-[8px] px-[8px] py-[4px] text-[11px]'
+            onClick={session?.user ? () => signOut() : () => signIn()}
+          >
+            {session?.user ? '로그아웃' : '로그인'}
+          </Button>
+        )}
+      </div>
+
+      <Txt align='text-center' size='text-[16px]' weight='font-[500]'>
+        {title}
+      </Txt>
+
+      <button
+        className='h-[24px] w-[24px] cursor-pointer bg-transparent'
+        onClick={onRightClick}
+      >
+        {rightIcon && (
+          <Image
+            src={imageRightUrl}
+            alt={isRightClose ? '닫기' : '알림'}
+            width={24}
+            height={24}
+            className='bg-transparent'
+          />
+        )}
+      </button>
+    </header>
   );
 }
