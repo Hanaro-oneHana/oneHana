@@ -16,9 +16,10 @@ type Props = { item: BucketItem };
 
 export default function WeddingBucketBox({ item }: Props) {
   const { data: session } = useSession();
-  const userId = Number(session?.user?.id) ?? 0;
+  const userId = session?.user?.isMain
+    ? Number(session.user.id)
+    : (session?.user?.partnerId ?? 0);
   const router = useRouter();
-  console.log('f;asdkjf;lksdjf;', item);
 
   // 로컬 상태로 UI 즉시 갱신
   const [currentState, setCurrentState] = useState<number>(item.state ?? 0);

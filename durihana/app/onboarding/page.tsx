@@ -1,9 +1,9 @@
-import Onboarding from "@/components/OnBoarding";
+import Onboarding from '@/components/auth/OnBoarding';
 
 export default function OnBoarding() {
   return (
     <>
-      <Onboarding/>
+      <Onboarding />
     </>
   );
 }

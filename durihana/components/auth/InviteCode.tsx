@@ -1,15 +1,13 @@
 'use client';
 
+import AlertModal from '@/components/alert/AlertModal';
+import { Button, InputComponent, Txt } from '@/components/atoms';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { findPartnerId } from '@/lib/actions/AuthActions';
-import { updateRandomCode, tryMating } from '../lib/actions/InviteActions';
-import AlertModal from './alert/AlertModal';
-import Button from './atoms/Button';
-import InputComponent from './atoms/InputComponent';
-import Txt from './atoms/Txt';
+import { updateRandomCode, tryMating } from '@/lib/actions/InviteActions';
 
 function generateRandomCode(length: number = 8): string {
   let result = '';
@@ -78,15 +76,15 @@ export default function InviteCode() {
   };
 
   return (
-    <div className='flex flex-col pt-[120px] h-dvh px-[20px]  relative '>
-      <div className='flex flex-col items-center gap-[15px] mb-[20px]'>
-        <Txt className='text-[16px] w-full'>내 초대코드</Txt>
+    <div className='relative flex h-dvh flex-col px-[20px] pt-[120px]'>
+      <div className='mb-[20px] flex flex-col items-center gap-[15px]'>
+        <Txt className='w-full text-[16px]'>내 초대코드</Txt>
         <InputComponent
           value={randomCode}
           disabled
           className='text-primarycolor text-[14px] font-[600]'
         />
-        <Txt className='text-[16px] w-full mt-[10px]'>
+        <Txt className='mt-[10px] w-full text-[16px]'>
           상대방 초대코드를 전달받으셨나요?
         </Txt>
         <InputComponent
@@ -94,7 +92,7 @@ export default function InviteCode() {
           onChange={onlyDigit}
           placeholder='전달받은 초대코드 입력'
           maxLength={8}
-          className='text-primarycolor text-[14px] font-[600] placeholder:font-[400] '
+          className='text-primarycolor text-[14px] font-[600] placeholder:font-[400]'
         />
       </div>
       <div className='flex justify-center'>
@@ -105,7 +103,7 @@ export default function InviteCode() {
           height={240}
         />
       </div>
-      <div className='absolute flex px-[20px] justify-center bottom-[40px] left-[50%] w-full h-[48px] text-[16px] translate-x-[-50%]'>
+      <div className='absolute bottom-[40px] left-[50%] flex h-[48px] w-full translate-x-[-50%] justify-center px-[20px] text-[16px]'>
         <Button onClick={handleConnect}>연결하기</Button>
       </div>
 

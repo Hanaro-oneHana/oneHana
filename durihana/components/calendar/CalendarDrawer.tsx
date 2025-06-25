@@ -28,7 +28,6 @@ export default function CalendarDrawer({
   viewOnly = false,
   onConfirm,
 }: CalendarDrawerProps) {
-  console.log('🚀 상담일정 :', partnerServiceId);
   const {
     times,
     selectedDate,
@@ -46,15 +45,6 @@ export default function CalendarDrawer({
 
   const handleReservationConfirm = () => {
     if (!viewOnly && selectedDate && selectedTime && onConfirm) {
-      console.log(
-        '🚀 ~ handleReservationConfirm ~ selectedTime:',
-        selectedTime
-      );
-      console.log(
-        '🚀 ~ handleReservationConfirm ~ selectedDate:',
-        selectedDate
-      );
-
       onConfirm(selectedDate, selectedTime);
       onOpenChange(false);
     }

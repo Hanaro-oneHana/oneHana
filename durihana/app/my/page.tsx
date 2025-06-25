@@ -1,14 +1,25 @@
 import { Button, Header, Txt } from '@/components/atoms';
-import { getInterestsByUserId, getUserInfo } from '@/lib/actions/UserActions';
+import { use } from 'react';
+import { getCategoriesByUserId } from '@/lib/actions/DashboardActions';
+import { getAllInterestRates } from '@/lib/actions/InterestActions';
+import { getUserInfo } from '@/lib/actions/UserActions';
 import { auth } from '@/lib/auth';
 
-export default async function Mypage() {
-  const session = await auth();
+export default function Mypage() {
+  const session = use(auth());
   const userId = Number(session?.user?.id);
 
-  const userInfo = await getUserInfo(userId);
+  const mainUserId = session?.user?.isMain
+    ? Number(session.user.id)
+    : session?.user?.partnerId;
 
-  const interestInfo = await getInterestsByUserId(userId);
+  const userInfo = use(getUserInfo(userId));
+
+  const interestInfo = use(getAllInterestRates());
+  const steps = ['기본', 'step 1', 'step 2', 'step 3', 'step 4', 'step 5'];
+
+  const completedCategory = use(getCategoriesByUserId(mainUserId));
+  const completedCnt = completedCategory.length;
 
   return (
     <>
@@ -37,36 +48,63 @@ export default async function Mypage() {
           {/*이자율 정보*/}
           <div>
             <Txt weight='font-[500]' className='flex pb-[15px]'>
-              현재 적용 중인 이자율
+              우리 부부의 이자율
             </Txt>
-            {/*첫번째 행*/}
-            <div className='grid grid-cols-3 border border-linegray h-[50px]'>
-              {Object.keys(interestInfo).map((label) => (
+
+            {/* 헤더 행 */}
+            <div className='grid grid-cols-4 border border-linegray h-[50px]'>
+              <div className='flex items-center justify-center border-r border-linegray'>
+                <Txt>구분</Txt>
+              </div>
+              {interestInfo.map(({ label }) => (
                 <div
                   key={label}
-                  className='flex items-center justify-center border-r last:border-r-0'
+                  className='flex items-center justify-center border-r border-linegray last:border-r-0'
                 >
                   <Txt>{label}</Txt>
                 </div>
               ))}
             </div>
-            {/*두번째 행*/}
-            <div className='grid grid-cols-3 border-x border-b border-linegray h-[50px]'>
-              {Object.values(interestInfo).map((value, idx) => (
-                <div
-                  key={idx}
-                  className='flex items-center justify-center border-r last:border-r-0'
-                >
-                  <Txt
-                    color='text-primarycolor'
-                    size='text-[14px]'
-                    weight='font-[600]'
-                  >
-                    {value}
-                  </Txt>
+
+            {/* 본문 */}
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className='grid grid-cols-4 border-x border-b border-linegray h-[50px]'
+              >
+                <div className='flex items-center justify-center border-r border-linegray'>
+                  {index === completedCnt ? (
+                    <Txt
+                      size='text-[14px]'
+                      color='text-primarycolor'
+                      weight='font-[600]'
+                    >
+                      {step}
+                    </Txt>
+                  ) : (
+                    <Txt size='text-[14px]'>{step}</Txt>
+                  )}
                 </div>
-              ))}
-            </div>
+                {interestInfo.map(({ rates, label }) => (
+                  <div
+                    key={`${label}-${index}`}
+                    className='flex items-center justify-center border-r border-linegray last:border-r-0'
+                  >
+                    {index === completedCnt ? (
+                      <Txt
+                        size='text-[14px]'
+                        color='text-primarycolor'
+                        weight='font-[600]'
+                      >
+                        {rates[index]}
+                      </Txt>
+                    ) : (
+                      <Txt size='text-[14px]'>{rates[index]}</Txt>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
 
           {/*버튼*/}

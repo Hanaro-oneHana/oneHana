@@ -1,5 +1,5 @@
-import InviteCode from '@/components/InviteCode';
 import { Header } from '@/components/atoms';
+import InviteCode from '@/components/auth/InviteCode';
 
 export default function InviteCodePage() {
   return (
