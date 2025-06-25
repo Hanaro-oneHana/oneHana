@@ -111,6 +111,7 @@ export const getBucketList = async (userId: number) => {
   const result: BucketItem[] = bucketList.map((item) => ({
     id: item.id,
     store: item.PartnerService.name,
+    partnerServiceId: item.partner_service_id,
     options: item.selected
       ? Object.entries(item.selected).map(([key, value]) => ({
           optionTitle: key,

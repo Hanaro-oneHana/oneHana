@@ -28,6 +28,7 @@ export default function CalendarDrawer({
   viewOnly = false,
   onConfirm,
 }: CalendarDrawerProps) {
+  console.log('🚀 상담일정 :', partnerServiceId);
   const {
     times,
     selectedDate,

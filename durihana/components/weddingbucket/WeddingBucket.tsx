@@ -19,6 +19,7 @@ export type BucketItem = {
   price?: number;
   state?: number;
   category?: number;
+  partnerServiceId: number;
 };
 
 type Props = {

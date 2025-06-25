@@ -81,7 +81,17 @@ export const createMultipleAccounts = async (
 
       for (const accountData of accountsData) {
         const now = new Date();
-        const formattedNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const formattedNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+          now.getDate()
+        ).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes()
+        ).padStart(
+          2,
+          '0'
+        )}:${String(now.getSeconds()).padStart(2, '0')}.${String(
+          now.getMilliseconds()
+        ).padStart(3, '0')}`;
+
         const expireDate = new Date(now);
         expireDate.setFullYear(
           now.getFullYear() + Math.floor(accountData.period / 12) || 1
