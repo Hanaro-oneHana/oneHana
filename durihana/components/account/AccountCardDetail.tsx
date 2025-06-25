@@ -5,8 +5,8 @@ import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { InputComponent } from './atoms';
-import Button from './atoms/Button';
+import { InputComponent } from '../atoms';
+import Button from '../atoms/Button';
 
 type AccountType = 0 | 1 | 2 | 3;
 
@@ -69,7 +69,7 @@ export default function AccountCardDetail({
   };
 
   return (
-    <div className='relative bg-lightmint border border-borderline rounded-[10px] p-6'>
+    <div className='bg-lightmint border-borderline relative rounded-[10px] border p-6'>
       <div className='absolute right-5'>
         <Image src='/asset/icons/info.svg' alt='info' width={24} height={24} />
       </div>
@@ -86,7 +86,7 @@ export default function AccountCardDetail({
         </Txt>
       </div>
 
-      <div className='text-right mb-4'>
+      <div className='mb-4 text-right'>
         <Txt size='text-[24px]' weight='font-[600]'>
           {balance.toLocaleString()} 원
         </Txt>
@@ -96,7 +96,7 @@ export default function AccountCardDetail({
 
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent className='h-3/10'>
-          <div className='p-[20px] w-full'>
+          <div className='w-full p-[20px]'>
             <div className='mb-[20px]'>
               <DrawerTitle>
                 <Txt>입금액 입력</Txt>
