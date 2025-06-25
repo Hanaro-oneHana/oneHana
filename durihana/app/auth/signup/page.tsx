@@ -6,12 +6,17 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { ChangeEvent, FormEvent, use, useState } from 'react';
 import { signInValidateAction, signUpAction } from '@/lib/actions/AuthActions';
+import Container from '@/components/containers/Container';
 
 export default function Singup() {
   const title = 'text-[16px] font-[500]';
   const inputSet =
     'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
   const errMasseage = 'text-red text-[10px] font-[500]';
+  // const title = 'text-[16px] font-[500]';
+  // const inputSet =
+  //   'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
+  // const errMasseage = 'text-red text-[10px] font-[500]';
 
   const phoneHyphen = (h: string) => {
     const digits = h.replace(/\D/g, '');
@@ -141,9 +146,8 @@ export default function Singup() {
   };
 
   return (
-    <div className='flex flex-col pb-[40px] pt-[80px] px-[20px]'>
-      <Header title='회원가입' leftIcon='back' />
-
+    // <div className='flex flex-col pb-[40px] pt-[80px] px-[20px]'>
+    <Container header={<Header title='회원가입' leftIcon='back'/>}>
       <form onSubmit={handleSubmit} className='flex flex-col gap-[15px]'>
         <div className='flex flex-col gap-[10px]'>
           <Txt className={title}>이름</Txt>
@@ -251,6 +255,6 @@ export default function Singup() {
           </Button>
         </AlertModal>
       )}
-    </div>
+    </Container>
   );
 }
