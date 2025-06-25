@@ -1,6 +1,6 @@
 'use server';
 
-import { AccountType } from '@/components/AccountDetail';
+import { AccountType } from '@/components/account/AccountDetail';
 import prisma from '@/lib/db';
 import { Prisma } from '../generated/prisma';
 import { createAccountSchedules } from './AccountCalendarActions';
@@ -21,16 +21,19 @@ export async function getCheckingAccountByUserId(userId: number) {
 }
 
 export async function getAccountsByUserId(userId: number) {
+  if (!userId) {
+    return { isSuccess: false, data: [] };
+  }
   try {
     const accounts = await prisma.account.findMany({
       where: { user_id: userId },
       orderBy: { type: 'asc' },
     });
 
-    return accounts;
+    return { isSuccess: true, data: accounts };
   } catch (error) {
     console.error('getAccountsByUserId error:', error);
-    return [];
+    return { isSuccess: false, data: [] };
   }
 }
 
@@ -312,12 +315,13 @@ export async function getFirstAccountByUserId(userId: number) {
 }
 
 export async function getCoupleTotalBalance(userId: number) {
+  if (!userId) return { isSuccess: false, data: 0 };
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { mate_code: true },
   });
 
-  if (!user?.mate_code) return 0;
+  if (!user?.mate_code) return { isSuccess: false, data: 0 };
 
   const couple = await prisma.user.findMany({
     where: { code: user.mate_code },
@@ -334,5 +338,8 @@ export async function getCoupleTotalBalance(userId: number) {
     select: { balance: true },
   });
 
-  return accounts.reduce((sum, acc) => sum + acc.balance, 0);
+  return {
+    isSuccess: true,
+    data: accounts.reduce((sum, acc) => sum + acc.balance, 0),
+  };
 }

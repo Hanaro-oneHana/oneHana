@@ -1,4 +1,5 @@
-import EstimateMain from '@/components/estimate/EstimateMain';
+import { EstimateMain } from '@/components/estimate-store';
+import { use } from 'react';
 import { getStoreList } from '@/lib/actions/StoreActions';
 
 type SearchParams = Promise<{
@@ -6,15 +7,14 @@ type SearchParams = Promise<{
   category?: string;
 }>;
 
-export default async function EstimatePage({
+export default function EstimatePage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const { search, category } = await searchParams;
-  const storeList = await getStoreList(
-    search || '',
-    parseInt(category || '0', 10)
+  const { search, category } = use(searchParams);
+  const storeList = use(
+    getStoreList(search || '', parseInt(category || '0', 10))
   );
   return (
     <EstimateMain

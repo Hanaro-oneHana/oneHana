@@ -1,8 +1,7 @@
 'use client';
 
+import { AssetLog, ProgressBar } from '@/components/asset';
 import dynamic from 'next/dynamic';
-import AssetLog from './AssetLog';
-import ProgressBar from './ProgressBar';
 
 type Props = {
   data: { name: string; value: number }[];
@@ -19,7 +18,7 @@ export default function AssetOverview({ data, balance }: Props) {
 
   return (
     <>
-      <div className='flex flex-col items-center gap-y-[40px] pt-[40px] pb-[40px]'>
+      <div className='flex w-full flex-col items-center gap-y-[40px] pb-[40px]'>
         <AssetLog data={assetData} />
         <div className='w-full px-[20px]'>
           <AssetPieChart data={assetData} />
