@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from '@/lib/db';
+import { Decimal } from '../generated/prisma/runtime/library';
 
 async function getStepByCount(
   userId: number,
@@ -68,4 +69,34 @@ export async function getSavingsInterestRates(): Promise<
     step: e.step,
     rate: typeof e.rate === 'number' ? e.rate : e.rate.toNumber(),
   }));
+}
+
+export async function getAllInterestRates() {
+  const depositInterestRates = await prisma.depositInterest.findMany({
+    orderBy: { step: 'asc' },
+  });
+
+  const savingsInterestRates = await prisma.savingsInterest.findMany({
+    orderBy: { step: 'asc' },
+  });
+
+  const loanInterestRates = await prisma.loanInterest.findMany({
+    orderBy: { step: 'asc' },
+  });
+
+  const mapRatesToArray = (list: { step: number; rate: Decimal }[]) => {
+    const rates = Array(6).fill('-');
+
+    for (const item of list) {
+      rates[item.step] = `${item.rate.toNumber().toFixed(2)}%`;
+    }
+
+    return rates;
+  };
+
+  return [
+    { label: '예금', rates: mapRatesToArray(depositInterestRates) },
+    { label: '적금', rates: mapRatesToArray(savingsInterestRates) },
+    { label: '대출', rates: mapRatesToArray(loanInterestRates) },
+  ];
 }
