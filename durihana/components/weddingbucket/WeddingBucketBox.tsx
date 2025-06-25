@@ -78,17 +78,20 @@ export default function WeddingBucketBox({ item }: Props) {
   return (
     <div className='flex flex-col gap-[10px] rounded-[10px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.05)]'>
       <div className='relative flex items-center justify-between p-[20px] bg-mainwhite rounded-[10px]'>
-        <Button
-          className='absolute bg-transparent p-0 top-[15px] right-[15px] w-fit h-fit leading-none'
-          onClick={handleDelete}
-        >
-          <Image
-            src={`/asset/icons/close.svg`}
-            alt={`Close Icon`}
-            width={16}
-            height={16}
-          />
-        </Button>
+        {(item.state === 0 || item.state === 2) && (
+          <Button
+            className='absolute bg-transparent p-0 top-[15px] right-[15px] w-fit h-fit leading-none'
+            onClick={handleDelete}
+          >
+            <Image
+              src={`/asset/icons/close.svg`}
+              alt={`Close Icon`}
+              width={16}
+              height={16}
+            />
+          </Button>
+        )}
+
         <div className='flex flex-col gap-[20px] w-full'>
           <Txt className='text-[16px] font-[500]'>{item.store}</Txt>
           <div className='flex flex-col items-center w-full gap-[4px]'>
