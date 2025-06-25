@@ -33,9 +33,9 @@ export default function DrawerContent({
   onTimeSelect,
 }: DrawerContentProps) {
   return (
-    <div className='px-4 pb-4 space-y-6'>
+    <div className='space-y-6 px-4 pb-4'>
       <div className='space-y-4'>
-        <div className='w-full max-w-sm mx-auto'>
+        <div className='mx-auto w-full max-w-sm'>
           <CalendarComponent
             variant='drawer'
             selectedDate={selectedDate}

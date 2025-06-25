@@ -52,7 +52,7 @@ export default function CalendarDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <UIDrawerContent className='max-w-md mx-auto bg-mainwhite'>
+      <UIDrawerContent className='bg-mainwhite mx-auto max-w-md'>
         <DrawerHeader className='relative pb-2'>
           <DrawerTitle className='text-center' />
           <DrawerDescription />
@@ -74,15 +74,15 @@ export default function CalendarDrawer({
           onTimeSelect={handleTimeSelect}
         />
 
-        <DrawerFooter className='px-4 pt-4 ml-[8px]'>
+        <DrawerFooter className='ml-[8px] px-4 pt-4'>
           <DrawerClose asChild>
             {viewOnly ? (
-              <Button className='w-full bg-primarycolor text-mainwhite'>
+              <Button className='bg-primarycolor text-mainwhite w-full'>
                 닫기
               </Button>
             ) : (
               <Button
-                className='w-full bg-primarycolor text-mainwhite'
+                className='bg-primarycolor text-mainwhite w-full'
                 disabled={!selectedDate || !selectedTime}
                 onClick={handleReservationConfirm}
               >

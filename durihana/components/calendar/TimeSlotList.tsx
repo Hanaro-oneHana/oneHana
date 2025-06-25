@@ -41,11 +41,7 @@ export default function TimeSlotList({
               return (
                 <Txt
                   key={time}
-                  className={`
-                    px-[11px] py-[8px] rounded-10px text-[12px] font-normal whitespace-nowrap
-                    transition-colors duration-200
-                    ${isReserved ? 'opacity-50 cursor-not-allowed' : ''}
-                  `}
+                  className={`rounded-10px px-[11px] py-[8px] text-[12px] font-normal whitespace-nowrap transition-colors duration-200 ${isReserved ? 'cursor-not-allowed opacity-50' : ''} `}
                 >
                   {time}
                 </Txt>
@@ -57,17 +53,13 @@ export default function TimeSlotList({
                   key={time}
                   onClick={() => onTimeSelect(time)}
                   disabled={isReserved}
-                  className={`
-                    px-[11px] py-[8px] rounded-10px text-[12px] font-normal
-                    transition-colors duration-200
-                    ${
-                      isReserved
-                        ? 'bg-linegray text-mainblack opacity-50 cursor-not-allowed'
-                        : selectedTime === time
-                          ? 'bg-primaryhalf text-mainblack'
-                          : 'bg-linegray text-mainblack'
-                    }
-                  `}
+                  className={`rounded-10px px-[11px] py-[8px] text-[12px] font-normal transition-colors duration-200 ${
+                    isReserved
+                      ? 'bg-linegray text-mainblack cursor-not-allowed opacity-50'
+                      : selectedTime === time
+                        ? 'bg-primaryhalf text-mainblack'
+                        : 'bg-linegray text-mainblack'
+                  } `}
                 >
                   {time}
                 </Button>

@@ -27,9 +27,9 @@ export default function UserCalendar({ userId }: ScheduleProps) {
   // };
 
   return (
-    <div className='w-full max-w-md mx-auto bg-background h-screen flex flex-col'>
+    <div className='bg-background mx-auto flex h-screen w-full max-w-md flex-col'>
       {/* 달력 - 고정 영역 */}
-      <div className='flex-shrink-0 p-4 mt-14'>
+      <div className='mt-14 flex-shrink-0 p-4'>
         <CalendarComponent
           variant='page'
           selectedDate={selectedDate}
@@ -45,7 +45,7 @@ export default function UserCalendar({ userId }: ScheduleProps) {
       </div>
 
       {/* 일정 리스트 - 스크롤 영역 */}
-      <div className='flex flex-col flex-1 overflow-y-auto px-4 pb-[100px] bg-background'>
+      <div className='scrollbar-hide bg-background flex flex-1 flex-col overflow-y-auto px-4 pb-[100px]'>
         <ScheduleList
           loading={loading}
           selectedDate={selectedDate}
