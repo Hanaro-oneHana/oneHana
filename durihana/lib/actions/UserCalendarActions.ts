@@ -3,7 +3,11 @@
 import prisma from '../db';
 
 // 특정 날짜의 사용자 일정들 가져오기
-export const getUserSchedulesForDate = async (userId: number, date: string) => {
+export const getUserSchedulesForDate = async (
+  userId: number,
+  mainId: number,
+  date: string
+) => {
   console.log('🚀 ~ getUserSchedulesForDate ~ userId:', userId);
   console.log('🚀 ~ getUserSchedulesForDate ~ date:', date);
 
@@ -20,7 +24,7 @@ export const getUserSchedulesForDate = async (userId: number, date: string) => {
     // 예약 일정
     prisma.partnerCalendar.findMany({
       where: {
-        user_id: userId,
+        user_id: mainId,
         reservation_date: {
           startsWith: date, // '2025-01-15'
         },

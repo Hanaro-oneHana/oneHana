@@ -1,6 +1,7 @@
 'use client';
 
 import { getScheduleTitle, Schedule } from '@/types/Schedule';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import {
   getDepositInterestRate,
@@ -14,6 +15,10 @@ import {
 import { formatDate } from '@/lib/utils';
 
 export function useUserCalendar(userId: number) {
+  const { data: session } = useSession();
+  const mainId = session?.user?.isMain
+    ? Number(session.user.id)
+    : (session?.user?.partnerId ?? 0);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [financeScheduleDates, setFinanceScheduleDates] = useState<Date[]>([]);
@@ -47,7 +52,7 @@ export function useUserCalendar(userId: number) {
         calendarMonth
       );
       const rd = await getReservationScheduleDates(
-        userId,
+        mainId,
         calendarYear,
         calendarMonth
       );
@@ -62,7 +67,7 @@ export function useUserCalendar(userId: number) {
       setLoading(true);
       const dateStr = formatDate(selectedDate);
       const { financePlans, userAccounts, reservations } =
-        await getUserSchedulesForDate(userId, dateStr);
+        await getUserSchedulesForDate(userId, mainId, dateStr);
 
       // 동적 예금 이자율(1년 기준)
       const depositRate = await getDepositInterestRate(userId);
