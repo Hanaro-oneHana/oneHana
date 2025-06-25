@@ -135,7 +135,7 @@ export async function minusBalance(
           accountId: updated.id,
           newBalance: updated.balance,
           accountType: updated.type,
-          coupleBalance,
+          coupleBalance: coupleBalance.data,
         });
       }
     }
