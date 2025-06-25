@@ -4,6 +4,7 @@ import { AccountType } from '@/components/AccountDetail';
 import prisma from '@/lib/db';
 import { Prisma } from '../generated/prisma';
 import { createAccountSchedules } from './AccountCalendarActions';
+import { getCoupleUserIds } from './getCoupleUserIds';
 
 export async function getCheckingAccountByUserId(userId: number) {
   try {
@@ -200,9 +201,6 @@ export const createMultipleAccounts = async (
             },
           });
         }
-
-        // 적금 타입 세부 로직
-
         // 스케줄 생성
         const scheduleResult = await createAccountSchedules(newAccount.id, tx);
         totalSchedules += scheduleResult.count;
@@ -210,6 +208,41 @@ export const createMultipleAccounts = async (
 
       return { accounts: createdAccounts, totalSchedules };
     });
+
+    const updatedMain = await prisma.account.findFirst({
+      where: { user_id: userId, type: 0 },
+    });
+    const coupleBalance = await getCoupleTotalBalance(userId);
+
+    // 3) 커플 멤버들 ID
+    const coupleUserIds = await getCoupleUserIds(userId);
+
+    // 4) emit
+    const io = (globalThis as any).io as import('socket.io').Server;
+    if (io) {
+      for (const uid of coupleUserIds) {
+        if (updatedMain) {
+          // — 메인 계좌 업데이트 (공통)
+          io.to(`user-${uid}`).emit('balance-updated', {
+            accountId: updatedMain.id,
+            newBalance: updatedMain.balance,
+            accountType: 0,
+            coupleBalance,
+          });
+        }
+        if (uid === userId) {
+          // — 본인에게만: 서브 계좌들도 emit
+          for (const acc of result.accounts) {
+            io.to(`user-${uid}`).emit('balance-updated', {
+              accountId: acc.id,
+              newBalance: acc.balance,
+              accountType: acc.type,
+              coupleBalance,
+            });
+          }
+        }
+      }
+    }
 
     return {
       success: true,
