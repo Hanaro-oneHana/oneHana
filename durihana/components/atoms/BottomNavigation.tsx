@@ -1,9 +1,9 @@
 'use client';
 
+import { Txt } from '@/components/atoms';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import Txt from './Txt';
 
 export default function BottomNavigation({
   selectedItem,
@@ -56,11 +56,11 @@ export default function BottomNavigation({
     router.push(`/${name}`);
   };
   return (
-    <div className='fixed bottom-0 left-[50%] translate-x-[-50%] max-w-[960px] flex w-dvw bg-mainwhite  items-center justify-around z-100'>
+    <div className='bg-mainwhite fixed bottom-0 left-[50%] z-100 flex w-dvw max-w-[960px] translate-x-[-50%] items-center justify-around'>
       {navigationItems.map((item) => (
         <button
           key={item.name}
-          className='flex flex-col items-center gap-[3px] pt-[14px] pb-[15px] px-[23px] cursor-pointer'
+          className='flex cursor-pointer flex-col items-center gap-[3px] px-[23px] pt-[14px] pb-[15px]'
           onClick={() => handleNavigation(item.name)}
         >
           <Image

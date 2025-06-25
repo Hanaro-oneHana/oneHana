@@ -1,6 +1,6 @@
-import { Header } from '@/components/atoms';
-import BottomNavigation from '@/components/atoms/BottomNavigation';
-import StoreComponent from '@/components/store/Store';
+import { Header, BottomNavigation } from '@/components/atoms';
+import Container from '@/components/containers/Container';
+import StoreComponent from '@/components/estimate-store/Store';
 import { use } from 'react';
 import { getStoreList } from '@/lib/actions/StoreActions';
 
@@ -21,13 +21,15 @@ export default function StorePage({
   );
 
   return (
-    <>
-      <Header leftIcon='my' rightIcon='bell' />
+    <Container
+      className='px-0 pt-[65px] pb-[72.5px]'
+      header={<Header leftIcon='my' rightIcon='bell' />}
+      footer={<BottomNavigation selectedItem='store' />}
+    >
       <StoreComponent
         storeList={storeList}
         categoryId={parseInt(category || '1', 10)}
       />
-      <BottomNavigation selectedItem='store' />
-    </>
+    </Container>
   );
 }

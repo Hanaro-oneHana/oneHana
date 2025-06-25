@@ -1,5 +1,6 @@
 import { Header } from '@/components/atoms';
-import StoreDetail from '@/components/store/StoreDetail';
+import Container from '@/components/containers/Container';
+import StoreDetail from '@/components/estimate-store/StoreDetail';
 import { use } from 'react';
 import { getStoreDetail } from '@/lib/actions/StoreDetailActions';
 
@@ -13,9 +14,11 @@ export default function StoreId({ params }: Props) {
   if (!details?.id) return null;
 
   return (
-    <div className='pt-[60px]'>
-      <Header leftIcon='back' rightIcon='close' />
-      <StoreDetail {...details}></StoreDetail>
-    </div>
+    <Container
+      className='px-0 pt-[65px] pb-[72.5px]'
+      header={<Header leftIcon='back' rightIcon='close' />}
+    >
+      <StoreDetail {...details} />
+    </Container>
   );
 }
