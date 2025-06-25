@@ -41,6 +41,9 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
   const { data: session } = useSession();
   const img = details.images;
   const [open, setOpen] = useState(false);
+  const requestUser = session?.user?.isMain
+    ? parseInt(session?.user?.id || '0', 10)
+    : session?.user?.partnerId || 0;
 
   const price = parseInt(details.info['가격'].replace(/[^0-9]/g, ''), 10);
 
@@ -51,13 +54,9 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
       const description = details.name;
 
       const result = await minusBalance(accountId, price, description);
-      await addPartnerCalendarEvent(userId, details.id);
+      await addPartnerCalendarEvent(requestUser, details.id, '', '');
       // Storedrawer 는 가전가구, 예물예단이니까 결제 완료 되면 budgetPlan 의 state 가 3으로 변경
       if (result.success) {
-        const requestUser = session?.user?.isMain
-          ? parseInt(session?.user?.id || '0', 10)
-          : session?.user?.partnerId || 0;
-
         const insertResult = await insertOptions(
           requestUser,
           details.id,
