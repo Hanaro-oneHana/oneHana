@@ -1,4 +1,4 @@
-import { signInValidator, UserValidator } from "@/lib/validator";
+import { signInValidator, userValidator } from "@/lib/validator";
 import { describe, expect, it } from "vitest";
 
 describe('signIn', () => {
@@ -31,14 +31,14 @@ describe('signup', () => {
     };
 
     it('pass', () => {
-        const result = UserValidator.safeParse(valid);
+        const result = userValidator.safeParse(valid);
         expect(result.success).toBe(true);
     });
 
     for(const fails of ['name', 'email', 'password', 'phone', 'marriageDate'] as const) {
         it(`reject ${fails}`, () =>{
             const rejectInput = {...valid, [fails] : ''};
-            const result = UserValidator.safeParse(rejectInput);
+            const result = userValidator.safeParse(rejectInput);
             expect(result.success).toBe(false);
             expect(result.error?.formErrors.fieldErrors[fails]).toBeDefined();
         });
