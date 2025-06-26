@@ -62,20 +62,40 @@ describe('getBucketTotalAmount ', () => {
     vi.clearAllMocks();
   })
 
-  it('return highest price', async () => {
-    (mockPartnerCalendar as any).mockResolvedValue([
+  it('return amount price with highest price', async () => {
+    (mockBudgetPlan as any).mockResolvedValue([
         {
           PartnerService: {
             content: {가격: '80000000', 식사: '뷔페'},
+            Partner: {
+              PartnerCategory: {
+                type: '예식장',
+              },
+            },
+          },
+        },
+        {
+          PartnerService: {
+            content: {가격: '70000000', 식사: '도시락'},
             Partner: {
               PartnerCategory: {
                 type: '예식',
               },
             },
           },
-        },])
+        },
+        {
+          PartnerService: {
+            content: {가격: '5000000', 냉장고: '삼성냉장고'},
+            Partner: {
+              PartnerCategory: {
+                type: '가전·가구',
+              },
+            },
+          },
+        }
+      ]);
+      const result = await getBucketTotalAmount(1);
+      expect(result).toBe(85000000);
   })
-
-  // const result = await getBucketTotalAmount(1);
-  
 });
