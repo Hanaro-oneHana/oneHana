@@ -1,7 +1,7 @@
 import { Button, Header, Txt } from '@/components/atoms';
 import Container from '@/components/containers/Container';
 import { use } from 'react';
-import { getCategoriesByUserId } from '@/lib/actions/DashboardActions';
+import { getCategoryData } from '@/lib/actions/AssetActions';
 import { getAllInterestRates } from '@/lib/actions/InterestActions';
 import { getUserInfo } from '@/lib/actions/UserActions';
 import { auth } from '@/lib/auth';
@@ -16,8 +16,10 @@ export default function Mypage() {
   const steps = ['기본', 'step 1', 'step 2', 'step 3', 'step 4', 'step 5'];
 
   const completedCategory = use(
-    getCategoriesByUserId(
-      session?.user?.isMain ? Number(session.user.id) : session?.user?.partnerId
+    getCategoryData(
+      session?.user?.isMain
+        ? Number(session.user.id)
+        : Number(session?.user?.partnerId)
     )
   );
   const completedCnt = completedCategory.length;
