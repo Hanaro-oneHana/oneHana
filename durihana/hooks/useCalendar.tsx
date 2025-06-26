@@ -1,15 +1,7 @@
 'use client';
 
+import { UseCalendarProps } from '@/types/Calendar';
 import { useState, useEffect } from 'react';
-
-type UseCalendarProps = {
-  selectedDate?: Date;
-  currentMonth?: number;
-  currentYear?: number;
-  onMonthChange?: (month: number) => void;
-  onYearChange?: (year: number) => void;
-  onDateSelect?: (date: Date) => void;
-};
 
 export function useCalendar({
   selectedDate,

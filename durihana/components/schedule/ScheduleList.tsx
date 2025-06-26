@@ -1,14 +1,7 @@
-import { Schedule } from '@/types/Schedule';
+import { ScheduleListProps } from '@/types/Schedule';
 import { formatDisplayDate } from '@/lib/utils';
 import Txt from '../atoms/Txt';
 import ScheduleCard from './ScheduleCard';
-
-type ScheduleListProps = {
-  loading: boolean;
-  selectedDate: Date;
-  reservationSchedules: Schedule[];
-  financeSchedules: Schedule[];
-};
 
 export default function ScheduleList({
   loading,
@@ -18,7 +11,7 @@ export default function ScheduleList({
 }: ScheduleListProps) {
   if (loading) {
     return (
-      <div className='text-center py-8'>
+      <div className='py-8 text-center'>
         <Txt size='text-[14px]' className='text-icongray' align='text-center'>
           일정을 불러오는 중...
         </Txt>
@@ -31,7 +24,7 @@ export default function ScheduleList({
 
   if (!hasSchedules) {
     return (
-      <div className='text-center py-12'>
+      <div className='py-12 text-center'>
         <Txt size='text-[14px]' className='text-icongray' align='text-center'>
           {formatDisplayDate(selectedDate)}에 일정이 없습니다.
         </Txt>
