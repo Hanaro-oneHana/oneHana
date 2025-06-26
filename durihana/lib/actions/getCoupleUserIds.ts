@@ -31,7 +31,9 @@ export async function getCoupleUserIds(userId: number): Promise<number[]> {
   return coupleUsers.map((u) => u.id);
 }
 
-export async function getCoupleNames(userId: number): Promise<string[]> {
+export async function getCoupleNames(userId?: number): Promise<string[]> {
+  if (!userId) return [];
+
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { code: true, mate_code: true },
@@ -42,14 +44,8 @@ export async function getCoupleNames(userId: number): Promise<string[]> {
   const coupleUsers = await prisma.user.findMany({
     where: {
       OR: [
-        {
-          code: user.code,
-          mate_code: user.mate_code,
-        },
-        {
-          code: user.mate_code,
-          mate_code: user.code,
-        },
+        { code: user.code, mate_code: user.mate_code },
+        { code: user.mate_code, mate_code: user.code },
       ],
     },
     select: { name: true },
