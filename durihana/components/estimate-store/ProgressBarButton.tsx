@@ -19,7 +19,7 @@ export default function ProgressBarButton({
 }: Props) {
   useEffect(() => {
     setSelectedItem(selectedItem);
-  }, [selectedItem]);
+  }, [selectedItem, setSelectedItem]);
 
   return (
     <div className='flex w-full items-center justify-center gap-[8px]'>
