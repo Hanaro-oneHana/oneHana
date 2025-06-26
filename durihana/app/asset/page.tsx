@@ -4,6 +4,7 @@ import { BottomNavigation, Header } from "@/components/atoms";
 import Container from "@/components/containers/Container";
 import { getAccountsByUserId, getCoupleTotalBalance } from "@/lib/actions/AccountActions";
 import { getBucketTotalAmount, getCategoryData } from "@/lib/actions/AssetActions";
+import { getCoupleNames } from "@/lib/actions/getCoupleUserIds";
 import { auth } from "@/lib/auth";
 import { MainAccount, SubAccount } from "@/types/Account";
 import { use } from "react";
@@ -18,6 +19,7 @@ export default function Asset() {
     : Number(session?.user?.partnerId);
 
   const accounts = use(getAccountsByUserId(userId));
+  const coupleNames = use(getCoupleNames(userId));
   const main = accounts.data.find((acc) => acc.type === 0)!;
   const subs = accounts.data.filter((acc) => acc.type !== 0);
 
@@ -49,6 +51,7 @@ export default function Asset() {
         mainAccount={mainAccount}
         subAccounts={subAccounts}
         coupleBalance={coupleBalance.data}
+        coupleNames={coupleNames}
       />
       <AssetOverview data={data} balance={total} />
     </Container>
