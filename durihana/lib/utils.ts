@@ -33,9 +33,7 @@ export const calculateDday = (date: string) => {
   today.setHours(0, 0, 0, 0);
 
   const diff = targetDate.getTime() - today.getTime(); // 밀리초 차이
-  // console.log('🚀 ~ calculateDday ~ diff:', diff);
   const dDay = Math.floor(diff / (1000 * 60 * 60 * 24)); // 일 수로 변환
-  // console.log('🚀 ~ calculateDday ~ dDay:', dDay);
 
   return dDay;
 };

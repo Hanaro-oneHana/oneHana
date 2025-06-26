@@ -141,7 +141,6 @@ export const deleteAccountSchedules = async (accountId: number) => {
       },
     });
 
-    console.log(`Deleted ${result.count} schedules for account ${accountId}`);
     return { isSuccess: true, count: result.count };
   } catch (error) {
     return { isSuccess: false, data: [] };
