@@ -1,6 +1,6 @@
 'use client';
 
-import type { FormState } from '@/hooks/useAccountCreation';
+import { FormState } from '@/types/Account';
 import DepositForm from './forms/DepositForm';
 import LoanForm from './forms/LoanForm';
 import SavingsForm from './forms/SavingsForm';

@@ -14,8 +14,8 @@ import {
 } from '@/lib/actions/AccountActions';
 import { getCategoryData } from '@/lib/actions/AssetActions';
 import { getUserInfo } from '@/lib/actions/UserActions';
-import { auth } from '@/lib/auth';
 import { getCoupleNames } from '@/lib/actions/getCoupleUserIds';
+import { auth } from '@/lib/auth';
 
 export default function Home() {
   const session = use(auth());
@@ -45,10 +45,17 @@ export default function Home() {
       balance: acc.balance,
     }));
 
-  const userInfo = use(getUserInfo(userId));
-  const marriageDate = userInfo?.['결혼 예정일'];
+  const userInfoResult = use(getUserInfo(userId));
+  const marriageDate =
+    userInfoResult?.isSuccess && userInfoResult.data
+      ? (userInfoResult.data['결혼 예정일'] ?? '')
+      : '';
 
-  const categoryData = use(getCategoryData(mainUserId));
+  const categoryDataResult = use(getCategoryData(mainUserId));
+  const categoryData =
+    categoryDataResult?.isSuccess && categoryDataResult.data
+      ? categoryDataResult.data
+      : [];
 
   return (
     <Container
@@ -67,10 +74,7 @@ export default function Home() {
           coupleNames={coupleNames}
         />
       )}
-      <MainDashBoard
-        date={marriageDate || ''}
-        categoryData={categoryData || [{ category: '', value: 0 }]}
-      />
+      <MainDashBoard date={marriageDate} categoryData={categoryData} />
       <HouseLoanCard />
       <PopularPartner />
     </Container>

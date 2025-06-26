@@ -8,6 +8,10 @@ const NORMAL_CARTEGORIES = ['가전·가구', '예물·예단'];
 
 // 웨딩 관련 지출 내역 가져오기
 export const getCategoryData = async (userId: number) => {
+  if (!userId) {
+    return { isSuccess: false, error: '유효하지 않은 사용자 ID입니다.' };
+  }
+
   const calendars = await prisma.partnerCalendar.findMany({
     where: { user_id: userId },
     select: {
@@ -28,12 +32,21 @@ export const getCategoryData = async (userId: number) => {
     },
   });
 
+  if (!calendars || calendars.length === 0) {
+    return { isSuccess: false, error: '카테고리 데이터를 찾을 수 없습니다.' };
+  }
+
   const rawData = calendars.map((calendar) => ({
     category: calendar.PartnerService.Partner.PartnerCategory.type,
     value: extractPrice(calendar.PartnerService.content),
   }));
 
-  return aggregateByCategory(rawData);
+  const aggregated = aggregateByCategory(rawData);
+
+  return {
+    isSuccess: true,
+    data: aggregated,
+  };
 };
 
 // 웨딩 버켓 총 금액 가져오기
