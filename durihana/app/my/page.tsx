@@ -22,7 +22,7 @@ export default function Mypage() {
         : Number(session?.user?.partnerId)
     )
   );
-  const completedCnt = completedCategory.length;
+  const completedCnt = completedCategory.data?.length;
 
   return (
     <Container
