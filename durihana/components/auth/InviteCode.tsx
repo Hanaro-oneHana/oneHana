@@ -23,7 +23,7 @@ export default function InviteCode() {
   const [randomCode, setRandomCode] = useState('');
   const [mateCode, setMateCode] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
@@ -33,7 +33,10 @@ export default function InviteCode() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!userId) { console.log('🚀 ~ InviteCode ~ loading:', loading); return;}
+    if (!userId) {
+      console.log('🚀 ~ InviteCode ~ loading:', loading);
+      return;
+    }
     const code = generateRandomCode();
     setRandomCode(code);
     updateRandomCode(userId, code);
@@ -77,8 +80,7 @@ export default function InviteCode() {
 
   return (
     <div className='w-full'>
-
-      <div className=' mb-[20px] flex flex-col gap-[15px]'>
+      <div className='mb-[20px] flex flex-col gap-[15px]'>
         <Txt className='w-full text-[16px]'>내 초대코드</Txt>
         <InputComponent
           value={randomCode}
@@ -110,19 +112,24 @@ export default function InviteCode() {
 
       {modalOpen && (
         <AlertModal onClose={() => setModalOpen(false)}>
-          <Txt size='text-[16px]' className='text-mainblack text-center'>
+          <Txt
+            size='text-[16px]'
+            color='text-mainblack'
+            align='text-center'
+            weight='font-[600]'
+          >
             {modalMessage}
           </Txt>
           {isSuccess ? (
             <Button
-              className='mt-[20px] w-full'
+              className='mt-[20px] w-full py-[10px]'
               onClick={() => router.push('/account/checking-account')}
             >
               계좌 만들러가기
             </Button>
           ) : (
             <Button
-              className='mt-[20px] w-full'
+              className='mt-[20px] w-full py-[10px]'
               onClick={() => setModalOpen(false)}
             >
               확인

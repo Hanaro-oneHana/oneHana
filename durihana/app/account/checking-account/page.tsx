@@ -93,11 +93,11 @@ export default function CheckingAccount() {
 
       {modal && (
         <AlertModal onClose={() => showModal(false)}>
-          <Txt align='text-center'>
+          <Txt align='text-center' size='text-[16px]' weight='font-[600]'>
             약관에 동의해야 <br />
             서비스를 이용하실 수 있습니다
           </Txt>
-          <Button className='mt-5' onClick={() => showModal(false)}>
+          <Button className='mt-5 py-[10px]' onClick={() => showModal(false)}>
             확인
           </Button>
         </AlertModal>

@@ -243,10 +243,17 @@ export default function Signup() {
 
       {successModal && (
         <AlertModal onClose={handleModalClose}>
-          <Txt size='text-[16px]' className='text-mainblack text-center'>
+          <Txt
+            size='text-[16px]'
+            color='text-mainblack'
+            align='text-center'
+            weight='font-[600]'
+          >
             회원가입이 완료되었습니다.
           </Txt>
-          <Button onClick={handleModalClose}>초대코드 받으러가기</Button>
+          <Button className='py-[10px]' onClick={handleModalClose}>
+            초대코드 받으러가기
+          </Button>
         </AlertModal>
       )}
     </Container>
