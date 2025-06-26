@@ -16,10 +16,18 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
+import { agreementTitle } from '@/constants/store';
 import { useAgreement } from '@/contexts/account/useAgreement';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { plusBalanceBySessionUser } from '@/lib/actions/calBalance';
+
+const agreeComponent = [
+  <AccountAgreement />,
+  <DepositAgreement />,
+  <SavingsAgreement />,
+  <LoanAgreement />,
+];
 
 export default function ElseAccount() {
   const {
@@ -32,6 +40,13 @@ export default function ElseAccount() {
     loanAgree,
     setLoanAgree,
   } = useAgreement();
+
+  const agreeArray = [
+    { value: baseAgree, fn: setBaseAgree },
+    { value: depositAgree, fn: setDepositAgree },
+    { value: savingsAgree, fn: setSavingsAgree },
+    { value: loanAgree, fn: setLoanAgree },
+  ];
 
   const [modal, showModal] = useState(false);
   const router = useRouter();
@@ -106,115 +121,36 @@ export default function ElseAccount() {
       </div>
       <div className='w-full'>
         <Accordion type='multiple'>
-          <AccordionItem value='item-1'>
-            <AccordionTrigger className='border-primarycolor border-b'>
-              <Txt className='text-[14px]'>
-                비대면 계좌 개설 가입 동의서
-                <Txt className='ml-1 text-[8px]' color='text-red'>
-                  (필수)
-                </Txt>
-              </Txt>
-            </AccordionTrigger>
-            <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-              <AccountAgreement />
-              <div className='flex items-center justify-end pr-[25px]'>
-                <span className='m-2 text-[10px]'>
-                  이에 대한 내용을 모두 확인했습니다
-                </span>
-                <Checkbox
-                  id='baseAgree'
-                  checked={baseAgree}
-                  className='data-[state=checked]:bg-mainwhite'
-                  onCheckedChange={(checked) => {
-                    if (typeof checked === 'boolean') {
-                      setBaseAgree(checked);
-                    }
-                  }}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value='item-2'>
-            <AccordionTrigger className='border-primarycolor border-b'>
-              <Txt className='text-[14px]'>
-                정기예금 상품 가입 동의서
-                <Txt className='ml-1 text-[8px]' color='text-red'>
-                  (선택)
-                </Txt>
-              </Txt>
-            </AccordionTrigger>
-            <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-              <DepositAgreement />
-              <div className='flex items-center justify-end pr-[25px]'>
-                <span className='m-2 text-[10px]'>
-                  이에 대한 내용을 모두 확인했습니다
-                </span>
-                <Checkbox
-                  id='depositAgree'
-                  checked={depositAgree}
-                  className='data-[state=checked]:bg-mainwhite'
-                  onCheckedChange={(checked) => {
-                    setDepositAgree(!!checked);
-                  }}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value='item-3'>
-            <AccordionTrigger className='border-primarycolor border-b'>
-              <Txt className='text-[14px]'>
-                정기적금 가입 동의서
-                <Txt className='ml-1 text-[8px]' color='text-red'>
-                  (선택)
-                </Txt>
-              </Txt>
-            </AccordionTrigger>
-            <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-              <SavingsAgreement />
-              <div className='flex items-center justify-end pr-[25px]'>
-                <span className='m-2 text-[10px]'>
-                  이에 대한 내용을 모두 확인했습니다
-                </span>
-                <Checkbox
-                  id='savingsAgree'
-                  checked={savingsAgree}
-                  className='data-[state=checked]:bg-mainwhite'
-                  onCheckedChange={(checked) => {
-                    setSavingsAgree(!!checked);
-                  }}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value='item-4'>
-            <AccordionTrigger className='border-primarycolor border-b'>
-              <Txt className='text-[14px]'>
-                대출 상품 가입 동의서
-                <Txt className='ml-1 text-[8px]' color='text-red'>
-                  (선택)
-                </Txt>
-              </Txt>
-            </AccordionTrigger>
-            <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-              <LoanAgreement />
-              <div className='flex items-center justify-end pr-[25px]'>
-                <span className='m-2 text-[10px]'>
-                  이에 대한 내용을 모두 확인했습니다
-                </span>
-                <Checkbox
-                  id='loanAgree'
-                  checked={loanAgree}
-                  className='data-[state=checked]:bg-mainwhite'
-                  onCheckedChange={(checked) => {
-                    setLoanAgree(!!checked);
-                  }}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+          {agreementTitle.map((item, index) => (
+            <AccordionItem value={String(index)} key={index}>
+              <AccordionTrigger className='border-primarycolor border-b'>
+                <div className='flex items-center gap-[10px]'>
+                  <Txt className='text-[14px]'>{item.label}</Txt>
+                  <Txt className='text-[8px]' color='text-red'>
+                    {item.optional}
+                  </Txt>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
+                {agreeComponent[index]}
+                <div className='flex items-center justify-end'>
+                  <span className='m-2 text-[10px]'>
+                    이에 대한 내용을 모두 확인했습니다
+                  </span>
+                  <Checkbox
+                    id={String(agreeArray[index].value)}
+                    checked={agreeArray[index].value}
+                    className='data-[state=checked]:bg-mainwhite'
+                    onCheckedChange={(checked) => {
+                      if (typeof checked === 'boolean') {
+                        agreeArray[index].fn(checked);
+                      }
+                    }}
+                  ></Checkbox>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </div>
 

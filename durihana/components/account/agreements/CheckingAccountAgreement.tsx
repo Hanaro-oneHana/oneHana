@@ -4,7 +4,9 @@ export default function CheckingAccountAgreement() {
   return (
     <>
       <Txt size='text-[8px]' color='text-mainblack' className='space-y-2 px-1'>
-        <p>본인은 아래 정기예금 약관의 주요 내용을 확인하고 이에 동의합니다.</p>
+        <p>
+          본인은 아래 정기입출금 약관의 주요 내용을 확인하고 이에 동의합니다.
+        </p>
         <ol className='list-decimal space-y-1 pl-5'>
           <li>
             본 예금은 실명으로 개설하며, 일정 기간 예치 후 만기일에 원금과
