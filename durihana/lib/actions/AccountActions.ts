@@ -255,6 +255,7 @@ export const createMultipleAccounts = async (
       totalSchedules: result.totalSchedules,
     };
   } catch (error) {
+    console.log("🚀 ~ error:", error)
     return { isSuccess: false, data: [] };
   }
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { Txt } from '@/components/atoms';
-import { accountTypeLabelMap, MainAccount, SubAccount } from '@/types/Account';
+import { accountTypeLabelMap, SubAccount } from '@/types/Account';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -9,7 +9,6 @@ import { socket } from '@/lib/socket-client';
 
 type Props = {
   userId: number;
-  mainAccount: MainAccount;
   subAccounts: SubAccount[];
   coupleBalance: number;
   coupleNames: string[];
@@ -17,7 +16,6 @@ type Props = {
 
 export default function AccountCard({
   userId,
-  mainAccount: initialMainAccount,
   subAccounts: initialSubAccounts,
   coupleBalance: initialCoupleBalance,
   coupleNames,
