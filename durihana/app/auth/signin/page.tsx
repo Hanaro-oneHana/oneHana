@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, Txt, InputComponent } from '@/components/atoms';
+import Container from '@/components/containers/Container';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import type React from 'react';
@@ -47,16 +48,19 @@ export default function SignInPage() {
   };
 
   return (
-    <div className=' flex flex-col justify-center px-[20px] pt-[120px]'>
-      <div className='text-center mb-16'>
-        <Txt size='text-[36px]' weight='font-[500]' align='text-center'>
-          두리하나
-        </Txt>
-      </div>
+    <Container className='gap-[60px] pt-[150px]'>
+      <Txt
+        size='text-[36px]'
+        weight='font-[500]'
+        align='text-center'
+        className='w-full'
+      >
+        두리하나
+      </Txt>
 
       {/* 로그인 폼 */}
-      <form onSubmit={handleSubmit}>
-        <div className='mb-6'>
+      <form onSubmit={handleSubmit} className='flex w-full flex-col'>
+        <div className='mb-6 flex w-full flex-col gap-[10px]'>
           <Txt weight='font-[500]'>이메일</Txt>
           <InputComponent
             id='email'
@@ -64,11 +68,11 @@ export default function SignInPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder='abc@doorihana.com'
-            className='text-primarycolor text-[14px] font-[600] placeholder:text-buttongray'
+            className='text-primarycolor placeholder:text-buttongray text-[14px] font-[600]'
             required
           />
         </div>
-        <div>
+        <div className='mb-6 flex w-full flex-col gap-[10px]'>
           <Txt weight='font-[500]'>비밀번호</Txt>
           <InputComponent
             id='password'
@@ -76,7 +80,7 @@ export default function SignInPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder='8자 이상 입력해주세요'
-            className='text-primarycolor text-[14px] font-[600] placeholder:text-buttongray'
+            className='text-primarycolor placeholder:text-buttongray text-[14px] font-[600]'
             required
             minLength={8}
           />
@@ -91,22 +95,18 @@ export default function SignInPage() {
           {error ? `*${error}` : ''}
         </Txt>
 
-        <div className='pt-8'>
-          <Button type='submit'>로그인</Button>
-        </div>
-        <div>
-          <Button className='bg-transparent' onClick={goToSignUp}>
-            <Txt
-              weight='font-[500]'
-              color='text-textgray'
-              size='text-[13px]'
-              align='text-center'
-            >
-              회원가입
-            </Txt>
-          </Button>
-        </div>
+        <Button type='submit'>로그인</Button>
+        <Button className='bg-transparent' onClick={goToSignUp}>
+          <Txt
+            weight='font-[500]'
+            color='text-textgray'
+            size='text-[13px]'
+            align='text-center'
+          >
+            회원가입
+          </Txt>
+        </Button>
       </form>
-    </div>
+    </Container>
   );
 }

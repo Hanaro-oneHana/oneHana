@@ -1,14 +1,11 @@
 'use client';
 
-import Txt from '@/components/atoms/Txt';
+import { Button, InputComponent, Txt } from '@/components/atoms';
 import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
+import { AccountType, accountTypeLabelMap } from '@/types/Account';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { InputComponent } from '../atoms';
-import Button from '../atoms/Button';
-
-type AccountType = 0 | 1 | 2 | 3;
 
 type Props = {
   type: AccountType;
@@ -16,13 +13,6 @@ type Props = {
   balance: number;
   accountId: number;
   onTransaction?: () => void;
-};
-
-const accountTypeLabelMap = {
-  0: '두리함께입출금통장',
-  1: '두리함께예금통장',
-  2: '두리함께적금통장',
-  3: '두리함께대출통장',
 };
 
 // 버튼 라벨 정의
@@ -69,30 +59,26 @@ export default function AccountCardDetail({
   };
 
   return (
-    <div className='bg-lightmint border-borderline relative rounded-[10px] border p-6'>
+    <div className='bg-lightmint border-borderline relative flex w-full flex-col rounded-[10px] border p-6'>
       <div className='absolute right-5'>
         <Image src='/asset/icons/info.svg' alt='info' width={24} height={24} />
       </div>
 
-      <div>
-        <Txt weight='font-[600]'>{accountTypeLabelMap[type]}</Txt>
-        <Txt
-          weight='font-[500]'
-          size='text-[13px]'
-          color='text-icon'
-          className='mb-2 block'
-        >
-          {account}
-        </Txt>
-      </div>
+      <Txt weight='font-[600]'>{accountTypeLabelMap[type]}</Txt>
+      <Txt
+        weight='font-[500]'
+        size='text-[13px]'
+        color='text-icon'
+        className='mb-2 block'
+      >
+        {account}
+      </Txt>
 
-      <div className='mb-4 text-right'>
-        <Txt size='text-[24px]' weight='font-[600]'>
-          {balance.toLocaleString()} 원
-        </Txt>
-      </div>
+      <Txt size='text-[24px]' weight='font-[600]' className='mb-4 text-right'>
+        {balance.toLocaleString()} 원
+      </Txt>
 
-      <div className='flex justify-start'>{renderButtonsByType(type)}</div>
+      {renderButtonsByType(type)}
 
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent className='h-3/10'>

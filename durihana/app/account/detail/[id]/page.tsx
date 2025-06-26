@@ -1,5 +1,7 @@
-import AccountDetail, { Transaction } from '@/components/account/AccountDetail';
-import AccountDetailHeader from '@/components/account/AccountDetailHeader';
+import { AccountDetailHeader, AccountDetail } from '@/components/account';
+import Container from '@/components/containers/Container';
+import { Transaction } from '@/types/Account';
+import { use } from 'react';
 import {
   getAllAccountsByUserId,
   getFirstAccountByUserId,
@@ -8,21 +10,19 @@ import {
   getTransactionsByAccountId,
   getMinusTransactionsByAccountId,
 } from '@/lib/actions/TransactionActions';
+import { auth } from '@/lib/auth';
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
-
-export default async function AccountDetailPage({ params }: Props) {
-  const userId = await params;
-  const allAccounts = await getAllAccountsByUserId(Number(userId.id));
-  const firstAccount = await getFirstAccountByUserId(Number(userId.id));
+export default function AccountDetailPage() {
+  const session = use(auth());
+  const userId = Number(session?.user?.id);
+  const allAccounts = use(getAllAccountsByUserId(userId));
+  const firstAccount = use(getFirstAccountByUserId(userId));
 
   const allTransactions: { [key: number]: Transaction[] } = {};
 
   for (const acc of allAccounts) {
-    const deposits = await getTransactionsByAccountId(acc.id);
-    const withdrawals = await getMinusTransactionsByAccountId(acc.id);
+    const deposits = use(getTransactionsByAccountId(acc.id));
+    const withdrawals = use(getMinusTransactionsByAccountId(acc.id));
 
     const merged = [...deposits, ...withdrawals].sort((a, b) => {
       const aTime = new Date(`${a.date} ${a.time}`).getTime();
@@ -37,14 +37,16 @@ export default async function AccountDetailPage({ params }: Props) {
 
   return (
     <>
-      <AccountDetailHeader />
-      <div className='mt-[60px] flex flex-col p-[20px]'>
+      <Container
+        className='flex flex-col pt-[70px]'
+        header={<AccountDetailHeader />}
+      >
         <AccountDetail
           account={firstAccount}
           allAccounts={allAccounts}
           allTransactions={allTransactions}
         />
-      </div>
+      </Container>
     </>
   );
 }

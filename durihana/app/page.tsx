@@ -17,6 +17,7 @@ import {
   getMarriageDate,
 } from '@/lib/actions/DashboardActions';
 import { auth } from '@/lib/auth';
+import { getCoupleNames } from '@/lib/actions/getCoupleUserIds';
 
 export default function Home() {
   const session = use(auth());
@@ -28,6 +29,7 @@ export default function Home() {
 
   const accounts = use(getAccountsByUserId(userId));
   const coupleBalance = use(getCoupleTotalBalance(userId));
+  const coupleNames = use(getCoupleNames(userId));
   const main = accounts.data.find((acc) => acc.type === 0);
   const subs = accounts.data.filter((acc) => acc.type !== 0);
 
@@ -62,6 +64,7 @@ export default function Home() {
           coupleBalance={coupleBalance.data}
           mainAccount={mainAccountData || { type: 0, account: '', balance: 0 }}
           subAccounts={subAccounts}
+          coupleNames={coupleNames}
         />
       )}
       <MainDashBoard

@@ -44,20 +44,33 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
               예약 완료
             </Txt>
             <div className='space-y-2'>
-              <Txt size='text-[16px]' className='text-mainblack'>
+              <Txt
+                size='text-[16px]'
+                color='text-mainblack'
+                weight='font-[600]'
+              >
                 {formatDisplayDate(confirmedInfo.date)}
               </Txt>
-              <Txt size='text-[16px]' className='text-mainblack'>
+              <Txt
+                size='text-[16px]'
+                color='text-mainblack'
+                weight='font-[600]'
+              >
                 {` ${confirmedInfo.time}`}
               </Txt>
               <br />
-              <Txt size='text-[14px]' className='text-mainblack mt-2'>
+              <Txt
+                size='text-[14px]'
+                color='text-mainblack'
+                weight='font-[600]'
+                className='mt-2'
+              >
                 예약이 완료되었습니다.
               </Txt>
             </div>
             <Button
               onClick={() => setShowSuccessModal(false)}
-              className='bg-primarycolor text-mainwhite mt-4 w-full'
+              className='mt-4 w-full py-[10px]'
             >
               확인
             </Button>
