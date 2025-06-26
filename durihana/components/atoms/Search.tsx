@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/useDebounce';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   onSearch: (query: string) => void;
@@ -15,14 +15,16 @@ export default function Search({
 }: Props) {
   const [inputValue, setInputValue] = useState('');
   const debouncedValue = useDebounce(inputValue, 200);
+  const lastSearchedRef = useRef<string | null>(null);
 
   useEffect(() => {
     const trimmed = debouncedValue.trim();
-    if (trimmed === '') {
-      return;
-    }
+
+    if (trimmed === lastSearchedRef.current) return;
+
+    lastSearchedRef.current = trimmed;
     onSearch(trimmed);
-  }, [debouncedValue]);
+  }, [debouncedValue, onSearch]);
 
   return (
     <div

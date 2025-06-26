@@ -24,10 +24,10 @@ import { useState } from 'react';
 import { plusBalanceBySessionUser } from '@/lib/actions/calBalance';
 
 const agreeComponent = [
-  <AccountAgreement />,
-  <DepositAgreement />,
-  <SavingsAgreement />,
-  <LoanAgreement />,
+  <AccountAgreement key='account-agreement' />,
+  <DepositAgreement key='deposit-agreement' />,
+  <SavingsAgreement key='savings-agreement' />,
+  <LoanAgreement key='loan-agreement' />,
 ];
 
 export default function ElseAccount() {

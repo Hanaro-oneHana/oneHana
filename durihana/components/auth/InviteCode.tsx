@@ -34,13 +34,12 @@ export default function InviteCode() {
 
   useEffect(() => {
     if (!userId) {
-      console.log('🚀 ~ InviteCode ~ loading:', loading);
       return;
     }
     const code = generateRandomCode();
     setRandomCode(code);
     updateRandomCode(userId, code);
-  }, [userId]);
+  }, [loading, userId]);
 
   const tryConnecting = async (id: number, mate_code: string) => {
     if (!id) return;
