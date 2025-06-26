@@ -104,6 +104,7 @@ model User {
   type            Int               @default(0) @db.TinyInt
   Account         Account[]
   BudgetPlan      BudgetPlan[]
+  Mate            Mate[]
   PartnerCalendar PartnerCalendar[]
   UserCalendar    UserCalendar[]
 }
@@ -139,4 +140,14 @@ model Account {
 model SavingsInterest {
   step Int     @id @db.UnsignedTinyInt
   rate Decimal @db.Decimal(5, 2)
+}
+
+model Mate {
+  id       Int    @id @default(autoincrement()) @db.UnsignedInt
+  name     String @db.VarChar(20)
+  password String @db.VarChar(255)
+  user_id  Int    @db.UnsignedInt
+  User     User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_mate_user")
+
+  @@index([user_id], map: "fk_mate_user")
 }
