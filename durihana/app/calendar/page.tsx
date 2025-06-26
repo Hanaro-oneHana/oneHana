@@ -2,7 +2,7 @@
 
 import { BottomNavigation, Header } from '@/components/atoms';
 import Container from '@/components/containers/Container';
-import UserCalendar from '@/components/schedule/UserCalendar';
+import { UserCalendar } from '@/components/schedule/index';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { processTodayTransfers } from '@/lib/actions/ScheduleProcessingActions';

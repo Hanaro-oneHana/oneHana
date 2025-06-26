@@ -206,7 +206,9 @@ export const createMultipleAccounts = async (
         }
         // 스케줄 생성
         const scheduleResult = await createAccountSchedules(newAccount.id, tx);
-        totalSchedules += scheduleResult.count;
+        if (scheduleResult.count) {
+          totalSchedules += scheduleResult.count;
+        }
       }
 
       return { accounts: createdAccounts, totalSchedules };
@@ -230,7 +232,7 @@ export const createMultipleAccounts = async (
             accountId: updatedMain.id,
             newBalance: updatedMain.balance,
             accountType: 0,
-            coupleBalance:coupleBalance.data,
+            coupleBalance: coupleBalance.data,
           });
         }
         if (uid === userId) {
@@ -240,7 +242,7 @@ export const createMultipleAccounts = async (
               accountId: acc.id,
               newBalance: acc.balance,
               accountType: acc.type,
-              coupleBalance:coupleBalance.data,
+              coupleBalance: coupleBalance.data,
             });
           }
         }
