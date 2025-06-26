@@ -59,11 +59,14 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   useEffect(() => {
     updateSearchParam(['category', 'search'], [category.toString(), '']);
     setSortOptionList(getFilteringOptions(category));
-  }, [category]);
+  }, [category, updateSearchParam]);
 
-  const handleSearch = useCallback((query: string) => {
-    updateSearchParam(['search'], [query]);
-  }, []);
+  const handleSearch = useCallback(
+    (query: string) => {
+      updateSearchParam(['search'], [query]);
+    },
+    [updateSearchParam]
+  );
 
   useEffect(() => {
     if (selectedRegions.length > 0) {

@@ -51,9 +51,12 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
     setItems(filteredItems);
   };
 
-  const handleSearch = useCallback((query: string) => {
-    updateSearchParam(['search'], [query]);
-  }, []);
+  const handleSearch = useCallback(
+    (query: string) => {
+      updateSearchParam(['search'], [query]);
+    },
+    [updateSearchParam]
+  );
 
   useEffect(() => {
     setItems(storeList || []);
@@ -63,7 +66,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   useEffect(() => {
     updateSearchParam(['category', 'search'], [category.toString(), '']);
     setSortOptionList(getFilteringOptions(category));
-  }, [category]);
+  }, [category, updateSearchParam]);
 
   useEffect(() => {
     if (selectedRegions.length > 0) {
