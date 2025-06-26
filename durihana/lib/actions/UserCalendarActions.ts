@@ -8,9 +8,6 @@ export const getUserSchedulesForDate = async (
   mainId: number,
   date: string
 ) => {
-  console.log('🚀 ~ getUserSchedulesForDate ~ userId:', userId);
-  console.log('🚀 ~ getUserSchedulesForDate ~ date:', date);
-
   const [financePlans, reservations, userAccounts] = await Promise.all([
     // 개인 금융 계획
     prisma.userCalendar.findMany({
@@ -64,10 +61,6 @@ export const getUserSchedulesForDate = async (
       },
     }),
   ]);
-
-  console.log('🚀 ~ financePlans:', financePlans);
-  console.log('🚀 ~ userAccounts:', userAccounts);
-  console.log('🚀 ~ reservations:', reservations);
 
   return {
     financePlans,
@@ -148,10 +141,6 @@ export const getFinanceScheduleDates = async (
   const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
   const endDate = `${year}-${String(month + 1).padStart(2, '0')}-31`;
 
-  console.log('🚀 ~ getFinanceScheduleDates ~ userId:', userId);
-  console.log('🚀 ~ getFinanceScheduleDates ~ startDate:', startDate);
-  console.log('🚀 ~ getFinanceScheduleDates ~ endDate:', endDate);
-
   const financeDates = await prisma.userCalendar.findMany({
     where: {
       user_id: userId,
@@ -164,8 +153,6 @@ export const getFinanceScheduleDates = async (
       user_date: true,
     },
   });
-
-  console.log('🚀 ~ financeDates:', financeDates);
 
   const allDates = new Set<string>();
   financeDates.forEach((item) => {
@@ -187,10 +174,6 @@ export const getReservationScheduleDates = async (
   const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
   const endDate = `${year}-${String(month + 1).padStart(2, '0')}-31`;
 
-  console.log('🚀 ~ getReservationScheduleDates ~ userId:', userId);
-  console.log('🚀 ~ getReservationScheduleDates ~ startDate:', startDate);
-  console.log('🚀 ~ getReservationScheduleDates ~ endDate:', endDate);
-
   const reservationDates = await prisma.partnerCalendar.findMany({
     where: {
       user_id: userId,
@@ -203,8 +186,6 @@ export const getReservationScheduleDates = async (
       reservation_date: true,
     },
   });
-
-  console.log('🚀 ~ reservationDates:', reservationDates);
 
   const allDates = new Set<string>();
   reservationDates.forEach((item) => {

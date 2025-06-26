@@ -1,15 +1,13 @@
 'use server';
 
+import { TIMES } from '@/constants/calendar';
 import prisma from '../db';
-import { TIMES } from '../times';
 
 // 특정 날짜의 예약된 시간들을 가져오는 함수
 export const getReservedTimes = async (
   partnerServiceId: number,
   date: string
 ) => {
-  console.log('🚀 ~ partnerServiceId:', partnerServiceId);
-  console.log('🚀 ^^^^^^^^^^^^^^^^^date:', date);
   const reservations = await prisma.partnerCalendar.findMany({
     where: {
       partner_service_id: partnerServiceId,
@@ -21,7 +19,6 @@ export const getReservedTimes = async (
       reservation_date: true,
     },
   });
-  console.log('🚀 여기여기여기여기 reservations:', reservations);
 
   // reservation_date에서 시간 부분만 추출 (예: '2025-01-15 10:00' -> '10:00')
   return reservations
@@ -53,7 +50,6 @@ export const getFullyBookedDates = async (
       reservation_date: true,
     },
   });
-  console.log('🚀 ~ reservations:', reservations);
 
   // 날짜별로 예약된 시간 개수 계산
   const dateTimeCount: { [key: string]: number } = {};

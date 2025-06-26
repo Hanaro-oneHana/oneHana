@@ -1,11 +1,11 @@
 'use client';
 
+import { TIMES } from '@/constants/calendar';
 import { useState, useEffect } from 'react';
 import {
   getReservedTimes,
   getFullyBookedDates,
 } from '@/lib/actions/ReservationActions';
-import { TIMES } from '@/lib/times';
 
 type UseCalendarDrawerProps = {
   partnerServiceId: number;
