@@ -45,7 +45,7 @@ export default function Asset() {
   const categoryData =
     categoryDataResult?.isSuccess && categoryDataResult.data
       ? categoryDataResult.data
-      : [{ category: '', value: 0 }];
+      : [];
 
   const total = use(getBucketTotalAmount(mainUserId));
 
