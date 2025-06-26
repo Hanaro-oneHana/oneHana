@@ -19,18 +19,19 @@ const mockCount = prisma.partnerCalendar.count as Mock;
 const mockFindFirst = prisma.depositInterest.findFirst as Mock;
 const mockFindUnique = prisma.depositInterest.findUnique as Mock;
 
-describe('cal depositInterestRate', () => {
+describe('test rateStep by deposit interest', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   }),
 
   it('use default rate when step = 0', async () => {
     mockCount.mockResolvedValue(0);
-    mockFindFirst.mockResolvedValue({where : {step:0}});
+    mockFindFirst.mockResolvedValue({where : {step:5}});
     mockFindUnique.mockResolvedValue({ rate: new Decimal(2.0) })
 
     const result = await getDepositInterestRate(0);
     expect(result).toBe(2.0);
+    expect(mockFindUnique).toHaveBeenCalledWith({ where: { step: 0 } });
   })
 
   it('change rate by step', async () => {
@@ -43,4 +44,6 @@ describe('cal depositInterestRate', () => {
     expect(mockFindUnique).toHaveBeenCalledWith({ where: { step: 2 } });
   })
 
+  
 });
+
