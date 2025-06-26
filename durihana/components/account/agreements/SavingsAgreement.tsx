@@ -15,7 +15,7 @@ export default function SavingsAgreement() {
             금융거래에 동의합니다.
           </li>
           <li>
-            예금의 입·출금, 이자 지급 등 거래는 당행의 관련 약관 및 규정에
+            적금의 입·출금, 이자 지급 등 거래는 당행의 관련 약관 및 규정에
             따릅니다.
           </li>
           <li>
