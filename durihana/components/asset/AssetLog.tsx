@@ -3,9 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '../atoms';
 import Txt from '../atoms/Txt';
+import { CategoryData } from '@/types/Asset';
 
 type Props = {
-  data: { name: string; value: number }[];
+  data: CategoryData[];
 };
 
 export default function AssetLog({ data }: Props) {
