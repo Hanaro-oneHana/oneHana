@@ -22,6 +22,10 @@ export default function Home() {
   const session = use(auth());
   const userId = Number(session?.user?.id);
 
+  const mainUserId = session?.user?.isMain
+    ? Number(session.user.id)
+    : Number(session?.user?.partnerId);
+
   const accounts = use(getAccountsByUserId(userId));
   const coupleBalance = use(getCoupleTotalBalance(userId));
   const main = accounts.data.find((acc) => acc.type === 0);
@@ -42,7 +46,7 @@ export default function Home() {
     }));
 
   const marriageDate = use(getMarriageDate(userId));
-  const completedCategory = use(getCategoriesByUserId(userId));
+  const completedCategory = use(getCategoriesByUserId(mainUserId));
 
   return (
     <Container
