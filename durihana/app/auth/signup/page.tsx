@@ -4,14 +4,16 @@ import AlertModal from '@/components/alert/AlertModal';
 import { Button, Header, InputComponent, Txt } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, use, useState } from 'react';
 import { signInValidateAction, signUpAction } from '@/lib/actions/AuthActions';
+import Container from '@/components/containers/Container';
 
 export default function Singup() {
   const title = 'text-[16px] font-[500]';
   const inputSet =
-    'w-full text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
+    'text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
   const errMasseage = 'text-red text-[10px] font-[500]';
+  const divClass = 'flex flex-col gap-[10px]';
 
   const phoneHyphen = (h: string) => {
     const digits = h.replace(/\D/g, '');
@@ -67,7 +69,7 @@ export default function Singup() {
     setMarriageDateError('');
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -77,13 +79,13 @@ export default function Singup() {
       return;
     }
     try {
-      const result = await signUpAction(
+      const result = use(signUpAction(
         formData.name,
         formData.email,
         formData.password,
         formData.phone,
         formData.marriageDate
-      );
+      ));
 
       if (!result.isSuccess) {
         handleErrorReset();
@@ -102,20 +104,20 @@ export default function Singup() {
         }
         return;
       } else {
-        const signInResult = await signInValidateAction(
+        const signInResult = use(signInValidateAction(
           formData.email,
           formData.password
-        );
+        ));
         if (signInResult.isSuccess && signInResult.data) {
           // 로그인 성공 시 NextAuth로 로그인 처리
-          await signIn('credentials', {
+          use(signIn('credentials', {
             redirect: false,
             id: result.data?.id || '',
             email: signInResult.data.email,
             password: formData.password,
             name: signInResult.data?.name || '',
             partnerCode: signInResult.data?.mate_code || 0,
-          });
+          }));
           setSuccessModal(true);
         }
       }
@@ -141,11 +143,9 @@ export default function Singup() {
   };
 
   return (
-    <div className='flex flex-col pb-[40px] pt-[80px] px-[20px]'>
-      <Header title='회원가입' leftIcon='back' />
-
+    <Container header={<Header title='회원가입' leftIcon='back'/>} className='pt-[80px]'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-[15px]'>
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>이름</Txt>
           <InputComponent
             className={inputSet}
@@ -160,7 +160,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{nameError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>이메일</Txt>
           <InputComponent
             className={inputSet}
@@ -174,7 +174,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{emailError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>비밀번호</Txt>
           <InputComponent
             className={inputSet}
@@ -188,7 +188,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{passwordError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>비밀번호 확인</Txt>
           <InputComponent
             className={inputSet}
@@ -202,7 +202,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{checkError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>전화번호</Txt>
           <InputComponent
             className={inputSet}
@@ -216,7 +216,7 @@ export default function Singup() {
           <Txt className={errMasseage}>{phoneError}</Txt>
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className={divClass}>
           <Txt className={title}>결혼 예정일</Txt>
           <InputComponent
             className={inputSet}
@@ -233,7 +233,7 @@ export default function Singup() {
         <div>
           <Button
             type='submit'
-            className='block w-full mt-[40px]'
+            className='mt-[40px]'
             disabled={isLoading}
           >
             {isLoading ? '가입중' : '완료'}
@@ -246,11 +246,11 @@ export default function Singup() {
           <Txt size='text-[16px]' className='text-mainblack text-center'>
             회원가입이 완료되었습니다.
           </Txt>
-          <Button className='mt-[20px] w-full' onClick={handleModalClose}>
+          <Button  onClick={handleModalClose}>
             초대코드 받으러가기
           </Button>
         </AlertModal>
       )}
-    </div>
+    </Container>
   );
 }
