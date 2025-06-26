@@ -220,12 +220,12 @@ export default function ElseAccount() {
 
       {modal && (
         <AlertModal onClose={() => showModal(false)}>
-          <Txt align='text-center'>
+          <Txt align='text-center' size='text-[16px]' weight='font-[600]'>
             비대면 계좌 개설 약관에 동의하셔야
             <br />
             서비스를 이용하실 수 있습니다
           </Txt>
-          <Button className='mt-5' onClick={() => showModal(false)}>
+          <Button className='mt-5 py-[10px]' onClick={() => showModal(false)}>
             확인
           </Button>
         </AlertModal>
