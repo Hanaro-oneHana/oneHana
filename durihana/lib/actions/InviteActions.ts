@@ -41,6 +41,13 @@ export const tryMating = async (id: number, mate_code: string) => {
     };
   }
 
+  if (mateUser.mate_code) {
+    return {
+      status: 'error',
+      message: '상대방이 이미 누군가와 연결됐습니다',
+    };
+  }
+
   await prisma.user.update({
     where: {
       id,
