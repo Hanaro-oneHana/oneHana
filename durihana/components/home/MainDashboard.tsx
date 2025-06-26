@@ -1,5 +1,7 @@
 'use client';
 
+import { checklist } from '@/constants/dashboard';
+import { CategoryData } from '@/types/Asset';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { calculateDday } from '@/lib/utils';
@@ -7,56 +9,29 @@ import { Txt } from '../atoms';
 
 type Props = {
   date: string;
-  category: string[];
+  categoryData: CategoryData[];
 };
 
-const checklist = [
-  {
-    keyword: '예식장',
-    todoText: '예식장 상담 예약하기',
-    doneText: '예식장 상담 예약 완료',
-  },
-  {
-    keyword: '스드메',
-    todoText: '스드메 상담 예약하기',
-    doneText: '스드메 상담 예약 완료',
-  },
-  {
-    keyword: '여행',
-    todoText: '신혼여행 상담 예약하기',
-    doneText: '신혼여행 상담 예약 완료',
-  },
-  {
-    keyword: '가전',
-    todoText: '가전·가구 구매하기',
-    doneText: '가전·가구 구매 완료',
-  },
-  {
-    keyword: '예물',
-    todoText: '예물·예단 구매하기',
-    doneText: '예물·예단 구매 완료',
-  },
-];
-
-export default function MainDashBoard({ date, category }: Props) {
+export default function MainDashBoard({ date, categoryData }: Props) {
   const router = useRouter();
   const dDay = calculateDday(date);
 
-  const isDone = (keyword: string) => category.some((c) => c.includes(keyword));
+  const isDone = (keyword: string) =>
+    categoryData.some((c) => c.category.includes(keyword));
 
   return (
     <div
-      className='flex flex-col w-full'
+      className='flex w-full flex-col'
       onClick={() => {
         router.push('/wedding-bucket');
       }}
     >
-      <div className='flex flex-col w-full'>
+      <div className='flex w-full flex-col'>
         <Txt size='text-[18px]' weight='font-[500]' className='mb-[20px]'>
           나의 결혼 준비
         </Txt>
       </div>
-      <div className='w-full bg-lightpurple rounded-[10px] border border-linegray flex justify-between'>
+      <div className='bg-lightpurple border-linegray flex w-full justify-between rounded-[10px] border'>
         <div className='pt-[29px] pl-[20px]'>
           <Txt weight='font-[600]'>
             {dDay === null
@@ -68,7 +43,7 @@ export default function MainDashBoard({ date, category }: Props) {
                   : '오늘 결혼해요'}
           </Txt>
 
-          <div className='flex flex-col gap-[4px] mt-[25px] mb-[34px]'>
+          <div className='mt-[25px] mb-[34px] flex flex-col gap-[4px]'>
             {checklist.map(({ keyword, todoText, doneText }) => {
               const done = isDone(keyword);
 
@@ -97,7 +72,7 @@ export default function MainDashBoard({ date, category }: Props) {
           alt='꽃다발'
           width={138}
           height={138}
-          className='shrink-0 aspect-[118.25/118.25] rotate-[23.132deg] mr-[25px]'
+          className='mr-[25px] aspect-[118.25/118.25] shrink-0 rotate-[23.132deg]'
         />
       </div>
     </div>

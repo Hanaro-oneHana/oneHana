@@ -1,7 +1,7 @@
 'use client';
 
-import Txt from '@/components/atoms/Txt';
-import { MainAccount, SubAccount } from '@/types/Account';
+import { Txt } from '@/components/atoms';
+import { accountTypeLabelMap, MainAccount, SubAccount } from '@/types/Account';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -12,14 +12,7 @@ type Props = {
   mainAccount: MainAccount;
   subAccounts: SubAccount[];
   coupleBalance: number;
-};
-
-// type에 따른 통장 이름 매핑
-export const accountTypeLabelMap = {
-  0: '두리함께입출금',
-  1: '두리함께예금',
-  2: '두리함께적금',
-  3: '두리함께대출',
+  coupleNames: string[];
 };
 
 export default function AccountCard({
@@ -27,9 +20,9 @@ export default function AccountCard({
   mainAccount: initialMainAccount,
   subAccounts: initialSubAccounts,
   coupleBalance: initialCoupleBalance,
+  coupleNames,
 }: Props) {
   const router = useRouter();
-  const [mainAccount, setMainAccount] = useState(initialMainAccount);
   const [subAccounts, setSubAccounts] = useState(initialSubAccounts);
   const [coupleBalance, setCoupleBalance] = useState(initialCoupleBalance);
 
@@ -49,13 +42,6 @@ export default function AccountCard({
       setCoupleBalance(data.coupleBalance);
 
       if (data.accountType === 0) {
-        // 메인 계좌 (입출금) 업데이트
-        setMainAccount((prev) => ({
-          ...prev,
-          balance: data.newBalance,
-        }));
-      } else {
-        // 서브 계좌 업데이트
         setSubAccounts((prev) =>
           prev.map((acc) =>
             acc.type === data.accountType
@@ -86,7 +72,7 @@ export default function AccountCard({
 
   return (
     <div
-      className='bg-lightmint border-linegray relative flex w-full flex-col rounded-[10px] border p-6'
+      className='bg-lightmint border-linegray relative flex w-full cursor-pointer flex-col rounded-[10px] border p-6'
       onClick={onCardClick}
     >
       <div className='absolute right-5'>
@@ -98,17 +84,14 @@ export default function AccountCard({
           className='text-navy'
         />
       </div>
-
-      <div>
-        <Txt weight='font-[600]'>{accountTypeLabelMap[mainAccount.type]}</Txt>
+      <div className='flex w-full flex-row items-center justify-start gap-[1px]'>
+        <Txt weight='font-[600]'>{coupleNames[0]}</Txt>
+        <Image src='/asset/icons/love.svg' alt='love' width={18} height={18} />
+        <Txt weight='font-[600]'>{coupleNames[1]}</Txt>
       </div>
-
-      <div className='text-right'>
-        <Txt size='text-[24px]' weight='font-[600]'>
-          {coupleBalance.toLocaleString()} 원
-        </Txt>
-      </div>
-
+      <Txt size='text-[24px]' weight='font-[600]' className='text-right'>
+        {coupleBalance.toLocaleString()} 원
+      </Txt>
       <div className='mt-3 flex flex-col gap-2'>
         {subAccounts.map((item) => (
           <div key={item.type} className='flex items-center justify-between'>

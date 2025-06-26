@@ -1,9 +1,11 @@
-import BottomNavigation from '@/components/atoms/BottomNavigation';
+import { BottomNavigation, Header } from '@/components/atoms';
+import Container from '@/components/containers/Container';
 
 export default function Menu() {
   return (
-    <>
-      <BottomNavigation selectedItem='menu' />
-    </>
+    <Container
+      header={<Header leftIcon='my' rightIcon='bell' />}
+      footer={<BottomNavigation selectedItem='menu' />}
+    />
   );
 }

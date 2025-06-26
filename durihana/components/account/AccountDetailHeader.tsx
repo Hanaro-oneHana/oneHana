@@ -1,6 +1,6 @@
 'use client';
 
-import Header from '@/components/atoms/Header';
+import { Header } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
 
 export default function AccountDetailHeader() {

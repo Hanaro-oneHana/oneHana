@@ -2,11 +2,11 @@
 
 import AlertModal from '@/components/alert/AlertModal';
 import { Button, Txt } from '@/components/atoms';
-import { CalendarDrawer } from '@/components/calendar';
+import CalendarDrawer from '@/components/calendar/CalendarDrawer';
 import {
-  StoreOption,
-  StoreInfo,
   StoreDrawer,
+  StoreInfo,
+  StoreOption,
 } from '@/components/estimate-store';
 import {
   Carousel,
@@ -168,12 +168,15 @@ export default function StoreDetail(details: StoreDetailProps) {
             showModal(false);
           }}
         >
-          <Txt align='text-center'>{selectedModalMent}</Txt>
+          <Txt align='text-center' size='text-[16px]' weight='font-[600]'>
+            {selectedModalMent}
+          </Txt>
           <div className='mt-5 flex w-full flex-row gap-[15px]'>
             {!Object.keys(details.options).some(
               (key) => !selectedOptions[key]
             ) && (
               <Button
+                className='py-[10px]'
                 bgColor='bg-icon'
                 onClick={() => {
                   showModal(false);
@@ -184,6 +187,7 @@ export default function StoreDetail(details: StoreDetailProps) {
               </Button>
             )}
             <Button
+              className='py-[10px]'
               onClick={() => {
                 showModal(false);
                 // 예시: handleAdd 내부 혹은 해당 로직이 위치한 곳에 적용

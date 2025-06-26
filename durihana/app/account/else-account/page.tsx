@@ -1,14 +1,14 @@
 'use client';
 
+import {
+  AccountAgreement,
+  DepositAgreement,
+  LoanAgreement,
+  SavingsAgreement,
+} from '@/components/account';
 import AlertModal from '@/components/alert/AlertModal';
-import { InputComponent } from '@/components/atoms';
-import AccountAgreement from '@/components/atoms/AccountAgreement';
-import Button from '@/components/atoms/Button';
-import DepositAgreement from '@/components/atoms/DepositAgreement';
-import Header from '@/components/atoms/Header';
-import LoanAgreement from '@/components/atoms/LoanAgreement';
-import SavingsAgreement from '@/components/atoms/SavingsAgreement';
-import Txt from '@/components/atoms/Txt';
+import { InputComponent, Button, Txt, Header } from '@/components/atoms';
+import Container from '@/components/containers/Container';
 import {
   Accordion,
   AccordionContent,
@@ -16,9 +16,18 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
+import { agreementTitle } from '@/constants/store';
 import { useAgreement } from '@/contexts/account/useAgreement';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { plusBalanceBySessionUser } from '@/lib/actions/calBalance';
+
+const agreeComponent = [
+  <AccountAgreement />,
+  <DepositAgreement />,
+  <SavingsAgreement />,
+  <LoanAgreement />,
+];
 
 export default function ElseAccount() {
   const {
@@ -32,13 +41,62 @@ export default function ElseAccount() {
     setLoanAgree,
   } = useAgreement();
 
+  const agreeArray = [
+    { value: baseAgree, fn: setBaseAgree },
+    { value: depositAgree, fn: setDepositAgree },
+    { value: savingsAgree, fn: setSavingsAgree },
+    { value: loanAgree, fn: setLoanAgree },
+  ];
+
   const [modal, showModal] = useState(false);
   const router = useRouter();
   const [initialDeposit, setInitialDeposit] = useState('');
 
+  const btnClick = async () => {
+    const amount = Number(initialDeposit.replace(/,/g, ''));
+    await plusBalanceBySessionUser(amount);
+  };
+
   return (
-    <div className='relative flex h-dvh w-full shrink-0 flex-col items-center justify-between overflow-hidden'>
-      <div className='mt-[40px] flex w-full flex-col gap-2 px-[25px] pt-[30px]'>
+    <Container
+      className='pt-[77px] pb-[88px]'
+      header={<Header leftIcon='back' title='계좌개설' />}
+      footer={
+        <div className='bg-background flex gap-2 px-[20px] pb-[40px]'>
+          <Button
+            bgColor='bg-icon'
+            onClick={() => {
+              btnClick();
+              router.push('/');
+            }}
+            className='w-1/2'
+          >
+            홈으로
+          </Button>
+          <Button
+            onClick={() => {
+              if (!baseAgree) {
+                showModal(true);
+                return;
+              }
+
+              const types: number[] = [];
+              if (depositAgree) types.push(1); // 예금
+              if (savingsAgree) types.push(2); // 적금
+              if (loanAgree) types.push(3); // 대출
+
+              btnClick();
+
+              router.push(`./create-account?types=${types.join(',')}`);
+            }}
+            className='w-1/2'
+          >
+            다음
+          </Button>
+        </div>
+      }
+    >
+      <div className='flex w-full flex-col'>
         <Txt>입출금통장 초기 입금액</Txt>
         <InputComponent
           placeholder='입금할 금액을 입력하세요'
@@ -57,183 +115,57 @@ export default function ElseAccount() {
           </Txt>
         </div>
       </div>
-      <div className='flex h-full w-full flex-col items-center overflow-y-scroll'>
-        <Header leftIcon='back' title='계좌개설' />
-        <div className='flex flex-col pr-[25px] pl-[25px]'>
-          <div className='flex pt-[40px]'>
-            <Txt>약관동의</Txt>
-          </div>
-          <Accordion type='multiple'>
-            <div className='w-[325px]'>
-              <AccordionItem value='item-1'>
-                <AccordionTrigger className='border-primarycolor border-b'>
-                  <Txt className='text-[14px]'>
-                    비대면 계좌 개설 가입 동의서
-                    <Txt className='ml-1 text-[8px]' color='text-red'>
-                      (필수)
-                    </Txt>
-                  </Txt>
-                </AccordionTrigger>
-                <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-                  <AccountAgreement />
-                  <div className='flex items-center justify-end pr-[25px]'>
-                    <span className='m-2 text-[10px]'>
-                      이에 대한 내용을 모두 확인했습니다
-                    </span>
-                    <Checkbox
-                      id='baseAgree'
-                      checked={baseAgree}
-                      className='data-[state=checked]:bg-mainwhite'
-                      onCheckedChange={(checked) => {
-                        if (typeof checked === 'boolean') {
-                          setBaseAgree(checked);
-                        }
-                      }}
-                    />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
 
-              <AccordionItem value='item-2'>
-                <AccordionTrigger className='border-primarycolor border-b'>
-                  <Txt className='text-[14px]'>
-                    정기예금 상품 가입 동의서
-                    <Txt className='ml-1 text-[8px]' color='text-red'>
-                      (선택)
-                    </Txt>
-                  </Txt>
-                </AccordionTrigger>
-                <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-                  <DepositAgreement />
-                  <div className='flex items-center justify-end pr-[25px]'>
-                    <span className='m-2 text-[10px]'>
-                      이에 대한 내용을 모두 확인했습니다
-                    </span>
-                    <Checkbox
-                      id='depositAgree'
-                      checked={depositAgree}
-                      className='data-[state=checked]:bg-mainwhite'
-                      onCheckedChange={(checked) => {
-                        setDepositAgree(!!checked);
-                      }}
-                    />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value='item-3'>
-                <AccordionTrigger className='border-primarycolor border-b'>
-                  <Txt className='text-[14px]'>
-                    정기적금 가입 동의서
-                    <Txt className='ml-1 text-[8px]' color='text-red'>
-                      (선택)
-                    </Txt>
-                  </Txt>
-                </AccordionTrigger>
-                <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-                  <SavingsAgreement />
-                  <div className='flex items-center justify-end pr-[25px]'>
-                    <span className='m-2 text-[10px]'>
-                      이에 대한 내용을 모두 확인했습니다
-                    </span>
-                    <Checkbox
-                      id='savingsAgree'
-                      checked={savingsAgree}
-                      className='data-[state=checked]:bg-mainwhite'
-                      onCheckedChange={(checked) => {
-                        setSavingsAgree(!!checked);
-                      }}
-                    />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value='item-4'>
-                <AccordionTrigger className='border-primarycolor border-b'>
-                  <Txt className='text-[14px]'>
-                    대출 상품 가입 동의서
-                    <Txt className='ml-1 text-[8px]' color='text-red'>
-                      (선택)
-                    </Txt>
-                  </Txt>
-                </AccordionTrigger>
-                <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
-                  <LoanAgreement />
-                  <div className='flex items-center justify-end pr-[25px]'>
-                    <span className='m-2 text-[10px]'>
-                      이에 대한 내용을 모두 확인했습니다
-                    </span>
-                    <Checkbox
-                      id='loanAgree'
-                      checked={loanAgree}
-                      className='data-[state=checked]:bg-mainwhite'
-                      onCheckedChange={(checked) => {
-                        setLoanAgree(!!checked);
-                      }}
-                    />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </div>
-          </Accordion>
-        </div>
+      <div className='flex pt-[40px]'>
+        <Txt>약관동의</Txt>
       </div>
-      <div className='w-full px-[20px] pb-[40px]'>
-        <div className='flex justify-between gap-2'>
-          <Button
-            bgColor='bg-icon'
-            onClick={async () => {
-              const amount = Number(initialDeposit.replace(/,/g, ''));
-              const { plusBalanceBySessionUser } = await import(
-                '@/lib/actions/calBalance'
-              );
-              await plusBalanceBySessionUser(amount);
-
-              router.push('/');
-            }}
-            className='w-1/2'
-          >
-            홈으로
-          </Button>
-          <Button
-            onClick={async () => {
-              if (!baseAgree) {
-                showModal(true);
-                return;
-              }
-
-              const types: number[] = [];
-              if (depositAgree) types.push(1); // 예금
-              if (savingsAgree) types.push(2); // 적금
-              if (loanAgree) types.push(3); // 대출
-
-              const amount = Number(initialDeposit.replace(/,/g, ''));
-              const { plusBalanceBySessionUser } = await import(
-                '@/lib/actions/calBalance'
-              );
-              await plusBalanceBySessionUser(amount);
-
-              router.push(`./create-account?types=${types.join(',')}`);
-            }}
-            className='h-[48px] w-1/2 text-[16px]'
-          >
-            다음
-          </Button>
-        </div>
+      <div className='w-full'>
+        <Accordion type='multiple'>
+          {agreementTitle.map((item, index) => (
+            <AccordionItem value={String(index)} key={index}>
+              <AccordionTrigger className='border-primarycolor border-b'>
+                <div className='flex items-center gap-[10px]'>
+                  <Txt className='text-[14px]'>{item.label}</Txt>
+                  <Txt className='text-[8px]' color='text-red'>
+                    {item.optional}
+                  </Txt>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className='flex flex-col gap-4 pt-[16px]'>
+                {agreeComponent[index]}
+                <div className='flex items-center justify-end'>
+                  <span className='m-2 text-[10px]'>
+                    이에 대한 내용을 모두 확인했습니다
+                  </span>
+                  <Checkbox
+                    id={String(agreeArray[index].value)}
+                    checked={agreeArray[index].value}
+                    className='data-[state=checked]:bg-mainwhite'
+                    onCheckedChange={(checked) => {
+                      if (typeof checked === 'boolean') {
+                        agreeArray[index].fn(checked);
+                      }
+                    }}
+                  ></Checkbox>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
 
       {modal && (
         <AlertModal onClose={() => showModal(false)}>
-          <Txt align='text-center'>
+          <Txt align='text-center' size='text-[16px]' weight='font-[600]'>
             비대면 계좌 개설 약관에 동의하셔야
             <br />
             서비스를 이용하실 수 있습니다
           </Txt>
-          <Button className='mt-5' onClick={() => showModal(false)}>
+          <Button className='mt-5 py-[10px]' onClick={() => showModal(false)}>
             확인
           </Button>
         </AlertModal>
       )}
-    </div>
+    </Container>
   );
 }

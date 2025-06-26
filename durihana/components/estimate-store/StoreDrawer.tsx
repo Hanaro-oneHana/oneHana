@@ -57,6 +57,7 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
 
       const description = details.name;
 
+      //minusBalance 함수에서 transaction 테이블에도 기록해줌
       const result = await minusBalance(accountId, price, description);
       await addPartnerCalendarEvent(requestUser, details.id, '', '');
       // Storedrawer 는 가전가구, 예물예단이니까 결제 완료 되면 budgetPlan 의 state 가 3으로 변경

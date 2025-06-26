@@ -6,6 +6,9 @@ import './globals.css';
 export const metadata: Metadata = {
   title: '두리하나',
   description: '두 사람, 하나의 여정',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export const viewport: Viewport = {

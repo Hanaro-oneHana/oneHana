@@ -87,16 +87,12 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
         />
         <Search onSearch={handleSearch} />
       </div>
-      {category !== 4 && category !== 5 && (
+      {(category === 1 || category === 3) && (
         <div className='flex w-full flex-col pt-[20px]'>
           <Filtering
             selectedRegions={selectedRegions}
             setSelectedRegions={setSelectedRegions}
-            regions={
-              category === 1 || category === 2
-                ? domesticRegions
-                : foreignRegions
-            }
+            regions={category === 1 ? domesticRegions : foreignRegions}
           />
         </div>
       )}

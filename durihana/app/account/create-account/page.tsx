@@ -1,4 +1,4 @@
-import CreateAccount from '@/components/account/CreateAccount';
+import { CreateAccount } from '@/components/account';
 import { Txt } from '@/components/atoms';
 import { Suspense } from 'react';
 

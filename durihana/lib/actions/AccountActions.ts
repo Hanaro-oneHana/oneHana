@@ -1,6 +1,6 @@
 'use server';
 
-import { AccountType } from '@/components/account/AccountDetail';
+import { AccountType } from '@/types/Account';
 import prisma from '@/lib/db';
 import { Prisma } from '../generated/prisma';
 import { createAccountSchedules } from './AccountCalendarActions';
