@@ -9,7 +9,6 @@ import { socket } from '@/lib/socket-client';
 
 type Props = {
   userId: number;
-  mainAccount: MainAccount;
   subAccounts: SubAccount[];
   coupleBalance: number;
   coupleNames: string[];
@@ -17,7 +16,6 @@ type Props = {
 
 export default function AccountCard({
   userId,
-  mainAccount: initialMainAccount,
   subAccounts: initialSubAccounts,
   coupleBalance: initialCoupleBalance,
   coupleNames,
