@@ -248,10 +248,11 @@ export default function Signup() {
             color='text-mainblack'
             align='text-center'
             weight='font-[600]'
+            className='mb-[20px]'
           >
             회원가입이 완료되었습니다.
           </Txt>
-          <Button className='pt-[20px]' onClick={handleModalClose}>
+          <Button className='py-[10px]' onClick={handleModalClose}>
             초대코드 받으러가기
           </Button>
         </AlertModal>
