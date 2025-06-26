@@ -29,9 +29,10 @@ describe('getTypeAmounts ', () => {
       (prisma.partnerCalendar.findMany as any).mockResolvedValue([
         {
           PartnerService: {
+            content: '80000000',
             Partner: {
               PartnerCategory: {
-                type: 'Wedding',
+                type: '식장예약',
               },
             },
           },
@@ -39,8 +40,9 @@ describe('getTypeAmounts ', () => {
         {
           PartnerService: {
             Partner: {
+              content: '5000000',
               PartnerCategory: {
-                type: 'Photo',
+                type: '스튜디오예약',
               },
             },
           },
@@ -48,7 +50,7 @@ describe('getTypeAmounts ', () => {
       ]);
 
       const result = await getTypeAmounts(1);
-      expect(result.map(r => r.name)).toEqual(['Wedding', 'Photo']);
+      expect(result.map(r => r.name)).toEqual(['식장예약', '스튜디오예약']);
     });
 });
 
