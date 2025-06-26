@@ -1,6 +1,6 @@
 'use client';
 
-import { boolean } from 'zod';
+import { FormState, Stage } from '@/types/Account';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -8,17 +8,6 @@ import {
   createMultipleAccounts,
   getAllAccountsByUserId,
 } from '@/lib/actions/AccountActions';
-
-export type FormState = {
-  type: number;
-  amount: string;
-  period: number;
-  transferDay: number;
-  userAccount: string;
-  monthlyPayment?: string;
-};
-
-export type Stage = 'form' | 'review' | 'complete';
 
 export function useAccountCreation() {
   const router = useRouter();
@@ -101,10 +90,8 @@ export function useAccountCreation() {
         accountsData
       );
 
-      if (result.success) {
+      if (result.isSuccess) {
         router.push('/');
-      } else {
-        throw new Error('계좌 생성 실패');
       }
     } catch (error) {
       console.error('계좌 생성 실패:', error);

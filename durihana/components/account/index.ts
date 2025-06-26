@@ -12,3 +12,8 @@ export { default as LoanForm } from './forms/LoanForm';
 export { default as SavingsForm } from './forms/SavingsForm';
 export { default as CompleteStep } from './steps/CompleteStep';
 export { default as LoanReviewStep } from './steps/LoanReviewStep';
+export { default as AccountAgreement } from './agreements/AccountAgreement';
+export { default as DepositAgreement } from './agreements/DepositAgreement';
+export { default as LoanAgreement } from './agreements/LoanAgreement';
+export { default as SavingsAgreement } from './agreements/SavingsAgreement';
+export { default as CheckingAccountAgreement } from './agreements/CheckingAccountAgreement';

@@ -1,24 +1,10 @@
 'use client';
 
 import { useCalendar } from '@/hooks/useCalendar';
+import { CustomCalendarProps } from '@/types/Calendar';
 import { cn } from '@/lib/utils';
 import CalendarGrid from '../calendar/CalendarGrid';
 import CalendarHeader from '../calendar/CalendarHeader';
-
-type CustomCalendarProps = {
-  selectedDate?: Date;
-  onDateSelect?: (date: Date) => void;
-  className?: string;
-  blockedDates?: Date[];
-  currentMonth?: number;
-  currentYear?: number;
-  onMonthChange?: (month: number) => void;
-  onYearChange?: (year: number) => void;
-  financeScheduleDates?: Date[];
-  reservationScheduleDates?: Date[];
-  showScheduleDots?: boolean;
-  variant?: 'page' | 'drawer';
-};
 
 export default function CalendarComponent({
   selectedDate,
@@ -56,7 +42,7 @@ export default function CalendarComponent({
   const bgClass = variant === 'drawer' ? 'bg-mainwhite' : 'bg-background';
 
   return (
-    <div className={cn('w-full max-w-sm mx-auto', bgClass, className)}>
+    <div className={cn('mx-auto w-full max-w-sm', bgClass, className)}>
       <CalendarHeader
         variant={variant}
         currentMonth={currentMonth}

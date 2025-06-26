@@ -1,4 +1,4 @@
-import Txt from './Txt';
+import { Txt } from '../../atoms';
 
 export default function LoanAgreement() {
   return (
@@ -8,7 +8,7 @@ export default function LoanAgreement() {
           본인은 아래 내용을 충분히 이해하였으며, 비대면으로 계좌 개설을
           진행하는 데 동의합니다.
         </p>
-        <ol className='list-decimal pl-5 space-y-1'>
+        <ol className='list-decimal space-y-1 pl-5'>
           <li>본 계좌는 실명확인 및 본인 인증 절차를 거쳐 개설됩니다.</li>
           <li>
             개인정보 수집·이용, 전자적 방법에 의한 본인 확인 및 비대면

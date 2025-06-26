@@ -1,10 +1,10 @@
 'use client';
 
+import { CalendarDrawer } from '@/components/calendar';
 import { useState } from 'react';
 import { formatDisplayDate } from '@/lib/utils';
 import AlertModal from '../alert/AlertModal';
 import { Button, Txt } from '../atoms';
-import CalendarDrawer from '../calendar/CalendarDrawer';
 
 type Props = {
   partnerServiceId: number;
@@ -19,11 +19,6 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleReservationConfirm = (date: Date, time: string) => {
-    console.log('예약 정보:', {
-      partnerServiceId,
-      date,
-      time,
-    });
     // 실제 예약 처리 로직 추가
     setConfirmedInfo({ date, time });
     setShowSuccessModal(true);
@@ -40,7 +35,7 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
 
       {showSuccessModal && confirmedInfo && (
         <AlertModal onClose={() => setShowSuccessModal(false)}>
-          <div className='flex flex-col items-center text-center space-y-4'>
+          <div className='flex flex-col items-center space-y-4 text-center'>
             <Txt
               size='text-[18px]'
               weight='font-[600]'
@@ -62,7 +57,7 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
             </div>
             <Button
               onClick={() => setShowSuccessModal(false)}
-              className='w-full bg-primarycolor text-mainwhite mt-4'
+              className='bg-primarycolor text-mainwhite mt-4 w-full'
             >
               확인
             </Button>
