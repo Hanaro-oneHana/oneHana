@@ -9,6 +9,7 @@ import prisma from '../db';
 vi.mock('../db', () => ({
   default: {
     user: {
+      findUnique: vi.fn(),
       create: vi.fn(),
     },
   },
