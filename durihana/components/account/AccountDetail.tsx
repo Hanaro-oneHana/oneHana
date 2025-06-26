@@ -7,32 +7,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { AccountType, accountTypeLabelMap } from '@/types/Account';
+import {
+  Account,
+  AccountType,
+  accountTypeLabelMap,
+  Transaction,
+} from '@/types/Account';
 import Image from 'next/image';
 import { useState } from 'react';
 import { formatDateInAccountDetail } from '@/lib/utils';
-import AccountCardDetail from './AccountCardDetail';
-
-export type Account = {
-  id: number;
-  account: string;
-  balance: number;
-  type: AccountType;
-  expire_date: string | null;
-  transfer_date: string | null;
-  payment: number | null;
-  user_id: number;
-};
-
-export type Transaction = {
-  id: number;
-  date: string;
-  time: string;
-  description: string;
-  type: string;
-  amount: number;
-  balance: number;
-};
+import { AccountCardDetail } from '@/components/account';
 
 type Props = {
   account: Account;

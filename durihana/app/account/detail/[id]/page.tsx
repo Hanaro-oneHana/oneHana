@@ -1,6 +1,6 @@
-import AccountDetail, { Transaction } from '@/components/account/AccountDetail';
-import AccountDetailHeader from '@/components/account/AccountDetailHeader';
+import { AccountDetailHeader, AccountDetail } from '@/components/account';
 import Container from '@/components/containers/Container';
+import { Transaction } from '@/types/Account';
 import { use } from 'react';
 import {
   getAllAccountsByUserId,

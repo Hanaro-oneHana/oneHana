@@ -1,10 +1,10 @@
 'use client';
 
-import Txt from '@/components/atoms/Txt';
+import { Txt } from '@/components/atoms';
 import { accountTypeLabelMap, MainAccount, SubAccount } from '@/types/Account';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { socket } from '@/lib/socket-client';
 
 type Props = {
@@ -92,12 +92,14 @@ export default function AccountCard({
           className='text-navy'
         />
       </div>
-
-      <Txt weight='font-[600]'>{coupleNames.join(' ❤️ ')}</Txt>
+      <div className='flex w-full flex-row items-center justify-start gap-[1px]'>
+        <Txt weight='font-[600]'>{coupleNames[0]}</Txt>
+        <Image src='/asset/icons/love.svg' alt='love' width={18} height={18} />
+        <Txt weight='font-[600]'>{coupleNames[1]}</Txt>
+      </div>
       <Txt size='text-[24px]' weight='font-[600]' className='text-right'>
         {coupleBalance.toLocaleString()} 원
       </Txt>
-
       <div className='mt-3 flex flex-col gap-2'>
         {subAccounts.map((item) => (
           <div key={item.type} className='flex items-center justify-between'>
