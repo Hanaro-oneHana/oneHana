@@ -11,21 +11,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   domesticRegions,
-  electronicPriceOptions,
   foreignRegions,
-  honeyMoonPriceOptions,
   PriceOption,
-  sdmPriceOptions,
-  weddingGiftPriceOptions,
-  weddinghallPriceOptions,
 } from '@/constants/filtering';
+import { Store } from '@/types/Store';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { Store } from '@/lib/actions/StoreActions';
+import { getFilteringOptions } from '@/lib/utils';
 
 type Props = {
-  storeList?: Store[];
+  storeList: Store[];
   categoryId?: number;
 };
 
@@ -66,26 +62,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
 
   useEffect(() => {
     updateSearchParam(['category', 'search'], [category.toString(), '']);
-    switch (category) {
-      case 1:
-        setSortOptionList(weddinghallPriceOptions);
-        break;
-      case 2:
-        setSortOptionList(sdmPriceOptions);
-        break;
-      case 3:
-        setSortOptionList(honeyMoonPriceOptions);
-        break;
-      case 4:
-        setSortOptionList(electronicPriceOptions);
-        break;
-      case 5:
-        setSortOptionList(weddingGiftPriceOptions);
-        break;
-      default:
-        setSortOptionList([]);
-        break;
-    }
+    setSortOptionList(getFilteringOptions(category));
   }, [category]);
 
   useEffect(() => {
@@ -172,7 +149,7 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
       <div className='scrollbar-hide flex w-full flex-col items-center justify-start gap-[10px] overflow-y-auto px-[20px] py-[20px]'>
         {items.length === 0 ? (
           <Txt size='text-[14px]' className='text-icongray' align='text-center'>
-            해당되는 매장이 없습니다.
+            해당되는 상품이 없습니다.
           </Txt>
         ) : (
           items.map((item, index) => <StoreCard key={index} store={item} />)

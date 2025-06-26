@@ -1,8 +1,7 @@
 'use client';
 
 import { Txt, Search, Button } from '@/components/atoms';
-import ProgressBarButton from '@/components/estimate-store/ProgressBarButton';
-import StoreCard from '@/components/estimate-store/StoreCard';
+import { StoreCard, ProgressBarButton } from '@/components/estimate-store';
 import Filtering from '@/components/filtering/Filtering';
 import {
   DropdownMenu,
@@ -12,21 +11,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   domesticRegions,
-  electronicPriceOptions,
   foreignRegions,
-  honeyMoonPriceOptions,
   PriceOption,
-  sdmPriceOptions,
-  weddingGiftPriceOptions,
-  weddinghallPriceOptions,
 } from '@/constants/filtering';
+import { Store } from '@/types/Store';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { Store } from '@/lib/actions/StoreActions';
+import { getFilteringOptions } from '@/lib/utils';
 
 type Props = {
-  storeList?: Store[];
+  storeList: Store[];
   categoryId?: number;
 };
 
@@ -63,26 +58,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
 
   useEffect(() => {
     updateSearchParam(['category', 'search'], [category.toString(), '']);
-    switch (category) {
-      case 1:
-        setSortOptionList(weddinghallPriceOptions);
-        break;
-      case 2:
-        setSortOptionList(sdmPriceOptions);
-        break;
-      case 3:
-        setSortOptionList(honeyMoonPriceOptions);
-        break;
-      case 4:
-        setSortOptionList(electronicPriceOptions);
-        break;
-      case 5:
-        setSortOptionList(weddingGiftPriceOptions);
-        break;
-      default:
-        setSortOptionList([]);
-        break;
-    }
+    setSortOptionList(getFilteringOptions(category));
   }, [category]);
 
   const handleSearch = useCallback((query: string) => {
@@ -112,16 +88,12 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           />
           <Search onSearch={handleSearch} />
         </div>
-        {category !== 4 && category !== 5 && (
+        {(category === 1 || category === 3) && (
           <div className='flex w-full flex-col pt-[20px]'>
             <Filtering
               selectedRegions={selectedRegions}
               setSelectedRegions={setSelectedRegions}
-              regions={
-                category === 1 || category === 2
-                  ? domesticRegions
-                  : foreignRegions
-              }
+              regions={category === 1 ? domesticRegions : foreignRegions}
             />
           </div>
         )}
@@ -169,7 +141,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
           </DropdownMenu>
         </div>
       </div>
-      <div className='flex w-full flex-1 flex-col items-center justify-start gap-[10px] overflow-y-scroll px-[20px] pt-[20px]'>
+      <div className='scrollbar-hide flex w-full flex-1 flex-col items-center justify-start gap-[10px] overflow-y-scroll px-[20px] pt-[20px]'>
         {items.map((item, index) => (
           <StoreCard key={index} store={item} />
         ))}

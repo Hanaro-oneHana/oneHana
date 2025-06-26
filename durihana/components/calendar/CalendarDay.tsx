@@ -1,19 +1,8 @@
 'use client';
 
+import { CalendarDayProps } from '@/types/Calendar';
 import { cn } from '@/lib/utils';
 import Button from '../atoms/Button';
-
-type CalendarDayProps = {
-  date: Date;
-  isCurrentMonth: boolean;
-  isSelected: boolean;
-  isBlocked: boolean;
-  hasFinanceSchedule: boolean;
-  hasReservationSchedule: boolean;
-  showScheduleDots: boolean;
-  onDateSelect: (date: Date) => void;
-  variant?: 'page' | 'drawer';
-};
 
 export default function CalendarDay({
   date,
@@ -36,7 +25,7 @@ export default function CalendarDay({
         disabled={isBlocked}
         onClick={() => onDateSelect(date)}
         className={cn(
-          'h-[37px] w-[37px] flex items-center justify-center rounded-full text-[18px] font-[400] p-0',
+          'flex h-[37px] w-[37px] items-center justify-center rounded-full p-0 text-[18px] font-[400]',
           !isCurrentMonth && 'opacity-50',
           isBlocked ? disabledBg : isSelected ? selectedBg : normalBg
         )}
@@ -44,12 +33,12 @@ export default function CalendarDay({
         {date.getDate()}
       </Button>
       {showScheduleDots && (hasFinanceSchedule || hasReservationSchedule) && (
-        <div className='absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-0.5'>
+        <div className='absolute bottom-1 left-1/2 flex -translate-x-1/2 transform gap-0.5'>
           {hasReservationSchedule && (
-            <div className='w-1 h-1 bg-primarycolor rounded-full'></div>
+            <div className='bg-primarycolor h-1 w-1 rounded-full'></div>
           )}
           {hasFinanceSchedule && (
-            <div className='w-1 h-1 bg-red rounded-full'></div>
+            <div className='bg-red h-1 w-1 rounded-full'></div>
           )}
         </div>
       )}

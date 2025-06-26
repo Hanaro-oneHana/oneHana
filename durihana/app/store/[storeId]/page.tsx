@@ -1,6 +1,6 @@
 import { Header } from '@/components/atoms';
 import Container from '@/components/containers/Container';
-import StoreDetail from '@/components/estimate-store/StoreDetail';
+import { StoreDetail } from '@/components/estimate-store';
 import { use } from 'react';
 import { getStoreDetail } from '@/lib/actions/StoreDetailActions';
 

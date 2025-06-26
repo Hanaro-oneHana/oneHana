@@ -15,3 +15,9 @@ export const partners = [
   { label: '가구', img: '/asset/images/furniture-popular.png' },
   { label: '예물', img: '/asset/images/ring-popular.png' },
 ];
+
+export const modalMent = [
+  '모든 옵션을 선택해 주세요',
+  '웨딩버켓 담기완료!',
+  '결제완료!',
+];
