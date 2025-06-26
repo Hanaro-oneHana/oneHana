@@ -55,7 +55,7 @@ export default function Home() {
   const categoryData =
     categoryDataResult?.isSuccess && categoryDataResult.data
       ? categoryDataResult.data
-      : [{ category: '', value: 0 }];
+      : [];
 
   return (
     <Container
