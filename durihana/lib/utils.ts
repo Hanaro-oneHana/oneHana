@@ -45,6 +45,16 @@ export const calculateDday = (date: string) => {
   return dDay;
 };
 
+export function formatDateInAccountDetail(dateStr: string): string {
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+  const dayName = dayNames[date.getDay()];
+  return `${year}.${month}.${day} (${dayName})`;
+}
+
 export function formatKRWUnit(amount: number) {
   if (amount < 10000) {
     return `${Math.floor(amount)}원`;
