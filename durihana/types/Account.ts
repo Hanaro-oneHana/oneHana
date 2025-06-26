@@ -1,6 +1,8 @@
 import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react';
 
+export type AccountType = 0 | 1 | 2 | 3;
+
 export type SubAccount = {
   type: 1 | 2 | 3; // 1:예금, 2:적금, 3:대출
   balance: number;
@@ -11,6 +13,14 @@ export type MainAccount = {
   account: string;
   balance: number;
 };
+
+export const accountTypeLabelMap = {
+  0: '두리함께입출금',
+  1: '두리함께예금',
+  2: '두리함께적금',
+  3: '두리함께대출',
+};
+
 export type DepositFormProps = {
   amount: string;
   period: number;

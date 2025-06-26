@@ -1,10 +1,10 @@
 'use client';
 
 import Txt from '@/components/atoms/Txt';
-import { MainAccount, SubAccount } from '@/types/Account';
+import { accountTypeLabelMap, MainAccount, SubAccount } from '@/types/Account';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { socket } from '@/lib/socket-client';
 
 type Props = {
@@ -12,14 +12,7 @@ type Props = {
   mainAccount: MainAccount;
   subAccounts: SubAccount[];
   coupleBalance: number;
-};
-
-// type에 따른 통장 이름 매핑
-export const accountTypeLabelMap = {
-  0: '두리함께입출금',
-  1: '두리함께예금',
-  2: '두리함께적금',
-  3: '두리함께대출',
+  coupleNames: string[];
 };
 
 export default function AccountCard({
@@ -27,6 +20,7 @@ export default function AccountCard({
   mainAccount: initialMainAccount,
   subAccounts: initialSubAccounts,
   coupleBalance: initialCoupleBalance,
+  coupleNames,
 }: Props) {
   const router = useRouter();
   const [mainAccount, setMainAccount] = useState(initialMainAccount);
@@ -86,7 +80,7 @@ export default function AccountCard({
 
   return (
     <div
-      className='bg-lightmint border-linegray relative flex w-full flex-col rounded-[10px] border p-6'
+      className='bg-lightmint border-linegray relative flex w-full cursor-pointer flex-col rounded-[10px] border p-6'
       onClick={onCardClick}
     >
       <div className='absolute right-5'>
@@ -99,15 +93,10 @@ export default function AccountCard({
         />
       </div>
 
-      <div>
-        <Txt weight='font-[600]'>{accountTypeLabelMap[mainAccount.type]}</Txt>
-      </div>
-
-      <div className='text-right'>
-        <Txt size='text-[24px]' weight='font-[600]'>
-          {coupleBalance.toLocaleString()} 원
-        </Txt>
-      </div>
+      <Txt weight='font-[600]'>{coupleNames.join(' ❤️ ')}</Txt>
+      <Txt size='text-[24px]' weight='font-[600]' className='text-right'>
+        {coupleBalance.toLocaleString()} 원
+      </Txt>
 
       <div className='mt-3 flex flex-col gap-2'>
         {subAccounts.map((item) => (
