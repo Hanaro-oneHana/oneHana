@@ -1,22 +1,21 @@
-import { AccountCard } from '@/components/account';
-import { AssetOverview } from '@/components/asset';
-import { BottomNavigation, Header } from '@/components/atoms';
-import Container from '@/components/containers/Container';
-import { MainAccount, SubAccount } from '@/types/Account';
-import { use } from 'react';
-import {
-  getAccountsByUserId,
-  getCoupleTotalBalance,
-} from '@/lib/actions/AccountActions';
-import {
-  getBucketTotalAmount,
-  getCategoryData,
-} from '@/lib/actions/AssetActions';
-import { auth } from '@/lib/auth';
+import { AccountCard } from "@/components/account";
+import { AssetOverview } from "@/components/asset";
+import { BottomNavigation, Header } from "@/components/atoms";
+import Container from "@/components/containers/Container";
+import { getAccountsByUserId, getCoupleTotalBalance } from "@/lib/actions/AccountActions";
+import { getBucketTotalAmount, getCategoryData } from "@/lib/actions/AssetActions";
+import { auth } from "@/lib/auth";
+import { MainAccount, SubAccount } from "@/types/Account";
+import { use } from "react";
+
 
 export default function Asset() {
   const session = use(auth());
   const userId = Number(session?.user?.id);
+
+  const mainUserId = session?.user?.isMain
+    ? Number(session.user.id)
+    : Number(session?.user?.partnerId);
 
   const accounts = use(getAccountsByUserId(userId));
   const main = accounts.data.find((acc) => acc.type === 0)!;
@@ -35,10 +34,9 @@ export default function Asset() {
 
   const coupleBalance = use(getCoupleTotalBalance(userId));
 
-  const data = use(getCategoryData(userId));
-  console.log("🚀 ~ Asset ~ data:", data)
+  const data = use(getCategoryData(mainUserId));
 
-  const total = use(getBucketTotalAmount(userId));
+  const total = use(getBucketTotalAmount(mainUserId));
 
   return (
     <Container
