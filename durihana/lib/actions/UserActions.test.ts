@@ -1,5 +1,5 @@
 import { getInterestsByUserId, getUserInfo } from './UserActions';
-import { getDepositInterestRate, getLoanInterestRate, getSavingsInterestRate} from './InterestActions';
+import { getDepositInterestRate, getLoanInterestRate} from './InterestActions';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import prisma from '@/lib/db';
 
