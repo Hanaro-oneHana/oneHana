@@ -33,4 +33,14 @@ describe('cal depositInterestRate', () => {
     expect(result).toBe(2.0);
   })
 
+  it('change rate by step', async () => {
+    mockCount.mockResolvedValue(2);
+    mockFindFirst.mockResolvedValue({where : {step:5}});
+    mockFindUnique.mockResolvedValue({ rate: new Decimal(4.0) })
+
+    const result = await getDepositInterestRate(0);
+    expect(result).toBe(4.0);
+    expect(mockFindUnique).toHaveBeenCalledWith({ where: { step: 2 } });
+  })
+
 });
