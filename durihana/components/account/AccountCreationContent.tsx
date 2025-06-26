@@ -1,6 +1,6 @@
 'use client';
 
-import type { FormState, Stage } from '@/hooks/useAccountCreation';
+import { FormState, Stage } from '@/types/Account';
 import AccountFormRenderer from './AccountFormRenderer';
 import CompleteStep from './steps/CompleteStep';
 import LoanReviewStep from './steps/LoanReviewStep';
