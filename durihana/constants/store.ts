@@ -21,3 +21,26 @@ export const modalMent = [
   '웨딩버켓 담기완료!',
   '결제완료!',
 ];
+
+export const agreementTitle = [
+  {
+    label: '비대면 계좌 개설 가입 동의서',
+    optional: '(필수)',
+    id: 'baseAgree',
+  },
+  {
+    label: '정기예금 가입 동의서',
+    optional: '(선택)',
+    id: 'depositAgree',
+  },
+  {
+    label: '정기적금 가입 동의서',
+    optional: '(선택)',
+    id: 'savingsAgree',
+  },
+  {
+    label: '대출 상품 가입 동의서',
+    optional: '(선택)',
+    id: 'loanAgree',
+  },
+];
