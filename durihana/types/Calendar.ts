@@ -79,3 +79,17 @@ export type CustomCalendarProps = {
   showScheduleDots?: boolean;
   variant?: 'page' | 'drawer';
 };
+
+export type UseCalendarProps = {
+  selectedDate?: Date;
+  currentMonth?: number;
+  currentYear?: number;
+  onMonthChange?: (month: number) => void;
+  onYearChange?: (year: number) => void;
+  onDateSelect?: (date: Date) => void;
+};
+
+export type UseCalendarDrawerProps = {
+  partnerServiceId: number;
+  viewOnly?: boolean;
+};

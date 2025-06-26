@@ -19,11 +19,6 @@ export default function ReservationComponent({ partnerServiceId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleReservationConfirm = (date: Date, time: string) => {
-    console.log('예약 정보:', {
-      partnerServiceId,
-      date,
-      time,
-    });
     // 실제 예약 처리 로직 추가
     setConfirmedInfo({ date, time });
     setShowSuccessModal(true);

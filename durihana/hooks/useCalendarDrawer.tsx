@@ -1,16 +1,12 @@
 'use client';
 
 import { TIMES } from '@/constants/calendar';
+import { UseCalendarDrawerProps } from '@/types/Calendar';
 import { useState, useEffect } from 'react';
 import {
   getReservedTimes,
   getFullyBookedDates,
 } from '@/lib/actions/ReservationActions';
-
-type UseCalendarDrawerProps = {
-  partnerServiceId: number;
-  viewOnly?: boolean;
-};
 
 export function useCalendarDrawer({
   partnerServiceId,
@@ -53,7 +49,6 @@ export function useCalendarDrawer({
       const mm = String(date.getMonth() + 1).padStart(2, '0');
       const dd = String(date.getDate()).padStart(2, '0');
       const dateStr = `${yyyy}-${mm}-${dd}`; // 'YYYY-MM-DD'
-      console.log('🚀 @@@@@@@@@@@@@@@@ ~ dateStr:', dateStr);
 
       const reserved = await getReservedTimes(partnerServiceId, dateStr);
       setReservedTimes(reserved);

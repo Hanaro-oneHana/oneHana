@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react';
 
 export type SubAccount = {
@@ -46,4 +47,26 @@ export type SavingsFormProps = {
   onAmountChange: (value: string) => void; // 총액 변경
   onPeriodChange: (period: number) => void; // 개월 수 변경
   onTransferDayChange: (day: number) => void; // 납입일 변경
+};
+
+export type FormState = {
+  type: number;
+  amount: string;
+  period: number;
+  transferDay: number;
+  userAccount: string;
+  monthlyPayment?: string;
+};
+
+export type Stage = 'form' | 'review' | 'complete';
+
+export type NavigationProps = {
+  currentStage: Stage;
+  setCurrentStage: (stage: Stage) => void;
+  step: number;
+  setStep: (step: number) => void;
+  types: number[];
+  formStatesLength: number;
+  createAccounts: () => Promise<void>;
+  router: ReturnType<typeof useRouter>;
 };

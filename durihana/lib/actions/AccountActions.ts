@@ -250,13 +250,12 @@ export const createMultipleAccounts = async (
     }
 
     return {
-      success: true,
+      isSuccess: true,
       accounts: result.accounts,
       totalSchedules: result.totalSchedules,
     };
   } catch (error) {
-    console.error('Failed to create multiple accounts:', error);
-    throw error;
+    return { isSuccess: false, data: [] };
   }
 };
 

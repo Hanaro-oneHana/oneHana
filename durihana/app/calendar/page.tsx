@@ -13,7 +13,7 @@ export default function Calendar() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      processTodayTransfers(userId).catch(console.error);
+      processTodayTransfers(userId);
     }
   }, [status, userId]);
 

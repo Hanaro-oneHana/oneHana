@@ -1,18 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import type { Stage } from './useAccountCreation';
-
-type NavigationProps = {
-  currentStage: Stage;
-  setCurrentStage: (stage: Stage) => void;
-  step: number;
-  setStep: (step: number) => void;
-  types: number[];
-  formStatesLength: number;
-  createAccounts: () => Promise<void>;
-  router: ReturnType<typeof useRouter>;
-};
+import { NavigationProps } from '@/types/Account';
 
 export function useAccountNavigation({
   currentStage,

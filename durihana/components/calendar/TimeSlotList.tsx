@@ -25,9 +25,6 @@ export default function TimeSlotList({
         <div className='flex gap-[9px]'>
           {times.map((time) => {
             const isReserved = reservedTimes.includes(time);
-            const isAvailable = availableTimes.includes(time);
-            console.log('🚀 ~ {times.map ~ isAvailable:', isAvailable);
-
             if (viewOnly) {
               // 조회 모드: Txt로 표시, 예약된 시간은 흐리게
               return (
