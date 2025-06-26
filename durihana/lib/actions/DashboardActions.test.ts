@@ -25,10 +25,10 @@ describe('DashboardActions', () => {
     });
 
     it('should return marriage_date if user is found', async () => {
-      (prisma.user.findUnique as any).mockResolvedValue({ marriage_date: '2025-05-10' });
+      (prisma.user.findUnique as any).mockResolvedValue({ marriage_date: '2027-05-10' });
 
       const result = await getMarriageDate(1);
-      expect(result).toBe('2025-05-10');
+      expect(result).toBe('2027-05-10');
     });
 
     it('should return empty string if user is not found', async () => {
@@ -58,7 +58,7 @@ describe('DashboardActions', () => {
           PartnerService: {
             Partner: {
               PartnerCategory: {
-                type: 'Wedding',
+                type: '식장예약',
               },
             },
           },
@@ -67,7 +67,7 @@ describe('DashboardActions', () => {
           PartnerService: {
             Partner: {
               PartnerCategory: {
-                type: 'Photo',
+                type: '스튜디오예약',
               },
             },
           },
@@ -75,7 +75,7 @@ describe('DashboardActions', () => {
       ]);
 
       const result = await getCategoriesByUserId(1);
-      expect(result).toEqual(['Wedding', 'Photo']);
+      expect(result).toEqual(['식장예약', '스튜디오예약']);
     });
   });
 });
