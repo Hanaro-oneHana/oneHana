@@ -51,7 +51,6 @@ export async function plusBalance(
         description: description ?? '입금',
       },
     });
-
     // 3. 커플 총 잔액 조회
     const coupleBalance = await getCoupleTotalBalance(user.id);
 
@@ -66,7 +65,7 @@ export async function plusBalance(
           accountId: updated.id,
           newBalance: updated.balance,
           accountType: updated.type,
-          coupleBalance,
+          coupleBalance: coupleBalance.data,
         });
       }
     }
@@ -102,7 +101,6 @@ export async function minusBalance(
         },
       },
     });
-
     const user = updated.User;
 
     // 2. 거래 내역 생성
@@ -137,7 +135,7 @@ export async function minusBalance(
           accountId: updated.id,
           newBalance: updated.balance,
           accountType: updated.type,
-          coupleBalance,
+          coupleBalance: coupleBalance.data,
         });
       }
     }

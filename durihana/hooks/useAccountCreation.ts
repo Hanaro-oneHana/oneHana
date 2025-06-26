@@ -102,7 +102,7 @@ export function useAccountCreation() {
       );
 
       if (result.success) {
-        router.push('/calendar');
+        router.push('/');
       } else {
         throw new Error('계좌 생성 실패');
       }
