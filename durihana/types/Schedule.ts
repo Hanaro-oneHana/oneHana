@@ -9,6 +9,18 @@ export type Schedule = {
   amount?: number; // Account의 payment 필드에서 가져올 금액
 };
 
+export type ScheduleCardProps = {
+  schedule: Schedule;
+  keyPrefix: string;
+};
+
+export type ScheduleListProps = {
+  loading: boolean;
+  selectedDate: Date;
+  reservationSchedules: Schedule[];
+  financeSchedules: Schedule[];
+};
+
 export type ScheduleProps = {
   userId: number;
 };

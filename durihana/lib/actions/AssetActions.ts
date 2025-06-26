@@ -1,9 +1,13 @@
 'use server';
 
+import { CategoryData } from '@/types/Asset';
 import prisma from '../db';
 
+const SPECIAL_CATEGORIES = ['예식장', '스드메', '신혼여행'];
+const NORMAL_CARTEGORIES = ['가전·가구', '예물·예단'];
+
 // 웨딩 관련 지출 내역 가져오기
-export const getTypeAmounts = async (userId: number) => {
+export const getCategoryData = async (userId: number) => {
   const calendars = await prisma.partnerCalendar.findMany({
     where: { user_id: userId },
     select: {
@@ -24,20 +28,15 @@ export const getTypeAmounts = async (userId: number) => {
     },
   });
 
-  // 웨딩 카테고리별로 지출한 금액 리턴
-  return calendars.map((calendar) => {
-    const service = calendar.PartnerService;
-    const categoryType = service.Partner.PartnerCategory.type;
-    const content = service.content;
+  const rawData = calendars.map((calendar) => ({
+    name: calendar.PartnerService.Partner.PartnerCategory.type,
+    value: extractPrice(calendar.PartnerService.content)
+  }))
 
-    return {
-      name: categoryType,
-      value: extractPrice(content),
-    };
-  });
+  return aggregateByCategory(rawData);
 };
 
-// 웨딩 버켓 총 금액 가져오기 (항목별로 가장 비싼 것들만 집계)
+// 웨딩 버켓 총 금액 가져오기
 export const getBucketTotalAmount = async (userId: number) => {
   const budgetplans = await prisma.budgetPlan.findMany({
     where: { user_id: userId },
@@ -47,7 +46,11 @@ export const getBucketTotalAmount = async (userId: number) => {
           content: true,
           Partner: {
             select: {
-              partner_category_id: true,
+              PartnerCategory: {
+                select: {
+                  type: true
+                }
+              }
             },
           },
         },
@@ -55,26 +58,12 @@ export const getBucketTotalAmount = async (userId: number) => {
     },
   });
 
-  // 웨딩 카테고리별로 가장 비싼 가격만 Map에 저장
-  const maxAmounts = budgetplans.reduce((acc, budgetplan) => {
-    const service = budgetplan.PartnerService;
-    const categoryId = service.Partner.partner_category_id;
-    const content = service.content;
+  const rawData = budgetplans.map((budgetplan) =>({
+    name: budgetplan.PartnerService.Partner.PartnerCategory.type,
+    value: extractPrice(budgetplan.PartnerService.content)
+  }))
 
-    const price = extractPrice(content);
-    const currentMax = acc.get(categoryId) ?? 0;
-
-    if (price > currentMax) {
-      acc.set(categoryId, price);
-    }
-
-    return acc;
-  }, new Map<number, number>());
-
-  const result = Array.from(maxAmounts.values()).reduce(
-    (acc, val) => acc + val,
-    0
-  );
+  const result = Array.from(aggregateByCategory(rawData).values()).reduce((sum, {value}) => sum + value, 0)
 
   return result;
 };
@@ -89,4 +78,25 @@ function extractPrice(content: unknown) {
   }
 
   return 0;
+}
+
+// 예식장 스드메 신혼여행은 비싼 것만 집계, 가전가구 예물예단은 합산 금액으로 정제
+function aggregateByCategory(rawData: CategoryData[]) {
+  const amountMap = new Map<string, number>();
+
+  rawData.forEach(({name, value}) => {
+    const current = amountMap.get(name) ?? 0;
+
+    if (SPECIAL_CATEGORIES.includes(name)) {
+      // 최고 금액
+      amountMap.set(name, Math.max(current, value))
+    } else if (NORMAL_CARTEGORIES.includes(name)) {
+      // 합산
+      amountMap.set(name, current + value); 
+    } else {
+      // isSuccess: false
+    }
+  })
+
+  return Array.from(amountMap).map(([name, value]) => ({name, value}));
 }

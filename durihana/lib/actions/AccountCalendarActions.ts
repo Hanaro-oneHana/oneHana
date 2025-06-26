@@ -17,7 +17,7 @@ export const createAccountSchedules = async (
     });
 
     if (!account) {
-      throw new Error('Account not found');
+      return { isSuccess: false, data: [] };
     }
 
     const schedules: Array<{
@@ -116,13 +116,9 @@ export const createAccountSchedules = async (
       });
     }
 
-    console.log(
-      `Created ${schedules.length} schedules for account ${accountId}`
-    );
-    return { success: true, count: schedules.length };
+    return { isSuccess: true, count: schedules.length };
   } catch (error) {
-    console.error('Failed to create account schedules:', error);
-    throw error;
+    return { isSuccess: false, data: [] };
   }
 };
 
@@ -145,11 +141,9 @@ export const deleteAccountSchedules = async (accountId: number) => {
       },
     });
 
-    console.log(`Deleted ${result.count} schedules for account ${accountId}`);
-    return { success: true, count: result.count };
+    return { isSuccess: true, count: result.count };
   } catch (error) {
-    console.error('Failed to delete account schedules:', error);
-    throw error;
+    return { isSuccess: false, data: [] };
   }
 };
 
@@ -164,12 +158,13 @@ export const createAllAccountSchedules = async (userId: number) => {
 
     for (const account of accounts) {
       const result = await createAccountSchedules(account.id);
-      totalCount += result.count;
+      if (result.count) {
+        totalCount += result.count;
+      }
     }
 
-    return { success: true, count: totalCount };
+    return { isSuccess: true, count: totalCount };
   } catch (error) {
-    console.error('Failed to create all account schedules:', error);
-    throw error;
+    return { isSuccess: false, data: [] };
   }
 };

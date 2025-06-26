@@ -1,6 +1,6 @@
 'use client';
 
-import Txt from '@/components/atoms/Txt';
+import { Txt } from '@/components/atoms';
 import { categories } from '@/constants/store';
 import Image from 'next/image';
 import { PropsWithChildren, useEffect } from 'react';
@@ -10,18 +10,16 @@ type Props = {
   selectedItem: number;
   setSelectedItem: (id: number) => void;
   progress: boolean;
-  onClick?: () => void;
 };
 
 export default function ProgressBarButton({
   selectedItem,
   setSelectedItem,
   progress,
-  onClick,
 }: Props) {
   useEffect(() => {
     setSelectedItem(selectedItem);
-  }, [selectedItem, setSelectedItem]);
+  }, [selectedItem]);
 
   return (
     <div className='flex w-full items-center justify-center gap-[8px]'>
@@ -35,9 +33,6 @@ export default function ProgressBarButton({
               selected={item.id === selectedItem}
               onClick={() => {
                 setSelectedItem(item.id);
-                if (onClick) {
-                  onClick();
-                }
               }}
             >
               <Image

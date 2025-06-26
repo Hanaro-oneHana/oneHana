@@ -1,3 +1,10 @@
+import {
+  electronicPriceOptions,
+  honeyMoonPriceOptions,
+  sdmPriceOptions,
+  weddingGiftPriceOptions,
+  weddinghallPriceOptions,
+} from '@/constants/filtering';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -33,9 +40,7 @@ export const calculateDday = (date: string) => {
   today.setHours(0, 0, 0, 0);
 
   const diff = targetDate.getTime() - today.getTime(); // 밀리초 차이
-  // console.log('🚀 ~ calculateDday ~ diff:', diff);
   const dDay = Math.floor(diff / (1000 * 60 * 60 * 24)); // 일 수로 변환
-  // console.log('🚀 ~ calculateDday ~ dDay:', dDay);
 
   return dDay;
 };
@@ -67,4 +72,21 @@ export function formatKRWUnit(amount: number) {
   }
 
   return parts.join(' ');
+}
+
+export function getFilteringOptions(category: number) {
+  switch (category) {
+    case 1:
+      return weddinghallPriceOptions;
+    case 2:
+      return sdmPriceOptions;
+    case 3:
+      return honeyMoonPriceOptions;
+    case 4:
+      return electronicPriceOptions;
+    case 5:
+      return weddingGiftPriceOptions;
+    default:
+      return [];
+  }
 }

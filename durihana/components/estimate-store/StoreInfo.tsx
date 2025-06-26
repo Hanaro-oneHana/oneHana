@@ -1,4 +1,4 @@
-import { Txt } from '../atoms';
+import { Txt } from '@/components/atoms';
 
 const InfoRow = ({
   label,
@@ -7,7 +7,7 @@ const InfoRow = ({
   label: string;
   value: string | number;
 }) => (
-  <div className='flex flex-row justify-between items-center'>
+  <div className='flex flex-row items-center justify-between'>
     <Txt size='text-[15px]' weight='font-[500]'>
       {label}
     </Txt>
@@ -19,7 +19,7 @@ const InfoRow = ({
 
 export default function StoreInfo({ info }: { info: Record<string, string> }) {
   return (
-    <div className='flex flex-col w-full gap-[20px] px-[20px] py-[10px]'>
+    <div className='flex w-full flex-col gap-[20px] px-[20px] py-[10px]'>
       {info &&
         Object.keys(info).length > 0 &&
         Object.entries(info).map(([key, value]) => (

@@ -1,18 +1,6 @@
-import CalendarDay from './CalendarDay';
-
-type CalendarGridProps = {
-  calendarDays: Array<{ date: Date; isCurrentMonth: boolean }>;
-  selectedDate: Date;
-  blockedDates: Date[];
-  financeScheduleDates: Date[];
-  reservationScheduleDates: Date[];
-  showScheduleDots: boolean;
-  onDateSelect: (date: Date) => void;
-  isSameDay: (d1: Date, d2: Date) => boolean;
-  variant?: 'page' | 'drawer';
-};
-
-const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+import { CalendarDay } from '@/components/calendar';
+import { weekDays } from '@/constants/calendar';
+import { CalendarGridProps } from '@/types/Calendar';
 
 export default function CalendarGrid({
   calendarDays,
@@ -45,9 +33,9 @@ export default function CalendarGrid({
   return (
     <>
       {/* 요일 */}
-      <div className='grid grid-cols-7 mb-2'>
+      <div className='mb-2 grid grid-cols-7'>
         {weekDays.map((wd) => (
-          <div key={wd} className='text-center text-[12px] weight-[500] py-2'>
+          <div key={wd} className='weight-[500] py-2 text-center text-[12px]'>
             {wd}
           </div>
         ))}

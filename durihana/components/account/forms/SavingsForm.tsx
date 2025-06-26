@@ -7,19 +7,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
+import { SavingsFormProps } from '@/types/Account';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import ExpandingInput from './ExpandingInput';
-
-type SavingsFormProps = {
-  amount: string; // 총 적금액
-  period: number; // 개월 수
-  transferDay: number; // 매월 납입일
-  userAccount: string; // 입금계좌 정보
-  onAmountChange: (value: string) => void; // 총액 변경
-  onPeriodChange: (period: number) => void; // 개월 수 변경
-  onTransferDayChange: (day: number) => void; // 납입일 변경
-};
 
 export default function SavingsForm({
   amount,
@@ -36,17 +27,17 @@ export default function SavingsForm({
 
   return (
     <div className='flex-1 px-6 py-8'>
-      <Txt size='text-[22px]' className='block text-mainblack mb-[40px]'>
+      <Txt size='text-[22px]' className='text-mainblack mb-[40px] block'>
         두리하나적금통장
       </Txt>
 
       <div className='space-y-6'>
         {/* 1. 총적금액 입력 */}
         <div>
-          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
+          <Txt size='text-[16px]' className='text-mainblack mb-[20px] block'>
             얼마를 저축할까요?
           </Txt>
-          <div className='flex items-end gap-2 mb-[40px]'>
+          <div className='mb-[40px] flex items-end gap-2'>
             <ExpandingInput
               value={
                 amount ? Number(amount.replace(/,/g, '')).toLocaleString() : ''
@@ -62,14 +53,14 @@ export default function SavingsForm({
                 onAmountChange?.(rawValue);
               }}
               placeholder='최소 10만원'
-              className='text-[14px] font-[400] leading-[24px] text-icongray border-b-[0.5px] border-mainblack bg-transparent px-0 pb-0 flex-none'
+              className='text-icongray border-mainblack flex-none border-b-[0.5px] bg-transparent px-0 pb-0 text-[14px] leading-[24px] font-[400]'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
               을
             </Txt>
 
             <DropdownMenu open={isPeriodOpen} onOpenChange={setIsPeriodOpen}>
-              <DropdownMenuTrigger className='min-w-[60px] flex items-center gap-1 text-[14px] font-[400] leading-[24px] text-primarycolor bg-transparent border-b-[0.5px] border-mainblack pb-1'>
+              <DropdownMenuTrigger className='text-primarycolor border-mainblack flex min-w-[60px] items-center gap-1 border-b-[0.5px] bg-transparent pb-1 text-[14px] leading-[24px] font-[400]'>
                 {period}개월
                 <ChevronDown
                   className={`h-4 w-4 transition-transform duration-200 ${
@@ -99,20 +90,18 @@ export default function SavingsForm({
         </div>
 
         <div>
-          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
+          <Txt size='text-[16px]' className='text-mainblack mb-[20px] block'>
             정기적으로 저축합니다
           </Txt>
         </div>
         {/* 2. 월납입액 입력 */}
-        <div className='flex items-end gap-2 mb-[20px]'>
-          <div className='flex items-end gap-2 mb-[20px]'>
+        <div className='mb-[20px] flex items-end gap-2'>
+          <div className='mb-[20px] flex items-end gap-2'>
             <ExpandingInput
               value={rawAmount}
               readOnly={true}
               placeholder={`위에서 설정한 금액`}
-              className='text-[14px] font-[400] leading-[24px] text-primarycolor
-                         border-b-[0.5px] border-mainblack bg-transparent
-                         px-0 pb-0 flex-none'
+              className='text-primarycolor border-mainblack flex-none border-b-[0.5px] bg-transparent px-0 pb-0 text-[14px] leading-[24px] font-[400]'
             />
             <Txt size='text-[12px]' className='text-mainblack'>
               을
@@ -126,12 +115,7 @@ export default function SavingsForm({
               open={isTransferOpen}
               onOpenChange={setIsTransferOpen}
             >
-              <DropdownMenuTrigger
-                className='min-w-[40px] flex items-center gap-1
-                                            text-[14px] font-[400] leading-[24px]
-                                            text-primarycolor bg-transparent
-                                            border-b-[0.5px] border-mainblack pb-1'
-              >
+              <DropdownMenuTrigger className='text-primarycolor border-mainblack flex min-w-[40px] items-center gap-1 border-b-[0.5px] bg-transparent pb-1 text-[14px] leading-[24px] font-[400]'>
                 {transferDay}일
                 <ChevronDown
                   className={`h-4 w-4 transition-transform duration-200 ${
@@ -161,10 +145,10 @@ export default function SavingsForm({
 
         {/* 4. 만기 안내 */}
         <div>
-          <Txt size='text-[16px]' className='block text-mainblack mb-[20px]'>
+          <Txt size='text-[16px]' className='text-mainblack mb-[20px] block'>
             만기 시
           </Txt>
-          <div className='flex items-baseline gap-2 mb-[43px]'>
+          <div className='mb-[43px] flex items-baseline gap-2'>
             <Txt size='text-[14px]' className='text-primarycolor'>
               자동 해지
             </Txt>
@@ -182,7 +166,7 @@ export default function SavingsForm({
 
         {/* 5. 입금 계좌 */}
         <div>
-          <Txt size='text-[16px]' className='block text-mainblack'>
+          <Txt size='text-[16px]' className='text-mainblack block'>
             아래 계좌로 입금됩니다
           </Txt>
           <div className='space-y-1'>
