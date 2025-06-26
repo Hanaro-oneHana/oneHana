@@ -2,13 +2,13 @@
 
 import AlertModal from '@/components/alert/AlertModal';
 import { Button, Header, InputComponent, Txt } from '@/components/atoms';
+import Container from '@/components/containers/Container';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { ChangeEvent, FormEvent, use, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { signInValidateAction, signUpAction } from '@/lib/actions/AuthActions';
-import Container from '@/components/containers/Container';
 
-export default function Singup() {
+export default function Signup() {
   const title = 'text-[16px] font-[500]';
   const inputSet =
     'text-[14px] font-[600] block text-primarycolor placeholder:text-buttongray ';
@@ -69,7 +69,7 @@ export default function Singup() {
     setMarriageDateError('');
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -79,13 +79,13 @@ export default function Singup() {
       return;
     }
     try {
-      const result = use(signUpAction(
+      const result = await signUpAction(
         formData.name,
         formData.email,
         formData.password,
         formData.phone,
         formData.marriageDate
-      ));
+      );
 
       if (!result.isSuccess) {
         handleErrorReset();
@@ -104,20 +104,21 @@ export default function Singup() {
         }
         return;
       } else {
-        const signInResult = use(signInValidateAction(
+        const signInResult = await signInValidateAction(
           formData.email,
           formData.password
-        ));
+        );
+
         if (signInResult.isSuccess && signInResult.data) {
           // 로그인 성공 시 NextAuth로 로그인 처리
-          use(signIn('credentials', {
+          await signIn('credentials', {
             redirect: false,
             id: result.data?.id || '',
             email: signInResult.data.email,
             password: formData.password,
             name: signInResult.data?.name || '',
             partnerCode: signInResult.data?.mate_code || 0,
-          }));
+          });
           setSuccessModal(true);
         }
       }
@@ -143,8 +144,11 @@ export default function Singup() {
   };
 
   return (
-    <Container header={<Header title='회원가입' leftIcon='back'/>} className='pt-[80px]'>
-      <form onSubmit={handleSubmit} className='flex flex-col gap-[15px]'>
+    <Container
+      header={<Header title='회원가입' leftIcon='back' />}
+      className='pt-[80px]'
+    >
+      <form onSubmit={handleSubmit} className='flex w-full flex-col gap-[15px]'>
         <div className={divClass}>
           <Txt className={title}>이름</Txt>
           <InputComponent
@@ -231,11 +235,7 @@ export default function Singup() {
         </div>
 
         <div>
-          <Button
-            type='submit'
-            className='mt-[40px]'
-            disabled={isLoading}
-          >
+          <Button type='submit' className='mt-[40px]' disabled={isLoading}>
             {isLoading ? '가입중' : '완료'}
           </Button>
         </div>
@@ -246,9 +246,7 @@ export default function Singup() {
           <Txt size='text-[16px]' className='text-mainblack text-center'>
             회원가입이 완료되었습니다.
           </Txt>
-          <Button  onClick={handleModalClose}>
-            초대코드 받으러가기
-          </Button>
+          <Button onClick={handleModalClose}>초대코드 받으러가기</Button>
         </AlertModal>
       )}
     </Container>
