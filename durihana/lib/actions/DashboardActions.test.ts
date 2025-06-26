@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { getMarriageDate, getCategoriesByUserId } from './DashboardActions';
 import prisma from '../db';
 
@@ -13,6 +13,9 @@ vi.mock('../db', () => ({
   },
 }));
 
+const mockUser = prisma.user.findUnique as Mock;
+const mockPartnerCalendar = prisma.partnerCalendar.findMany as Mock
+
 describe('DashboardActions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -25,14 +28,14 @@ describe('DashboardActions', () => {
     });
 
     it('should return marriage_date if user is found', async () => {
-      (prisma.user.findUnique as any).mockResolvedValue({ marriage_date: '2027-05-10' });
+      (mockUser as any).mockResolvedValue({ marriage_date: '2027-05-10' });
 
       const result = await getMarriageDate(1);
       expect(result).toBe('2027-05-10');
     });
 
     it('should return empty string if user is not found', async () => {
-      (prisma.user.findUnique as any).mockResolvedValue(null);
+      (mockUser as any).mockResolvedValue(null);
 
       const result = await getMarriageDate(1);
       expect(result).toBe('');
@@ -46,14 +49,14 @@ describe('DashboardActions', () => {
     });
 
     it('should return empty array if no calendars are found', async () => {
-      (prisma.partnerCalendar.findMany as any).mockResolvedValue([]);
+      (mockPartnerCalendar as any).mockResolvedValue([]);
 
       const result = await getCategoriesByUserId(1);
       expect(result).toEqual([]);
     });
 
     it('should return list of types from partner calendars', async () => {
-      (prisma.partnerCalendar.findMany as any).mockResolvedValue([
+      (mockPartnerCalendar as any).mockResolvedValue([
         {
           PartnerService: {
             Partner: {

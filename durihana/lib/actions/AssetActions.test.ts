@@ -1,4 +1,4 @@
-import { getTypeAmounts, getBucketTotalAmount } from './AssetActions';
+import { getCategoryData, getBucketTotalAmount } from './AssetActions';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import prisma from '@/lib/db';
 
@@ -13,50 +13,67 @@ vi.mock('@/lib/db', () => ({
   }
 }));
 
-describe('getTypeAmounts ', () => {
+const mockPartnerCalendar = prisma.partnerCalendar.findMany as Mock;
+const mockBudgetPlan = prisma.budgetPlan.findMany as Mock;
+
+describe('getCategoryData ', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   })
 
-  it('Return empty array if no calendars are found', async () => {
-      (prisma.partnerCalendar.findMany as any).mockResolvedValue([]);
+  it('return empty array if type is empty', async () => {
+      (mockPartnerCalendar as any).mockResolvedValue([]);
 
-      const result = await getTypeAmounts(1);
+      const result = await getCategoryData(1);
       expect(result).toEqual([]);
-    });
+  });
   
-  it('Return list of types from partner calendars', async () => {
-      (prisma.partnerCalendar.findMany as any).mockResolvedValue([
+  it('return list of types within CATEGORIESs list', async () => {
+      (mockPartnerCalendar as any).mockResolvedValue([
         {
           PartnerService: {
-            content: '80000000',
+            content: {가격: '80000000', 식사: '뷔페'},
             Partner: {
               PartnerCategory: {
-                type: '식장예약',
+                type: '예식',
               },
             },
           },
         },
         {
           PartnerService: {
+            content: {가격: '5000000', 드레스: '벨형'},
             Partner: {
-              content: '5000000',
               PartnerCategory: {
-                type: '스튜디오예약',
+                type: '스드메',
               },
             },
           },
         },
       ]);
 
-      const result = await getTypeAmounts(1);
-      expect(result.map(r => r.name)).toEqual(['식장예약', '스튜디오예약']);
+      const result = await getCategoryData(1);
+      expect(result).toEqual([{ name: '스드메', value: 5000000 }]);
     });
 });
 
 describe('getBucketTotalAmount ', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  })
+
+  it('return highest price', async () => {
+    (mockPartnerCalendar as any).mockResolvedValue([
+        {
+          PartnerService: {
+            content: {가격: '80000000', 식사: '뷔페'},
+            Partner: {
+              PartnerCategory: {
+                type: '예식',
+              },
+            },
+          },
+        },])
   })
 
   // const result = await getBucketTotalAmount(1);
