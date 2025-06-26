@@ -1,5 +1,6 @@
 'use client';
 
+import RatesGraph from '@/components/RatesGraph';
 import {
   AccountAgreement,
   DepositAgreement,
@@ -120,7 +121,7 @@ export default function ElseAccount() {
         <Txt>약관동의</Txt>
       </div>
       <div className='w-full'>
-        <Accordion type='multiple'>
+        <Accordion type='multiple' className=''>
           {agreementTitle.map((item, index) => (
             <AccordionItem value={String(index)} key={index}>
               <AccordionTrigger className='border-primarycolor border-b'>
@@ -152,6 +153,13 @@ export default function ElseAccount() {
             </AccordionItem>
           ))}
         </Accordion>
+
+        <div className='pt-[30px]'>
+          <Txt size='text-[10px]' weight='font-[300]' className='pb-[10px]'>
+            ※ 두리하나에서 웨딩 준비를 완료할 때마다 우대 이율이 적용됩니다
+          </Txt>
+          <RatesGraph />
+        </div>
       </div>
 
       {modal && (
