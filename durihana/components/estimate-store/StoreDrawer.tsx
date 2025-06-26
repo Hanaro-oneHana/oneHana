@@ -1,5 +1,6 @@
 'use client';
 
+import { Button, Txt } from '@/components/atoms';
 import {
   Drawer,
   DrawerContent,
@@ -10,6 +11,7 @@ import {
   DrawerTrigger,
   DrawerClose,
 } from '@/components/ui/drawer';
+import { modalMent } from '@/constants/store';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
@@ -19,8 +21,8 @@ import {
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
 import { minusBalance } from '@/lib/actions/calBalance';
-import { Button, Txt } from '../atoms';
-import { modalMent } from '../estimate-store/StoreDetail';
+
+/* eslint-disable @next/next/no-img-element */
 
 type StoreDrawerProps = {
   details: StoreDetailProps;
@@ -72,7 +74,6 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
       console.error('결제 실패', e);
       alert('결제 중 오류가 발생했습니다.');
     }
-
     setOpen(false);
   };
 
