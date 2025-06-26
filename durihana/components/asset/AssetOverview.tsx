@@ -1,10 +1,11 @@
 'use client';
 
 import { AssetLog, ProgressBar } from '@/components/asset';
+import { CategoryData } from '@/types/Asset';
 import dynamic from 'next/dynamic';
 
 type Props = {
-  data: { name: string; value: number }[];
+  data: CategoryData[];
   balance: number;
 };
 export default function AssetOverview({ data, balance }: Props) {

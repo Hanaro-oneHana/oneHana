@@ -10,7 +10,7 @@ import {
 } from '@/lib/actions/AccountActions';
 import {
   getBucketTotalAmount,
-  getTypeAmounts,
+  getCategoryData,
 } from '@/lib/actions/AssetActions';
 import { auth } from '@/lib/auth';
 
@@ -35,7 +35,8 @@ export default function Asset() {
 
   const coupleBalance = use(getCoupleTotalBalance(userId));
 
-  const data = use(getTypeAmounts(userId));
+  const data = use(getCategoryData(userId));
+  console.log("🚀 ~ Asset ~ data:", data)
 
   const total = use(getBucketTotalAmount(userId));
 
