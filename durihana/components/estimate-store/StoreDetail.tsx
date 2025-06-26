@@ -51,6 +51,10 @@ export default function StoreDetail(details: StoreDetailProps) {
   const [count, setCount] = useState(0);
 
   const handleAdd = async () => {
+    if (!userId) {
+      router.push('/auth/unauthorized');
+      return;
+    }
     // 담기 선택했을 때의 함수
     const requiredKeys = Object.keys(details.options);
     const hasUnselected = requiredKeys.some((key) => !selectedOptions[key]);
@@ -134,7 +138,13 @@ export default function StoreDetail(details: StoreDetailProps) {
         {details.categoryId < 4 ? (
           <Button
             className='bg-buttongray h-[48px] w-full'
-            onClick={() => setCalendarOpen(true)}
+            onClick={() => {
+              if (!userId) {
+                router.push('/auth/unauthorized');
+                return;
+              }
+              setCalendarOpen(true);
+            }}
           >
             상담일정 보기
           </Button>

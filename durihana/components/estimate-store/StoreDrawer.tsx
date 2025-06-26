@@ -12,6 +12,7 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { modalMent } from '@/constants/store';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
@@ -40,6 +41,7 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
     userId,
     onSelectModalMent,
   } = drawer;
+  const router = useRouter();
   const { data: session } = useSession();
   const img = details.images;
   const [open, setOpen] = useState(false);
@@ -78,6 +80,10 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
+    if (!userId) {
+      router.push('/auth/unauthorized');
+      return;
+    }
     if (
       nextOpen &&
       Object.keys(selectedOptions).length !==
