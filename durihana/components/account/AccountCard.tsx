@@ -23,7 +23,6 @@ export default function AccountCard({
   coupleNames,
 }: Props) {
   const router = useRouter();
-  const [mainAccount, setMainAccount] = useState(initialMainAccount);
   const [subAccounts, setSubAccounts] = useState(initialSubAccounts);
   const [coupleBalance, setCoupleBalance] = useState(initialCoupleBalance);
 
@@ -43,13 +42,6 @@ export default function AccountCard({
       setCoupleBalance(data.coupleBalance);
 
       if (data.accountType === 0) {
-        // 메인 계좌 (입출금) 업데이트
-        setMainAccount((prev) => ({
-          ...prev,
-          balance: data.newBalance,
-        }));
-      } else {
-        // 서브 계좌 업데이트
         setSubAccounts((prev) =>
           prev.map((acc) =>
             acc.type === data.accountType

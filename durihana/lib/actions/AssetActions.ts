@@ -8,6 +8,10 @@ const NORMAL_CARTEGORIES = ['가전·가구', '예물·예단'];
 
 // 웨딩 관련 지출 내역 가져오기
 export const getCategoryData = async (userId: number) => {
+  if (!userId) {
+    return { isSuccess: false, error: '유효하지 않은 사용자 ID입니다.' };
+  }
+
   const calendars = await prisma.partnerCalendar.findMany({
     where: { user_id: userId },
     select: {
@@ -28,12 +32,21 @@ export const getCategoryData = async (userId: number) => {
     },
   });
 
-  const rawData = calendars.map((calendar) => ({
-    name: calendar.PartnerService.Partner.PartnerCategory.type,
-    value: extractPrice(calendar.PartnerService.content)
-  }))
+  if (!calendars || calendars.length === 0) {
+    return { isSuccess: false, error: '카테고리 데이터를 찾을 수 없습니다.' };
+  }
 
-  return aggregateByCategory(rawData);
+  const rawData = calendars.map((calendar) => ({
+    category: calendar.PartnerService.Partner.PartnerCategory.type,
+    value: extractPrice(calendar.PartnerService.content),
+  }));
+
+  const aggregated = aggregateByCategory(rawData);
+
+  return {
+    isSuccess: true,
+    data: aggregated,
+  };
 };
 
 // 웨딩 버켓 총 금액 가져오기
@@ -48,9 +61,9 @@ export const getBucketTotalAmount = async (userId: number) => {
             select: {
               PartnerCategory: {
                 select: {
-                  type: true
-                }
-              }
+                  type: true,
+                },
+              },
             },
           },
         },
@@ -58,12 +71,15 @@ export const getBucketTotalAmount = async (userId: number) => {
     },
   });
 
-  const rawData = budgetplans.map((budgetplan) =>({
-    name: budgetplan.PartnerService.Partner.PartnerCategory.type,
-    value: extractPrice(budgetplan.PartnerService.content)
-  }))
+  const rawData = budgetplans.map((budgetplan) => ({
+    category: budgetplan.PartnerService.Partner.PartnerCategory.type,
+    value: extractPrice(budgetplan.PartnerService.content),
+  }));
 
-  const result = Array.from(aggregateByCategory(rawData).values()).reduce((sum, {value}) => sum + value, 0)
+  const result = Array.from(aggregateByCategory(rawData).values()).reduce(
+    (sum, { value }) => sum + value,
+    0
+  );
 
   return result;
 };
@@ -84,19 +100,22 @@ function extractPrice(content: unknown) {
 function aggregateByCategory(rawData: CategoryData[]) {
   const amountMap = new Map<string, number>();
 
-  rawData.forEach(({name, value}) => {
-    const current = amountMap.get(name) ?? 0;
+  rawData.forEach(({ category, value }) => {
+    const current = amountMap.get(category) ?? 0;
 
-    if (SPECIAL_CATEGORIES.includes(name)) {
+    if (SPECIAL_CATEGORIES.includes(category)) {
       // 최고 금액
-      amountMap.set(name, Math.max(current, value))
-    } else if (NORMAL_CARTEGORIES.includes(name)) {
+      amountMap.set(category, Math.max(current, value));
+    } else if (NORMAL_CARTEGORIES.includes(category)) {
       // 합산
-      amountMap.set(name, current + value); 
+      amountMap.set(category, current + value);
     } else {
       // isSuccess: false
     }
-  })
+  });
 
-  return Array.from(amountMap).map(([name, value]) => ({name, value}));
+  return Array.from(amountMap).map(([category, value]) => ({
+    category,
+    value,
+  }));
 }

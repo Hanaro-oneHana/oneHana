@@ -1,13 +1,19 @@
-import { AccountCard } from "@/components/account";
-import { AssetOverview } from "@/components/asset";
-import { BottomNavigation, Header } from "@/components/atoms";
-import Container from "@/components/containers/Container";
-import { getAccountsByUserId, getCoupleTotalBalance } from "@/lib/actions/AccountActions";
-import { getBucketTotalAmount, getCategoryData } from "@/lib/actions/AssetActions";
-import { auth } from "@/lib/auth";
-import { MainAccount, SubAccount } from "@/types/Account";
-import { use } from "react";
-
+import { AccountCard } from '@/components/account';
+import { AssetOverview } from '@/components/asset';
+import { BottomNavigation, Header } from '@/components/atoms';
+import Container from '@/components/containers/Container';
+import { MainAccount, SubAccount } from '@/types/Account';
+import { use } from 'react';
+import {
+  getAccountsByUserId,
+  getCoupleTotalBalance,
+} from '@/lib/actions/AccountActions';
+import {
+  getBucketTotalAmount,
+  getCategoryData,
+} from '@/lib/actions/AssetActions';
+import { getCoupleNames } from '@/lib/actions/getCoupleUserIds';
+import { auth } from '@/lib/auth';
 
 export default function Asset() {
   const session = use(auth());
@@ -18,6 +24,7 @@ export default function Asset() {
     : Number(session?.user?.partnerId);
 
   const accounts = use(getAccountsByUserId(userId));
+  const coupleNames = use(getCoupleNames(userId));
   const main = accounts.data.find((acc) => acc.type === 0)!;
   const subs = accounts.data.filter((acc) => acc.type !== 0);
 
@@ -34,13 +41,17 @@ export default function Asset() {
 
   const coupleBalance = use(getCoupleTotalBalance(userId));
 
-  const data = use(getCategoryData(mainUserId));
+  const categoryDataResult = use(getCategoryData(mainUserId));
+  const categoryData =
+    categoryDataResult?.isSuccess && categoryDataResult.data
+      ? categoryDataResult.data
+      : [];
 
   const total = use(getBucketTotalAmount(mainUserId));
 
   return (
     <Container
-      className='gap-[70px] pt-[70px] pb-[82.5px]'
+      className='gap-[40px] pt-[70px] pb-[82.5px]'
       header={<Header leftIcon='my' rightIcon='bell' />}
       footer={<BottomNavigation selectedItem='asset' />}
     >
@@ -49,8 +60,9 @@ export default function Asset() {
         mainAccount={mainAccount}
         subAccounts={subAccounts}
         coupleBalance={coupleBalance.data}
+        coupleNames={coupleNames}
       />
-      <AssetOverview data={data} balance={total} />
+      <AssetOverview data={categoryData} balance={total} />
     </Container>
   );
 }
