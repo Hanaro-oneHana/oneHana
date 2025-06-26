@@ -4,19 +4,15 @@ import StoreComponent from '@/components/estimate-store/Store';
 import { use } from 'react';
 import { getStoreList } from '@/lib/actions/StoreActions';
 
-type SearchParams = Promise<{
+type Params = Promise<{
   search?: string;
   category?: string;
 }>;
 
-export default function StorePage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default function StorePage({ searchParams }: { searchParams: Params }) {
   const { search, category } = use(searchParams);
 
-  const storeList = use(
+  const { isSuccess, data: storeList } = use(
     getStoreList(search || '', parseInt(category || '1', 10))
   );
 
@@ -27,7 +23,7 @@ export default function StorePage({
       footer={<BottomNavigation selectedItem='store' />}
     >
       <StoreComponent
-        storeList={storeList}
+        storeList={isSuccess ? storeList : []}
         categoryId={parseInt(category || '1', 10)}
       />
     </Container>

@@ -2,7 +2,7 @@ import { EstimateMain } from '@/components/estimate-store';
 import { use } from 'react';
 import { getStoreList } from '@/lib/actions/StoreActions';
 
-type SearchParams = Promise<{
+type Params = Promise<{
   search?: string;
   category?: string;
 }>;
@@ -10,15 +10,15 @@ type SearchParams = Promise<{
 export default function EstimatePage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Params;
 }) {
   const { search, category } = use(searchParams);
-  const storeList = use(
+  const { isSuccess, data: storeList } = use(
     getStoreList(search || '', parseInt(category || '0', 10))
   );
   return (
     <EstimateMain
-      storeList={storeList}
+      storeList={isSuccess ? storeList : []}
       categoryId={parseInt(category || '0', 10)}
     />
   );
