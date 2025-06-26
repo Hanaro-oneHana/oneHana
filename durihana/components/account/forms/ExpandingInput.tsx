@@ -1,6 +1,5 @@
 import InputComponent from '@/components/atoms/InputComponent';
 import { ExpandingInputProps } from '@/types/Account';
-import React, { ChangeEvent } from 'react';
 
 export default function ExpandingInput({
   value,

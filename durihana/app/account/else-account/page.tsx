@@ -37,8 +37,8 @@ export default function ElseAccount() {
   const [initialDeposit, setInitialDeposit] = useState('');
 
   return (
-    <div className='relative flex flex-col shrink-0 w-full items-center justify-between h-dvh overflow-hidden'>
-      <div className='flex flex-col gap-2 px-[25px] mt-[40px] w-full pt-[30px]'>
+    <div className='relative flex h-dvh w-full shrink-0 flex-col items-center justify-between overflow-hidden'>
+      <div className='mt-[40px] flex w-full flex-col gap-2 px-[25px] pt-[30px]'>
         <Txt>입출금통장 초기 입금액</Txt>
         <InputComponent
           placeholder='입금할 금액을 입력하세요'
@@ -57,19 +57,19 @@ export default function ElseAccount() {
           </Txt>
         </div>
       </div>
-      <div className='flex flex-col items-center h-full w-full overflow-y-scroll'>
+      <div className='flex h-full w-full flex-col items-center overflow-y-scroll'>
         <Header leftIcon='back' title='계좌개설' />
-        <div className='flex flex-col pl-[25px] pr-[25px]'>
-          <div className='flex pt-[40px] '>
+        <div className='flex flex-col pr-[25px] pl-[25px]'>
+          <div className='flex pt-[40px]'>
             <Txt>약관동의</Txt>
           </div>
           <Accordion type='multiple'>
             <div className='w-[325px]'>
               <AccordionItem value='item-1'>
-                <AccordionTrigger className='border-b border-primarycolor'>
+                <AccordionTrigger className='border-primarycolor border-b'>
                   <Txt className='text-[14px]'>
                     비대면 계좌 개설 가입 동의서
-                    <Txt className='text-[8px] ml-1' color='text-red'>
+                    <Txt className='ml-1 text-[8px]' color='text-red'>
                       (필수)
                     </Txt>
                   </Txt>
@@ -95,10 +95,10 @@ export default function ElseAccount() {
               </AccordionItem>
 
               <AccordionItem value='item-2'>
-                <AccordionTrigger className='border-b border-primarycolor'>
+                <AccordionTrigger className='border-primarycolor border-b'>
                   <Txt className='text-[14px]'>
                     정기예금 상품 가입 동의서
-                    <Txt className='text-[8px] ml-1' color='text-red'>
+                    <Txt className='ml-1 text-[8px]' color='text-red'>
                       (선택)
                     </Txt>
                   </Txt>
@@ -122,10 +122,10 @@ export default function ElseAccount() {
               </AccordionItem>
 
               <AccordionItem value='item-3'>
-                <AccordionTrigger className='border-b border-primarycolor'>
+                <AccordionTrigger className='border-primarycolor border-b'>
                   <Txt className='text-[14px]'>
                     정기적금 가입 동의서
-                    <Txt className='text-[8px] ml-1' color='text-red'>
+                    <Txt className='ml-1 text-[8px]' color='text-red'>
                       (선택)
                     </Txt>
                   </Txt>
@@ -149,10 +149,10 @@ export default function ElseAccount() {
               </AccordionItem>
 
               <AccordionItem value='item-4'>
-                <AccordionTrigger className='border-b border-primarycolor'>
+                <AccordionTrigger className='border-primarycolor border-b'>
                   <Txt className='text-[14px]'>
                     대출 상품 가입 동의서
-                    <Txt className='text-[8px] ml-1' color='text-red'>
+                    <Txt className='ml-1 text-[8px]' color='text-red'>
                       (선택)
                     </Txt>
                   </Txt>
@@ -215,7 +215,7 @@ export default function ElseAccount() {
 
               router.push(`./create-account?types=${types.join(',')}`);
             }}
-            className='w-1/2 h-[48px] text-[16px]'
+            className='h-[48px] w-1/2 text-[16px]'
           >
             다음
           </Button>

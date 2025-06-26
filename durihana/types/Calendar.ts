@@ -64,3 +64,18 @@ export type TimeSlotListProps = {
   viewOnly: boolean;
   onTimeSelect: (time: string) => void;
 };
+
+export type CustomCalendarProps = {
+  selectedDate?: Date;
+  onDateSelect?: (date: Date) => void;
+  className?: string;
+  blockedDates?: Date[];
+  currentMonth?: number;
+  currentYear?: number;
+  onMonthChange?: (month: number) => void;
+  onYearChange?: (year: number) => void;
+  financeScheduleDates?: Date[];
+  reservationScheduleDates?: Date[];
+  showScheduleDots?: boolean;
+  variant?: 'page' | 'drawer';
+};
