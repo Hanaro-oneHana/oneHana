@@ -118,6 +118,7 @@ export const createAccountSchedules = async (
 
     return { isSuccess: true, count: schedules.length };
   } catch (error) {
+    console.log('🚀 ~ error:', error);
     return { isSuccess: false, data: [] };
   }
 };
@@ -143,6 +144,7 @@ export const deleteAccountSchedules = async (accountId: number) => {
 
     return { isSuccess: true, count: result.count };
   } catch (error) {
+    console.log('🚀 ~ deleteAccountSchedules ~ error:', error);
     return { isSuccess: false, data: [] };
   }
 };
@@ -165,6 +167,7 @@ export const createAllAccountSchedules = async (userId: number) => {
 
     return { isSuccess: true, count: totalCount };
   } catch (error) {
+    console.log('🚀 ~ createAllAccountSchedules ~ error:', error);
     return { isSuccess: false, data: [] };
   }
 };
