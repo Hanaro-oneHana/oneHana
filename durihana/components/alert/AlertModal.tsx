@@ -12,13 +12,13 @@ export default function AlertModal({
   return (
     <div
       onClick={onClose}
-      className='fixed inset-0 flex items-center justify-center bg-black/50 z-50'
+      className='fixed inset-0 z-100 flex items-center justify-center bg-black/50'
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className='flex flex-col items-center justify-start bg-mainwhite rounded-[10px] p-[20px] w-[300px]'
+        className='bg-mainwhite flex w-[300px] flex-col items-center justify-start rounded-[10px] p-[20px]'
       >
-        <div className='flex items-center justify-end w-full mb-[7px]'>
+        <div className='mb-[7px] flex w-full items-center justify-end'>
           <button onClick={onClose}>
             <Image
               src='/asset/icons/close.svg'
