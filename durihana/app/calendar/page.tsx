@@ -1,22 +1,19 @@
-// app/calendar/page.tsx
 'use client';
 
 import { BottomNavigation, Header } from '@/components/atoms';
-import UserCalendar from '@/components/schedule/UserCalendar';
+import Container from '@/components/containers/Container';
+import { UserCalendar } from '@/components/schedule/index';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { processTodayTransfers } from '@/lib/actions/ScheduleProcessingActions';
-
-// app/calendar/page.tsx
 
 export default function Calendar() {
   const { data: session, status } = useSession();
   const userId = Number(session?.user?.id);
 
-  // 오늘의 입출금 출금/입금 처리
   useEffect(() => {
     if (status === 'authenticated') {
-      processTodayTransfers(userId).catch(console.error);
+      processTodayTransfers(userId);
     }
   }, [status, userId]);
 
@@ -24,10 +21,11 @@ export default function Calendar() {
   if (!session?.user?.id) return <p>로그인이 필요합니다.</p>;
 
   return (
-    <>
-      <Header leftIcon='my' rightIcon='bell' />
+    <Container
+      header={<Header leftIcon='my' rightIcon='bell' />}
+      footer={<BottomNavigation selectedItem='calendar' />}
+    >
       <UserCalendar userId={userId} />
-      <BottomNavigation selectedItem='calendar' />
-    </>
+    </Container>
   );
 }

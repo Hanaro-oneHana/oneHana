@@ -1,13 +1,5 @@
 import InputComponent from '@/components/atoms/InputComponent';
-import React, { ChangeEvent } from 'react';
-
-interface ExpandingInputProps {
-  value: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  className?: string;
-  readOnly?: boolean;
-}
+import { ExpandingInputProps } from '@/types/Account';
 
 export default function ExpandingInput({
   value,

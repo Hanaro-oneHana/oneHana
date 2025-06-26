@@ -2,16 +2,19 @@
 
 import AlertModal from '@/components/alert/AlertModal';
 import { Button, Txt } from '@/components/atoms';
-import CalendarDrawer from '@/components/calendar/CalendarDrawer';
-import StoreDrawer from '@/components/estimate-store/StoreDrawer';
-import StoreInfo from '@/components/estimate-store/StoreInfo';
-import StoreOption from '@/components/estimate-store/StoreOption';
+import { CalendarDrawer } from '@/components/calendar';
+import {
+  StoreOption,
+  StoreInfo,
+  StoreDrawer,
+} from '@/components/estimate-store';
 import {
   Carousel,
   CarouselApi,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import { modalMent } from '@/constants/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -22,12 +25,6 @@ import {
 } from '@/lib/actions/StoreDetailActions';
 
 /* eslint-disable @next/next/no-img-element */
-
-export const modalMent = [
-  '모든 옵션을 선택해 주세요',
-  '웨딩버켓 담기완료!',
-  '결제완료!',
-];
 
 export default function StoreDetail(details: StoreDetailProps) {
   const [selectedOptions, setSelectedOptions] = useState<
@@ -52,20 +49,12 @@ export default function StoreDetail(details: StoreDetailProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
-
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
 
   const handleAdd = async () => {
+    if (!userId) {
+      router.push('/auth/unauthorized');
+      return;
+    }
     // 담기 선택했을 때의 함수
     const requiredKeys = Object.keys(details.options);
     const hasUnselected = requiredKeys.some((key) => !selectedOptions[key]);
@@ -76,25 +65,29 @@ export default function StoreDetail(details: StoreDetailProps) {
       showModal(true);
       return;
     }
-
-    try {
-      const requestUser = session?.user?.isMain
-        ? parseInt(session?.user?.id || '0', 10)
-        : session?.user?.partnerId || 0;
-
-      //insertOptions 에서 categoryId 에 따라 budgetPlan 의 state 들어가는거 다름
-      await insertOptions(requestUser || 0, details.id, selectedOptions, state);
-      if (isSelectOption) {
-        setSelectedModalMent(modalMent[0]);
-      } else {
-        setSelectedModalMent(modalMent[1]);
-      }
-      showModal(true);
-    } catch (error) {
-      console.error('옵션 저장 실패:', error);
-      alert('담기 중 오류가 발생했습니다.');
+    const requestUser = session?.user?.isMain
+      ? parseInt(session?.user?.id || '0', 10)
+      : session?.user?.partnerId || 0;
+    //insertOptions 에서 categoryId 에 따라 budgetPlan 의 state 들어가는거 다름
+    await insertOptions(requestUser || 0, details.id, selectedOptions, state);
+    if (isSelectOption) {
+      setSelectedModalMent(modalMent[0]);
+    } else {
+      setSelectedModalMent(modalMent[1]);
     }
+    showModal(true);
   };
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   return (
     <>
@@ -117,12 +110,10 @@ export default function StoreDetail(details: StoreDetailProps) {
           </Carousel>
         </div>
       </div>
-
       <div className='flex w-full flex-col px-[20px] pt-[25px]'>
         <Txt size='text-[20px]' weight='font-[500]'>
           {details?.name}
         </Txt>
-
         {'위치' in details.info && (
           <div className='mt-[5px] flex items-center gap-[4px]'>
             <Image
@@ -137,21 +128,23 @@ export default function StoreDetail(details: StoreDetailProps) {
           </div>
         )}
       </div>
-
       <StoreInfo info={details.info} />
-
       <hr className='my-[20px] w-full' />
-
       <StoreOption
         options={details.options}
         onSelectChange={(opts) => setSelectedOptions(opts)}
       />
-
       <div className='bg-background fixed bottom-0 left-[50%] z-50 flex h-[80px] w-full max-w-[960px] translate-x-[-50%] items-center justify-between gap-[15px] px-[20px]'>
         {details.categoryId < 4 ? (
           <Button
             className='bg-buttongray h-[48px] w-full'
-            onClick={() => setCalendarOpen(true)}
+            onClick={() => {
+              if (!userId) {
+                router.push('/auth/unauthorized');
+                return;
+              }
+              setCalendarOpen(true);
+            }}
           >
             상담일정 보기
           </Button>
@@ -195,13 +188,11 @@ export default function StoreDetail(details: StoreDetailProps) {
                 showModal(false);
                 // 예시: handleAdd 내부 혹은 해당 로직이 위치한 곳에 적용
                 const optionKeys = Object.keys(details.options);
-
                 // 1) categoryId 가 3 이면 즉시 뒤로가기
                 if (details.categoryId === 3) {
                   router.back();
                   return;
                 }
-
                 // 2) 아니면 옵션이 있고, 모든 옵션이 선택되었을 때만 뒤로가기
                 if (
                   optionKeys.length > 0 &&

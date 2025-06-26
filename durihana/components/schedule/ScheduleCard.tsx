@@ -1,12 +1,7 @@
-import { Schedule } from '@/types/Schedule';
+import { ScheduleCardProps } from '@/types/Schedule';
 import Image from 'next/image';
 import { formatDisplayDate } from '@/lib/utils';
 import Txt from '../atoms/Txt';
-
-type ScheduleCardProps = {
-  schedule: Schedule;
-  keyPrefix: string;
-};
 
 export default function ScheduleCard({
   schedule,
@@ -27,10 +22,10 @@ export default function ScheduleCard({
   return (
     <div
       key={`${keyPrefix}-${schedule.id}`}
-      className='bg-white rounded-[10px] p-4 shadow-sm border border-gray-100'
+      className='rounded-[10px] border border-gray-100 bg-white p-4 shadow-sm'
     >
       {/* 제목과 금액 (금융 일정인 경우) */}
-      <div className='flex justify-between items-start mb-3'>
+      <div className='mb-3 flex items-start justify-between'>
         <Txt size='text-[12px]' weight='font-[400]' className='text-mainblack'>
           {schedule.title}
         </Txt>

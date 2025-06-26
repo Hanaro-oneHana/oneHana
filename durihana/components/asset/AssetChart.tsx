@@ -3,9 +3,10 @@
 import { PieChart, Pie, Cell } from 'recharts';
 import Image from 'next/image';
 import Txt from '../atoms/Txt';
+import { CategoryData } from '@/types/Asset';
 
 type Props = {
-  data: { name: string; value: number }[];
+  data: CategoryData[];
 };
 
 type PieLabelProps = {
