@@ -10,7 +10,8 @@ export default function Mypage() {
   const session = use(auth());
   const userId = Number(session?.user?.id);
 
-  const userInfo = use(getUserInfo(userId));
+  const userInfoResult = use(getUserInfo(userId));
+  const userInfo = userInfoResult.data;
 
   const interestInfo = use(getAllInterestRates());
   const steps = ['기본', 'step 1', 'step 2', 'step 3', 'step 4', 'step 5'];
@@ -44,7 +45,7 @@ export default function Mypage() {
                 weight='font-[600]'
                 className='block w-full'
               >
-                {value}
+                {value != null ? String(value) : ''}
               </Txt>
             </div>
           ))}
