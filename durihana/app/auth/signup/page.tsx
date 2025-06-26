@@ -251,7 +251,7 @@ export default function Signup() {
           >
             회원가입이 완료되었습니다.
           </Txt>
-          <Button className='py-[10px]' onClick={handleModalClose}>
+          <Button className='pt-[20px]' onClick={handleModalClose}>
             초대코드 받으러가기
           </Button>
         </AlertModal>
