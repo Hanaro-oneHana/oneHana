@@ -1,6 +1,7 @@
 'use server';
 
-import { BucketItem } from '@/components/weddingbucket/WeddingBucket';
+import { Store } from '@/types/Store';
+import { BucketItem } from '@/types/WeddingBucket';
 import prisma from '../db';
 
 export interface UpdateBudgetPlanPayload {
@@ -11,17 +12,6 @@ export interface UpdateBudgetPlanPayload {
     time: string; // Calendar에서 선택한 “HH:mm” format
   };
 }
-
-export type Store = {
-  id: number;
-  name: string;
-  location: string;
-  price: number;
-  images?: string[];
-  destination: string;
-  modelId: string;
-  categoryId: number;
-};
 
 export const getStoreList = async (search: string, category: number) => {
   const stores = await prisma.partnerService.findMany({
@@ -71,6 +61,12 @@ export const getStoreList = async (search: string, category: number) => {
           ? store.content['여행지']?.toString() || ''
           : ''
         : '',
+    description:
+      typeof store.content === 'object' && store.content !== null
+        ? '설명' in store.content
+          ? store.content['설명']?.toString() || ''
+          : ''
+        : '',
     modelId:
       typeof store.content === 'object' && store.content !== null
         ? '모델명' in store.content
@@ -80,10 +76,16 @@ export const getStoreList = async (search: string, category: number) => {
     categoryId: store.Partner.partner_category_id,
   }));
 
-  return result.sort((a, b) => a.price - b.price);
+  return {
+    isSuccess: true,
+    data: result.sort((a, b) => a.price - b.price),
+  };
 };
 
-export const getBucketList = async (userId: number) => {
+export const getBucketList = async (userId?: number) => {
+  if (!userId) {
+    return { isSuccess: false, error: '유효하지 않은 사용자 ID입니다.' };
+  }
   const bucketList = await prisma.budgetPlan.findMany({
     where: {
       user_id: userId,
@@ -132,7 +134,10 @@ export const getBucketList = async (userId: number) => {
     category: item.PartnerService.Partner.partner_category_id,
   }));
 
-  return result.sort((a, b) => (a.category ?? 0) - (b.category ?? 0));
+  return {
+    isSuccess: true,
+    data: result.sort((a, b) => (a.category ?? 0) - (b.category ?? 0)),
+  };
 };
 
 export const deleteBucketItem = async (id: number) => {
@@ -142,10 +147,10 @@ export const deleteBucketItem = async (id: number) => {
         id: id,
       },
     });
-    return true;
+    return { isSuccess: true };
   } catch (error) {
-    console.error('아이템 삭제 중 오류 발생', error);
-    return false;
+    console.log(error);
+    return { isSuccess: false, error: '해당 아이템 삭제를 실패하였습니다.' };
   }
 };
 

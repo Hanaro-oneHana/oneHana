@@ -1,8 +1,8 @@
 'use client';
 
+import { Txt } from '@/components/atoms';
+import { Store } from '@/types/Store';
 import { useRouter } from 'next/navigation';
-import { Store } from '@/lib/actions/StoreActions';
-import Txt from '../atoms/Txt';
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -17,7 +17,7 @@ export default function StoreCard({ store }: Props) {
       onClick={() => {
         router.push(`/store/${store?.id}`);
       }}
-      className='flex flex-row items-center justify-start w-full border-b-[1px] border-linegray gap-[20px] pb-[20px]'
+      className='border-linegray flex w-full flex-row items-center justify-start gap-[20px] border-b-[1px] pb-[20px]'
     >
       <img
         src={
@@ -25,10 +25,10 @@ export default function StoreCard({ store }: Props) {
             ? store.images[0]
             : '/asset/images/store-default.png'
         }
-        className='rounded-[10px] object-cover min-w-[60px] min-h-[60px] max-w-[60px] max-h-[60px]'
+        className='max-h-[60px] min-h-[60px] max-w-[60px] min-w-[60px] rounded-[10px] object-cover'
         alt='Store Image'
       />
-      <div className='flex flex-col items-start justify-center w-full gap-[5px]'>
+      <div className='flex w-full flex-col items-start justify-center gap-[5px]'>
         <Txt size='text-[14px]' weight='font-[500]'>
           {store?.name || '가게 이름'}
         </Txt>
@@ -39,6 +39,10 @@ export default function StoreCard({ store }: Props) {
         ) : store?.modelId ? (
           <Txt size='text-[10px]' weight='font-[400]' color='text-textgray'>
             {`모델명: ${store.modelId}`}
+          </Txt>
+        ) : store?.description ? (
+          <Txt size='text-[10px]' weight='font-[400]' color='text-textgray'>
+            {`${store.description}`}
           </Txt>
         ) : (
           <Txt size='text-[10px]' weight='font-[400]' color='text-textgray'>
