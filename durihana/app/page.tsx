@@ -1,5 +1,5 @@
 import { AccountCard, AccountCardDefault } from '@/components/account';
-import { Header, BottomNavigation } from '@/components/atoms';
+import { BottomNavigation, Header } from '@/components/atoms';
 import Container from '@/components/containers/Container';
 import {
   HouseLoanCard,
@@ -12,10 +12,8 @@ import {
   getAccountsByUserId,
   getCoupleTotalBalance,
 } from '@/lib/actions/AccountActions';
-import {
-  getCategoriesByUserId,
-  getMarriageDate,
-} from '@/lib/actions/DashboardActions';
+import { getCategoryData } from '@/lib/actions/AssetActions';
+import { getUserInfo } from '@/lib/actions/UserActions';
 import { auth } from '@/lib/auth';
 import { getCoupleNames } from '@/lib/actions/getCoupleUserIds';
 
@@ -47,8 +45,10 @@ export default function Home() {
       balance: acc.balance,
     }));
 
-  const marriageDate = use(getMarriageDate(userId));
-  const completedCategory = use(getCategoriesByUserId(mainUserId));
+  const userInfo = use(getUserInfo(userId));
+  const marriageDate = userInfo?.['결혼 예정일'];
+
+  const categoryData = use(getCategoryData(mainUserId));
 
   return (
     <Container
@@ -69,7 +69,7 @@ export default function Home() {
       )}
       <MainDashBoard
         date={marriageDate || ''}
-        category={completedCategory || ['']}
+        categoryData={categoryData || [{ category: '', value: 0 }]}
       />
       <HouseLoanCard />
       <PopularPartner />

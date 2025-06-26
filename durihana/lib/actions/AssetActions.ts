@@ -29,9 +29,9 @@ export const getCategoryData = async (userId: number) => {
   });
 
   const rawData = calendars.map((calendar) => ({
-    name: calendar.PartnerService.Partner.PartnerCategory.type,
-    value: extractPrice(calendar.PartnerService.content)
-  }))
+    category: calendar.PartnerService.Partner.PartnerCategory.type,
+    value: extractPrice(calendar.PartnerService.content),
+  }));
 
   return aggregateByCategory(rawData);
 };
@@ -48,9 +48,9 @@ export const getBucketTotalAmount = async (userId: number) => {
             select: {
               PartnerCategory: {
                 select: {
-                  type: true
-                }
-              }
+                  type: true,
+                },
+              },
             },
           },
         },
@@ -58,12 +58,15 @@ export const getBucketTotalAmount = async (userId: number) => {
     },
   });
 
-  const rawData = budgetplans.map((budgetplan) =>({
-    name: budgetplan.PartnerService.Partner.PartnerCategory.type,
-    value: extractPrice(budgetplan.PartnerService.content)
-  }))
+  const rawData = budgetplans.map((budgetplan) => ({
+    category: budgetplan.PartnerService.Partner.PartnerCategory.type,
+    value: extractPrice(budgetplan.PartnerService.content),
+  }));
 
-  const result = Array.from(aggregateByCategory(rawData).values()).reduce((sum, {value}) => sum + value, 0)
+  const result = Array.from(aggregateByCategory(rawData).values()).reduce(
+    (sum, { value }) => sum + value,
+    0
+  );
 
   return result;
 };
@@ -84,19 +87,22 @@ function extractPrice(content: unknown) {
 function aggregateByCategory(rawData: CategoryData[]) {
   const amountMap = new Map<string, number>();
 
-  rawData.forEach(({name, value}) => {
-    const current = amountMap.get(name) ?? 0;
+  rawData.forEach(({ category, value }) => {
+    const current = amountMap.get(category) ?? 0;
 
-    if (SPECIAL_CATEGORIES.includes(name)) {
+    if (SPECIAL_CATEGORIES.includes(category)) {
       // 최고 금액
-      amountMap.set(name, Math.max(current, value))
-    } else if (NORMAL_CARTEGORIES.includes(name)) {
+      amountMap.set(category, Math.max(current, value));
+    } else if (NORMAL_CARTEGORIES.includes(category)) {
       // 합산
-      amountMap.set(name, current + value); 
+      amountMap.set(category, current + value);
     } else {
       // isSuccess: false
     }
-  })
+  });
 
-  return Array.from(amountMap).map(([name, value]) => ({name, value}));
+  return Array.from(amountMap).map(([category, value]) => ({
+    category,
+    value,
+  }));
 }
