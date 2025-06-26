@@ -11,7 +11,7 @@ export default function Mypage() {
 
   const mainUserId = session?.user?.isMain
     ? Number(session.user.id)
-    : session?.user?.partnerId;
+    : Number(session?.user?.partnerId);
 
   const userInfo = use(getUserInfo(userId));
 
