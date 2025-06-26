@@ -25,7 +25,10 @@ describe('getCategoryData ', () => {
       (mockPartnerCalendar as any).mockResolvedValue([]);
 
       const result = await getCategoryData(1);
-      expect(result).toEqual([]);
+      expect(result).toEqual({
+        "error": "카테고리 데이터를 찾을 수 없습니다.",
+        "isSuccess": false,
+      });
   });
   
   it('return list of types within CATEGORIESs list', async () => {
@@ -53,7 +56,11 @@ describe('getCategoryData ', () => {
       ]);
 
       const result = await getCategoryData(1);
-      expect(result).toEqual([{ name: '스드메', value: 5000000 }]);
+      expect(result).toEqual({
+        "data": [{ "category": "스드메", "value": 5000000,
+      },],
+      "isSuccess": true,
+      });
     });
 });
 
