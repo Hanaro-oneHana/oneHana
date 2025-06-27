@@ -222,37 +222,19 @@ export const createMultipleAccounts = async (
     // 3) 커플 멤버들 ID
     const coupleUserIds = await getCoupleUserIds(userId);
 
-    // 4) emit
-    const io = (globalThis as any).io;
-    if (io) {
-      for (const uid of coupleUserIds) {
-        if (updatedMain) {
-          // — 메인 계좌 업데이트 (공통)
-          io.to(`user-${uid}`).emit('balance-updated', {
-            accountId: updatedMain.id,
-            newBalance: updatedMain.balance,
-            accountType: 0,
-            coupleBalance: coupleBalance.data,
-          });
-        }
-        if (uid === userId) {
-          // — 본인에게만: 서브 계좌들도 emit
-          for (const acc of result.accounts) {
-            io.to(`user-${uid}`).emit('balance-updated', {
-              accountId: acc.id,
-              newBalance: acc.balance,
-              accountType: acc.type,
-              coupleBalance: coupleBalance.data,
-            });
-          }
-        }
-      }
-    }
+    const socketData = {
+      accountId: updatedMain?.id,
+      newBalance: updatedMain?.balance,
+      accountType: 0,
+      coupleBalance: coupleBalance.data,
+      coupleUserIds,
+    };
 
     return {
       isSuccess: true,
       accounts: result.accounts,
       totalSchedules: result.totalSchedules,
+      socketData,
     };
   } catch (error) {
     console.log('🚀 ~ error:', error);
