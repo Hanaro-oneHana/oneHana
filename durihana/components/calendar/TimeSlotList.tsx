@@ -7,7 +7,6 @@ import HorizontalSlider from '../atoms/HorizontalSlider';
 export default function TimeSlotList({
   times,
   reservedTimes,
-  availableTimes,
   selectedTime,
   viewOnly,
   onTimeSelect,
