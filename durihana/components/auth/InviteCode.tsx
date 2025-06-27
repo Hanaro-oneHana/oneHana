@@ -7,7 +7,11 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { findPartnerId } from '@/lib/actions/AuthActions';
-import { updateRandomCode, tryMating } from '@/lib/actions/InviteActions';
+import {
+  updateRandomCode,
+  tryMating,
+  isCodeExists,
+} from '@/lib/actions/InviteActions';
 
 function generateRandomCode(length: number = 8): string {
   let result = '';
@@ -33,16 +37,30 @@ export default function InviteCode() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!userId) {
-      return;
-    }
-    const code = generateRandomCode();
-    setRandomCode(code);
-    updateRandomCode(userId, code);
-  }, [loading, userId]);
+    const initCode = async () => {
+      if (!userId) return;
+
+      const existing = await isCodeExists(userId);
+
+      //db에 code 가 이미 있으면 그걸 계속 렌더링
+      if (existing) {
+        setRandomCode(existing);
+      } else {
+        //code 가 비어있을 때만 랜덤으로 생성
+        const code = generateRandomCode();
+        setRandomCode(code);
+        await updateRandomCode(userId, code);
+      }
+    };
+
+    initCode();
+  }, [userId]);
 
   const tryConnecting = async (id: number, mate_code: string) => {
-    if (!id) return;
+    if (!id) {
+      console.log('🚀 ~ InviteCode ~ loading:', loading);
+      return;
+    }
     setLoading(true);
     const mate = await tryMating(id, mate_code);
     setLoading(false);

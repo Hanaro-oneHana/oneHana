@@ -2,6 +2,14 @@
 
 import prisma from '../db';
 
+// 사용자의 code 가 비어있는지 확인
+export const isCodeExists = async (id: number) => {
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+  return user?.code ?? null;
+};
+
 export const updateRandomCode = async (id: number, code: string) => {
   await prisma.user.update({
     where: { id },
@@ -41,6 +49,7 @@ export const tryMating = async (id: number, mate_code: string) => {
     };
   }
 
+  // 상대방이 자신의 코드가 아닌 다른 상대방과 연결됐을 때
   if (mateUser.mate_code && mateUser.mate_code !== user.code) {
     return {
       status: 'error',
