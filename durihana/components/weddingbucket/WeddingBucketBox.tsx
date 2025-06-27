@@ -9,6 +9,7 @@ import { getCheckingAccountByUserId } from '@/lib/actions/AccountActions';
 import { addPartnerCalendarEvent } from '@/lib/actions/ReservationActions';
 import { deleteBucketItem, updateBudgetPlan } from '@/lib/actions/StoreActions';
 import { minusBalance } from '@/lib/actions/calBalance';
+import { socket } from '@/lib/socket-client';
 import { Button, Txt } from '../atoms';
 import CalendarDrawer from '../calendar/CalendarDrawer';
 
@@ -35,7 +36,22 @@ export default function WeddingBucketBox({ item }: Props) {
     const dateStr = `${yyyy}-${mm}-${dd}`; // "2025-07-01"
     const accountId = await getCheckingAccountByUserId(userId);
 
-    await minusBalance(accountId, Number(item.price), item.store);
+    const result = await minusBalance(
+      accountId,
+      Number(item.price),
+      item.store
+    );
+    if (result.success && result.socketData) {
+      socket.emit('admin-balance-update', {
+        uids: result.socketData.coupleUserIds,
+        payload: {
+          accountId: result.socketData.accountId,
+          newBalance: result.socketData.newBalance,
+          accountType: result.socketData.accountType,
+          coupleBalance: result.socketData.coupleBalance,
+        },
+      });
+    }
     // 1-1) partnerCalendar에 예약 이벤트 기록
     await addPartnerCalendarEvent(userId, item.partnerServiceId, dateStr, time);
 
@@ -56,8 +72,22 @@ export default function WeddingBucketBox({ item }: Props) {
     const dateStr = `${yyyy}-${mm}-${dd}`; // ex: "2025-06-24"
     const timeStr = `${hh}:00`; // ex: "14:00"
     const accountId = await getCheckingAccountByUserId(userId);
-    await minusBalance(accountId, Number(item.price), item.store);
-
+    const result = await minusBalance(
+      accountId,
+      Number(item.price),
+      item.store
+    );
+    if (result.success && result.socketData) {
+      socket.emit('admin-balance-update', {
+        uids: result.socketData.coupleUserIds,
+        payload: {
+          accountId: result.socketData.accountId,
+          newBalance: result.socketData.newBalance,
+          accountType: result.socketData.accountType,
+          coupleBalance: result.socketData.coupleBalance,
+        },
+      });
+    }
     // 2-1) partnerCalendar에 결제 이벤트 기록
     await addPartnerCalendarEvent(
       userId,

@@ -8,6 +8,7 @@ import {
   createMultipleAccounts,
   getAllAccountsByUserId,
 } from '@/lib/actions/AccountActions';
+import { socket } from '@/lib/socket-client';
 
 export function useAccountCreation() {
   const router = useRouter();
@@ -90,7 +91,16 @@ export function useAccountCreation() {
         accountsData
       );
 
-      if (result.isSuccess) {
+      if (result.isSuccess && result.socketData) {
+        socket.emit('admin-balance-update', {
+          uids: result.socketData.coupleUserIds,
+          payload: {
+            accountId: result.socketData.accountId,
+            newBalance: result.socketData.newBalance,
+            accountType: result.socketData.accountType,
+            coupleBalance: result.socketData.coupleBalance,
+          },
+        });
         router.push('/');
       }
     } catch (error) {
