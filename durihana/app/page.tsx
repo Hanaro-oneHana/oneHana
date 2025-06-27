@@ -69,7 +69,6 @@ export default function Home() {
         <AccountCard
           userId={userId}
           coupleBalance={coupleBalance.data}
-          mainAccount={mainAccountData || { type: 0, account: '', balance: 0 }}
           subAccounts={subAccounts}
           coupleNames={coupleNames}
         />
