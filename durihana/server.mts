@@ -7,19 +7,7 @@ const handle = nextApp.getRequestHandler();
 
 nextApp.prepare().then(() => {
   const httpServer = createServer(handle);
-
-  const io = new Server(httpServer, {
-    cors: {
-      origin:
-        process.env.NODE_ENV === 'production'
-          ? false // 배포하면 false를 url로 바꿔주면 됨
-          : ['http://localhost:3000'],
-      methods: ['GET', 'POST'],
-    },
-  });
-
-  // Socket.IO 인스턴스를 전역으로 저장. 다른 server-action들을 사용하려면 필요
-  (globalThis as any).io = io;
+  const io = new Server(httpServer);
 
   io.on('connection', (socket) => {
     // 사용자 고유 방 참가

@@ -223,7 +223,7 @@ export const createMultipleAccounts = async (
     const coupleUserIds = await getCoupleUserIds(userId);
 
     // 4) emit
-    const io = (globalThis as any).io as import('socket.io').Server;
+    const io = (globalThis as any).io;
     if (io) {
       for (const uid of coupleUserIds) {
         if (updatedMain) {
@@ -255,7 +255,7 @@ export const createMultipleAccounts = async (
       totalSchedules: result.totalSchedules,
     };
   } catch (error) {
-    console.log("🚀 ~ error:", error)
+    console.log('🚀 ~ error:', error);
     return { isSuccess: false, data: [] };
   }
 };
