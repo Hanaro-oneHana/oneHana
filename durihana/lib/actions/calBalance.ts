@@ -57,20 +57,15 @@ export async function plusBalance(
     // 4. 커플 ID들 추출
     const coupleUserIds = await getCoupleUserIds(user.id);
 
-    // 5. 소켓 전송
-    const io = (globalThis as any).io;
-    if (io) {
-      for (const uid of coupleUserIds) {
-        io.to(`user-${uid}`).emit('balance-updated', {
-          accountId: updated.id,
-          newBalance: updated.balance,
-          accountType: updated.type,
-          coupleBalance: coupleBalance.data,
-        });
-      }
-    }
+    const socketData = {
+      accountId: updated.id,
+      newBalance: updated.balance,
+      accountType: updated.type,
+      coupleBalance: coupleBalance.data,
+      coupleUserIds
+    };
 
-    return { success: true, newBalance: updated.balance };
+    return { success: true, newBalance: updated.balance, socketData };
   } catch (err) {
     console.error('Failed to decrease balance:', err);
     return { success: false };
@@ -128,19 +123,15 @@ export async function minusBalance(
     const coupleUserIds = await getCoupleUserIds(user.id);
 
     // 5. 소켓 전송
-    const io = (globalThis as any).io;
-    if (io) {
-      for (const uid of coupleUserIds) {
-        io.to(`user-${uid}`).emit('balance-updated', {
-          accountId: updated.id,
-          newBalance: updated.balance,
-          accountType: updated.type,
-          coupleBalance: coupleBalance.data,
-        });
-      }
-    }
+    const socketData = {
+      accountId: updated.id,
+      newBalance: updated.balance,
+      accountType: updated.type,
+      coupleBalance: coupleBalance.data,
+      coupleUserIds
+    };
 
-    return { success: true, newBalance: updated.balance };
+    return { success: true, newBalance: updated.balance, socketData };
   } catch (err) {
     console.error('Failed to decrease balance:', err);
     return { success: false };

@@ -2,6 +2,7 @@
 
 import { Button, InputComponent, Txt } from '@/components/atoms';
 import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
+import { socket } from '@/lib/socket-client';
 import { AccountType, accountTypeLabelMap } from '@/types/Account';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -37,7 +38,20 @@ export default function AccountCardDetail({
     const numericAmount = Number(amount.replaceAll(',', ''));
     if (!isNaN(numericAmount) && numericAmount > 0) {
       const { plusBalance } = await import('@/lib/actions/calBalance');
-      await plusBalance(accountId, numericAmount);
+      
+      const result = await plusBalance(accountId, numericAmount);
+      if (result.success && result.socketData) {
+      // 서버에게 uids와 payload를 전달
+      socket.emit('admin-balance-update', {
+        uids: result.socketData.coupleUserIds,
+        payload: {
+          accountId: result.socketData.accountId,
+          newBalance: result.socketData.newBalance,
+          accountType: result.socketData.accountType,
+          coupleBalance: result.socketData.coupleBalance,
+        },
+      });
+    }
       onTransaction?.();
       setAmount('');
       setOpen(false);
