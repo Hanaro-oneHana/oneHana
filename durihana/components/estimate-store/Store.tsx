@@ -35,15 +35,13 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   const [items, setItems] = useState<Store[]>(storeList || []);
 
   const updateSearchParam = useCallback(
-    (key: string[], value: string[]) => {
-      const params = new URLSearchParams(searchParams);
-      key.forEach((k, index) => {
-        params.set(k, value[index]);
-      });
-      router.push(`?${params.toString()}`);
+    (keys: string[], values: string[]) => {
+      const current = new URLSearchParams(window.location.search);
+      keys.forEach((k, i) => current.set(k, values[i]));
+      router.push(`?${current.toString()}`);
       router.refresh();
     },
-    [router, searchParams]
+    [router]
   );
 
   const handlePriceFilter = (price: number, isLast: boolean) => {
