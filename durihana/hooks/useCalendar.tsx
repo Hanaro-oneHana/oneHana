@@ -11,7 +11,8 @@ export function useCalendar({
   onYearChange,
   onDateSelect,
 }: UseCalendarProps) {
-  const [currentDate, setCurrentDate] = useState(selectedDate || new Date());
+  // const [currentDate, setCurrentDate] = useState(selectedDate || new Date());
+  const currentDate = selectedDate || new Date();
   const [currentMonth, setCurrentMonth] = useState(
     propCurrentMonth ?? currentDate.getMonth()
   );

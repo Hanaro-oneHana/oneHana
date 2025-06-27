@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import {
   getDepositInterestRate,
+  getSavingsInterestRate,
   getSavingsInterestRates,
 } from '@/lib/actions/InterestActions';
 import {
@@ -32,16 +33,6 @@ export function useUserCalendar(userId: number) {
     new Date().getFullYear()
   );
   const [loading, setLoading] = useState<boolean>(false);
-
-  // 적금 이자율 테이블 전체 로드
-  const [savingsRates, setSavingsRates] = useState<
-    { step: number; rate: number }[]
-  >([]);
-  useEffect(() => {
-    (async () => {
-      setSavingsRates(await getSavingsInterestRates());
-    })();
-  }, []);
 
   // 달력 점 표시용 날짜들 불러오기
   useEffect(() => {
@@ -71,6 +62,7 @@ export function useUserCalendar(userId: number) {
 
       // 동적 예금 이자율(1년 기준)
       const depositRate = await getDepositInterestRate(userId);
+      const savingsRate = await getSavingsInterestRate(userId);
 
       const formatted: Schedule[] = [];
 
@@ -99,8 +91,6 @@ export function useUserCalendar(userId: number) {
         } else if (plan.type === 2) {
           // 적금: 매월 납입, 마지막에는 원금+이자
           const payment = Number(account?.payment ?? 0);
-          const totalSteps = savingsRates.length;
-          const step = financePlans.filter((p) => p.type === 2).length; // 총 횟수
           if (!isExpiry) {
             formatted.push({
               id: plan.id,
@@ -112,10 +102,11 @@ export function useUserCalendar(userId: number) {
               amount: payment,
             });
           } else {
-            const principal = Number(account?.balance ?? 0);
-            const rateEntry = savingsRates.find((r) => r.step === totalSteps);
-            const rate = rateEntry?.rate ?? 0;
-            const interest = Math.round(principal * (rate / 100));
+            const monthly = Number(account?.payment ?? 0);
+            const totalSteps = financePlans.filter((p) => p.type === 2).length;
+            console.log('🚀 ~ financePlans.forEach ~ totalSteps:', totalSteps);
+            const principal = monthly * totalSteps; // ← 현재 balance 대신
+            const interest = Math.round(principal * (savingsRate / 100));
             formatted.push({
               id: plan.id,
               title: getScheduleTitle(2, true), // '적금 만료'
@@ -160,7 +151,7 @@ export function useUserCalendar(userId: number) {
       setSchedules(formatted);
       setLoading(false);
     })();
-  }, [selectedDate, userId, savingsRates]);
+  }, [selectedDate, userId]);
 
   return {
     selectedDate,
