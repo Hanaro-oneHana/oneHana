@@ -58,7 +58,7 @@ export async function plusBalance(
     const coupleUserIds = await getCoupleUserIds(user.id);
 
     // 5. 소켓 전송
-    const io = (globalThis as any).io as import('socket.io').Server;
+    const io = (globalThis as any).io;
     if (io) {
       for (const uid of coupleUserIds) {
         io.to(`user-${uid}`).emit('balance-updated', {
@@ -128,7 +128,7 @@ export async function minusBalance(
     const coupleUserIds = await getCoupleUserIds(user.id);
 
     // 5. 소켓 전송
-    const io = (globalThis as any).io as import('socket.io').Server;
+    const io = (globalThis as any).io;
     if (io) {
       for (const uid of coupleUserIds) {
         io.to(`user-${uid}`).emit('balance-updated', {
