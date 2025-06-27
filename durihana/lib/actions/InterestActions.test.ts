@@ -29,7 +29,7 @@ const mockFindUnique = prisma.depositInterest.findUnique as Mock;
 describe('test rateStep by deposit interest', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  }),
+  })
 
   it('use default rate when step = 0', async () => {
     mockCount.mockResolvedValue(0);
@@ -39,7 +39,7 @@ describe('test rateStep by deposit interest', () => {
     const result = await getDepositInterestRate(0);
     expect(result).toBe(2.0);
     expect(mockFindUnique).toHaveBeenCalledWith({ where: { step: 0 } });
-  }),
+  });
 
   it('change rate by step', async () => {
     mockCount.mockResolvedValue(2);
@@ -49,7 +49,7 @@ describe('test rateStep by deposit interest', () => {
     const result = await getDepositInterestRate(0);
     expect(result).toBe(4.0);
     expect(mockFindUnique).toHaveBeenCalledWith({ where: { step: 2 } });
-  })
+  });
 });
 
 const mockDeposit = prisma.depositInterest.findMany as Mock;
@@ -59,7 +59,7 @@ const mockLoan = prisma.loanInterest.findMany as Mock;
 describe('getAllInterestRates', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  }),
+  })
 
   it('show rates for each step', async () => {
     mockDeposit.mockResolvedValue([{step: 4, rate: new Decimal(3.5)}]);
