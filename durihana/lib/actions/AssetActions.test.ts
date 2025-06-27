@@ -22,7 +22,7 @@ describe('getCategoryData ', () => {
   })
 
   it('return empty array if type is empty', async () => {
-      (mockPartnerCalendar as any).mockResolvedValue([]);
+      mockPartnerCalendar.mockResolvedValue([]);
 
       const result = await getCategoryData(1);
       expect(result).toEqual({
@@ -32,7 +32,7 @@ describe('getCategoryData ', () => {
   });
   
   it('return list of types within CATEGORIESs list', async () => {
-      (mockPartnerCalendar as any).mockResolvedValue([
+      mockPartnerCalendar.mockResolvedValue([
         {
           PartnerService: {
             content: {가격: '80000000', 식사: '뷔페'},
@@ -70,7 +70,7 @@ describe('getBucketTotalAmount ', () => {
   })
 
   it('return amount price with highest price', async () => {
-    (mockBudgetPlan as any).mockResolvedValue([
+    mockBudgetPlan.mockResolvedValue([
         {
           PartnerService: {
             content: {가격: '80000000', 식사: '뷔페'},

@@ -27,7 +27,7 @@ describe('getUserInfo', () => {
   })
 
   it('return empty array if empty', async () => {
-    (mockUser as any).mockResolvedValue(null);
+    mockUser.mockResolvedValue(null);
   
     const result = await getUserInfo(1);
     expect(result).toEqual({
@@ -35,9 +35,9 @@ describe('getUserInfo', () => {
       "error": "사용자를 찾을 수 없습니다."
     });
   });
-  
+
   it('return empty array if empty', async () => {
-    (mockUser as any).mockResolvedValue({
+    mockUser.mockResolvedValue({
         name: '홍길동',
         email: 'hong@gmail.com',
         phone: '010-1234-1234',
