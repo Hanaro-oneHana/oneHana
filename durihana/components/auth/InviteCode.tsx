@@ -61,7 +61,7 @@ export default function InviteCode() {
       setModalMessage('연결 성공');
       setIsSuccess(true);
     } else {
-      setModalMessage('상대방이 없습니다');
+      setModalMessage(mate.message || '연결 실패');
       setIsSuccess(false);
     }
     setModalOpen(true);
