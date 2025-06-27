@@ -22,6 +22,7 @@ import {
   StoreDetailProps,
 } from '@/lib/actions/StoreDetailActions';
 import { minusBalance } from '@/lib/actions/calBalance';
+import { socket } from '@/lib/socket-client';
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -59,6 +60,20 @@ export default function StoreDrawer(drawer: StoreDrawerProps) {
 
       //minusBalance 함수에서 transaction 테이블에도 기록해줌
       const result = await minusBalance(accountId, price, description);
+
+      if (result.success && result.socketData) {
+        // 서버에게 uids와 payload를 전달
+        socket.emit('admin-balance-update', {
+          uids: result.socketData.coupleUserIds,
+          payload: {
+            accountId: result.socketData.accountId,
+            newBalance: result.socketData.newBalance,
+            accountType: result.socketData.accountType,
+            coupleBalance: result.socketData.coupleBalance,
+          },
+        });
+      }
+
       await addPartnerCalendarEvent(requestUser, details.id, '', '');
       // Storedrawer 는 가전가구, 예물예단이니까 결제 완료 되면 budgetPlan 의 state 가 3으로 변경
       if (result.success) {
