@@ -26,7 +26,7 @@ export default function SavingsForm({
   const [rawAmount, setRawAmount] = useState<string>('');
 
   return (
-    <div className='flex-1 px-6 py-8'>
+    <div className='scrollbar-hide flex flex-1 flex-col overflow-y-auto px-6 py-8'>
       <Txt size='text-[22px]' className='text-mainblack mb-[40px] block'>
         두리하나적금통장
       </Txt>
