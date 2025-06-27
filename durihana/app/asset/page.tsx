@@ -2,7 +2,7 @@ import { AccountCard } from '@/components/account';
 import { AssetOverview } from '@/components/asset';
 import { BottomNavigation, Header } from '@/components/atoms';
 import Container from '@/components/containers/Container';
-import { MainAccount, SubAccount } from '@/types/Account';
+import { SubAccount } from '@/types/Account';
 import { use } from 'react';
 import {
   getAccountsByUserId,
@@ -25,14 +25,7 @@ export default function Asset() {
 
   const accounts = use(getAccountsByUserId(userId));
   const coupleNames = use(getCoupleNames(userId));
-  const main = accounts.data.find((acc) => acc.type === 0)!;
   const subs = accounts.data.filter((acc) => acc.type !== 0);
-
-  const mainAccount: MainAccount = {
-    type: 0,
-    account: main.account,
-    balance: main.balance,
-  };
 
   const subAccounts: SubAccount[] = subs.map((acc) => ({
     type: acc.type as 1 | 2 | 3,
@@ -57,7 +50,6 @@ export default function Asset() {
     >
       <AccountCard
         userId={userId}
-        mainAccount={mainAccount}
         subAccounts={subAccounts}
         coupleBalance={coupleBalance.data}
         coupleNames={coupleNames}
