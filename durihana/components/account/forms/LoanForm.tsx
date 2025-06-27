@@ -56,7 +56,7 @@ export default function LoanForm({
 
   const estimatedPayment = calculateMonthlyPayment(amount, period);
   return (
-    <div className='flex-1 px-6 py-8'>
+    <div className='scrollbar-hide flex flex-1 flex-col overflow-y-auto px-6 py-8'>
       <Txt size='text-[22px]' className='text-mainblack mb-[40px] block'>
         두리하나대출통장
       </Txt>

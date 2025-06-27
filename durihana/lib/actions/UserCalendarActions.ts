@@ -8,64 +8,69 @@ export const getUserSchedulesForDate = async (
   mainId: number,
   date: string
 ) => {
-  const [financePlans, reservations, userAccounts] = await Promise.all([
-    // 개인 금융 계획
-    prisma.userCalendar.findMany({
-      where: {
-        user_id: userId,
-        user_date: {
-          startsWith: date, // '2025-01-15'
+  const [financePlans, reservations, userAccounts, savingsDay] =
+    await Promise.all([
+      // 개인 금융 계획
+      prisma.userCalendar.findMany({
+        where: {
+          user_id: userId,
+          user_date: {
+            startsWith: date, // '2025-01-15'
+          },
         },
-      },
-    }),
-    // 예약 일정
-    prisma.partnerCalendar.findMany({
-      where: {
-        user_id: mainId,
-        reservation_date: {
-          startsWith: date, // '2025-01-15'
+      }),
+      // 예약 일정
+      prisma.partnerCalendar.findMany({
+        where: {
+          user_id: mainId,
+          reservation_date: {
+            startsWith: date, // '2025-01-15'
+          },
         },
-      },
-      include: {
-        PartnerService: {
-          select: {
-            id: true,
-            name: true,
-            Partner: {
-              select: {
-                id: true,
-                name: true,
-                phone: true,
-                email: true,
-                address: true,
-                service_detail: true,
-                is_active: true,
+        include: {
+          PartnerService: {
+            select: {
+              id: true,
+              name: true,
+              Partner: {
+                select: {
+                  id: true,
+                  name: true,
+                  phone: true,
+                  email: true,
+                  address: true,
+                  service_detail: true,
+                  is_active: true,
+                },
               },
             },
           },
         },
-      },
-    }),
-    // 해당 사용자의 모든 계좌 정보 (타입별로 매칭하기 위해)
-    prisma.account.findMany({
-      where: {
-        user_id: userId,
-      },
-      select: {
-        id: true,
-        type: true,
-        payment: true,
-        balance: true,
-        expire_date: true,
-        transfer_date: true,
-      },
-    }),
-  ]);
+      }),
+      // 해당 사용자의 모든 계좌 정보 (타입별로 매칭하기 위해)
+      prisma.account.findMany({
+        where: {
+          user_id: userId,
+        },
+        select: {
+          id: true,
+          type: true,
+          payment: true,
+          balance: true,
+          expire_date: true,
+          transfer_date: true,
+        },
+      }),
+      prisma.userCalendar.count({
+        where: { user_id: userId, type: 2 },
+      }),
+    ]);
 
   return {
     financePlans,
     userAccounts,
     reservations,
+    savingsDay,
   };
 };
 

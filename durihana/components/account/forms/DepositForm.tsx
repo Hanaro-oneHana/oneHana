@@ -22,7 +22,7 @@ export default function DepositForm({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className='flex-1 px-6 py-8'>
+    <div className='scrollbar-hide flex flex-1 flex-col overflow-y-auto px-6 py-8'>
       <Txt size='text-[22px]' className='text-mainblack mb-[40px] block'>
         두리하나예금통장
       </Txt>
