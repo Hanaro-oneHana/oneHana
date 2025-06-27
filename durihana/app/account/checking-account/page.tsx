@@ -43,6 +43,7 @@ export default function CheckingAccount() {
 
   return (
     <Container
+      className='pt-[77px] pb-[88px]'
       header={<Header leftIcon='back' title='계좌개설' />}
       footer={
         <div className='bg-background flex px-[20px] pb-[40px]'>
@@ -50,8 +51,8 @@ export default function CheckingAccount() {
         </div>
       }
     >
-      <div className='w-full'>
-        <div className='flex pt-[77px]'>
+      <div className='flex w-full flex-col'>
+        <div className='flex'>
           <Txt>약관동의</Txt>
         </div>
         <Accordion type='multiple'>

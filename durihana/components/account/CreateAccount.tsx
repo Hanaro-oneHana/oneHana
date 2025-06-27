@@ -34,7 +34,7 @@ export default function CreateAccount() {
   // 로딩 상태
   if (types.length === 0) {
     return (
-      <div className='w-full max-w-md mx-auto bg-mainwhite h-dvh flex items-center justify-center'>
+      <div className='bg-mainwhite mx-auto flex h-dvh w-full max-w-md items-center justify-center'>
         <Txt>약관 동의 페이지로 이동 중...</Txt>
       </div>
     );
@@ -50,14 +50,14 @@ export default function CreateAccount() {
     (!current?.amount && currentStage === 'form') || loading;
 
   return (
-    <div className='flex flex-col w-full mx-auto bg-background h-dvh '>
+    <div className='bg-background mx-auto flex h-dvh w-full flex-col'>
       <Header
         leftIcon='back'
         title={`상품 가입 (${step + 1}/${formStates.length})`}
         onLeftClick={handleBack}
       />
 
-      <div className='flex flex-1 pt-[80px] pb-[110px]'>
+      <div className='flex flex-1 overflow-y-auto pb-[110px]'>
         <AccountCreationContent
           currentStage={currentStage}
           current={current}
@@ -67,7 +67,7 @@ export default function CreateAccount() {
         />
       </div>
 
-      <div className='fixed bg-background flex justify-center bottom-0 pb-[40px] left-[50%] w-full  text-[16px] translate-x-[-50%] px-[20px]'>
+      <div className='bg-background fixed bottom-0 left-[50%] flex w-full translate-x-[-50%] justify-center px-[20px] pb-[40px] text-[16px]'>
         <Button
           className='h-[48px]'
           onClick={() => handleNext(current.type)}

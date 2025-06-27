@@ -1,5 +1,6 @@
 import { CreateAccount } from '@/components/account';
 import { Txt } from '@/components/atoms';
+import Container from '@/components/containers/Container';
 import { Suspense } from 'react';
 
 export default function CreateAccountPage() {
