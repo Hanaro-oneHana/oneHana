@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import {
   getDepositInterestRate,
   getSavingsInterestRate,
-  getSavingsInterestRates,
 } from '@/lib/actions/InterestActions';
 import {
   getUserSchedulesForDate,
@@ -57,7 +56,7 @@ export function useUserCalendar(userId: number) {
     (async () => {
       setLoading(true);
       const dateStr = formatDate(selectedDate);
-      const { financePlans, userAccounts, reservations } =
+      const { financePlans, userAccounts, reservations, savingsDay } =
         await getUserSchedulesForDate(userId, mainId, dateStr);
 
       // 동적 예금 이자율(1년 기준)
@@ -103,7 +102,7 @@ export function useUserCalendar(userId: number) {
             });
           } else {
             const monthly = Number(account?.payment ?? 0);
-            const totalSteps = financePlans.filter((p) => p.type === 2).length;
+            const totalSteps = savingsDay;
             console.log('🚀 ~ financePlans.forEach ~ totalSteps:', totalSteps);
             const principal = monthly * totalSteps; // ← 현재 balance 대신
             const interest = Math.round(principal * (savingsRate / 100));
