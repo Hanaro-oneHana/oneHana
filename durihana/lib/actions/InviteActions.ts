@@ -41,7 +41,7 @@ export const tryMating = async (id: number, mate_code: string) => {
     };
   }
 
-  if (mateUser.mate_code) {
+  if (mateUser.mate_code && mateUser.mate_code !== user.code) {
     return {
       status: 'error',
       message: '상대방이 이미 누군가와 연결됐습니다',

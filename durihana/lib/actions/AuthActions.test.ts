@@ -148,7 +148,7 @@ describe('findUserByEmail()', () => {
     const result = await findUserByEmail('error@example.com');
     expect(result).toEqual({
       isSuccess: false,
-      error: 'User not found',
+      error: '사용자를 찾을 수 없습니다',
     });
   });
 });
