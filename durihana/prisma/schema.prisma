@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../lib/generated/prisma"
@@ -12,4 +6,137 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model BudgetPlan {
+  id                 Int            @id @default(autoincrement()) @db.UnsignedInt
+  user_id            Int            @db.UnsignedInt
+  partner_service_id Int            @db.UnsignedInt
+  state              Int?           @db.TinyInt
+  selected           Json?
+  PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_service")
+  User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_budget_user")
+
+  @@unique([user_id, partner_service_id], map: "unique_user_ps")
+  @@index([partner_service_id], map: "fk_budget_service")
+}
+
+model DepositInterest {
+  step Int     @id @db.UnsignedTinyInt
+  rate Decimal @db.Decimal(5, 2)
+}
+
+model LoanInterest {
+  step Int     @id @db.UnsignedTinyInt
+  rate Decimal @db.Decimal(5, 2)
+}
+
+model Partner {
+  id                  Int              @id @default(autoincrement()) @db.UnsignedInt
+  name                String           @db.VarChar(30)
+  partner_category_id Int              @db.UnsignedInt
+  phone               String           @db.VarChar(20)
+  email               String?          @db.VarChar(30)
+  address             String           @db.VarChar(30)
+  discount_rate       Decimal          @default(0.00) @db.Decimal(5, 2)
+  service_detail      String           @db.Text
+  is_active           Boolean          @default(true)
+  PartnerCategory     PartnerCategory  @relation(fields: [partner_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partner_category")
+  PartnerService      PartnerService[]
+
+  @@index([partner_category_id], map: "fk_partner_category")
+}
+
+model PartnerCalendar {
+  id                 Int            @id @default(autoincrement()) @db.UnsignedInt
+  user_id            Int            @db.UnsignedInt
+  reservation_date   String         @db.VarChar(31)
+  partner_service_id Int            @db.UnsignedInt
+  PartnerService     PartnerService @relation(fields: [partner_service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partnercalender_service")
+  User               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_partnercalender_user")
+
+  @@index([partner_service_id], map: "fk_partnercalender_service")
+  @@index([user_id], map: "fk_partnercalender_user")
+}
+
+model PartnerCategory {
+  id      Int       @id @default(autoincrement()) @db.UnsignedInt
+  type    String    @db.VarChar(30)
+  Partner Partner[]
+}
+
+model PartnerService {
+  id              Int               @id @default(autoincrement()) @db.UnsignedInt
+  partner_id      Int               @db.UnsignedInt
+  name            String            @db.VarChar(255)
+  image           Json?
+  content         Json
+  BudgetPlan      BudgetPlan[]
+  PartnerCalendar PartnerCalendar[]
+  Partner         Partner           @relation(fields: [partner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_service_partner")
+
+  @@index([partner_id], map: "fk_service_partner")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Transaction {
+  id               Int     @id @default(autoincrement()) @db.UnsignedInt
+  account_id       Int     @db.UnsignedInt
+  transaction_date String  @db.VarChar(31)
+  amount           Int
+  balance          Int
+  description      String? @db.VarChar(255)
+  Account          Account @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_account")
+
+  @@index([account_id], map: "fk_transaction_account")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model User {
+  id              Int               @id @default(autoincrement()) @db.UnsignedInt
+  name            String            @db.VarChar(20)
+  password        String            @db.VarChar(255)
+  phone           String            @db.VarChar(20)
+  email           String            @unique(map: "email") @db.VarChar(31)
+  marriage_date   String?           @db.VarChar(31)
+  code            String?           @db.VarChar(15)
+  mate_code       String?           @db.VarChar(15)
+  type            Int               @default(0) @db.TinyInt
+  Account         Account[]
+  BudgetPlan      BudgetPlan[]
+  PartnerCalendar PartnerCalendar[]
+  UserCalendar    UserCalendar[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model UserCalendar {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id   Int    @db.UnsignedInt
+  user_date String @db.VarChar(31)
+  type      Int    @db.TinyInt
+  User      User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usercalender_user")
+
+  @@index([user_id], map: "fk_usercalender_user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Account {
+  id            Int           @id @default(autoincrement()) @db.UnsignedInt
+  account       String        @db.VarChar(31)
+  balance       Int           @default(0)
+  type          Int           @db.TinyInt
+  expire_date   String?       @db.VarChar(31)
+  transfer_date String?       @db.VarChar(31)
+  payment       Int?
+  user_id       Int           @db.UnsignedInt
+  User          User          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_user")
+  Transaction   Transaction[]
+
+  @@index([user_id], map: "fk_account_user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model SavingsInterest {
+  step Int     @id @db.UnsignedTinyInt
+  rate Decimal @db.Decimal(5, 2)
 }

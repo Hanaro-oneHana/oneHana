@@ -1,7 +1,104 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
+
+/* font */
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Bold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hana';
+  src: url('/asset/fonts/Hana2-Heavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 디자인 시스템 */
+@layer styles {
+  :root {
+    --mainblack: #333333;
+    --mainwhite: #fbfcfc;
+    --mint: #d2e8e4;
+    --background: #f6f7f9;
+    --navy: #3b4156;
+    --textgray: #666666;
+    --buttongray: #9ca7b3;
+    --buttonlightgray: #e9eaec;
+    --primarycolor: #489896;
+    --secondarycolor: #5e68bd;
+    --icon: #7a8da0;
+    --iconselect: #5bc0a4;
+    --lightmint: #e5f5f1;
+    --purple: #d7dbf0;
+    --lightpurple: #e4e8f5;
+    --pink: #f1e7f6;
+    --skyblue: #e0f0f5;
+    --lime: #e1f4e2;
+    --red: #ec4774;
+    --primaryhalf: #48989680;
+    --linegray: #dddee4;
+    --icongray: #8d8f9a;
+    --accountgray: #f1f2f6;
+  }
+
+  @theme inline {
+    --font-hana: 'Hana', sans-serif;
+    --color-mainblack: var(--mainblack);
+    --color-mainwhite: var(--mainwhite);
+    --color-primarycolor: var(--primarycolor);
+    --color-secondarycolor: var(--secondary);
+    --color-background: var(--background);
+    --color-navy: var(--navy);
+    --color-textgray: var(--textgray);
+    --color-buttongray: var(--buttongray);
+    --color-buttonlightgray: var(--buttonlightgray);
+    --color-icon: var(--icon);
+    --color-iconselect: var(--iconselect);
+    --color-mint: var(--mint);
+    --color-lightmint: var(--lightmint);
+    --color-purple: var(--purple);
+    --color-lightpurple: var(--lightpurple);
+    --color-pink: var(--pink);
+    --color-skyblue: var(--skyblue);
+    --color-lime: var(--lime);
+    --color-primaryhalf: var(--primaryhalf);
+    --color-linegray: var(--linegray);
+    --color-red: var(--red);
+    --color-icongray: var(--icongray);
+    --color-accountgray: var(--accountgray);
+  }
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -45,15 +142,12 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -115,8 +209,39 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    background-color: transparent;
   }
-  body {
+  body,
+  html,
+  #root {
     @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+    max-width: 960px;
+    width: 100vw;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: var(--font-hana);
+    /* 스크롤바 제거 */
+    -ms-overflow-style: none; /* IE & Edge */
+    scrollbar-width: none; /* Firefox */
   }
+
+  body::-webkit-scrollbar,
+  html::-webkit-scrollbar,
+  #root::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
