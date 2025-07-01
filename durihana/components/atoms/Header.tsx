@@ -74,7 +74,7 @@ export default function Header({
 
       <button
         className='h-[24px] w-[24px] cursor-pointer bg-transparent'
-        onClick={onRightClick}
+        onClick={onRightClick ? onRightClick : () => router.back()}
       >
         {rightIcon && (
           <Image

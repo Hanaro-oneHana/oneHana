@@ -84,16 +84,15 @@ export default function SignInPage() {
             required
             minLength={8}
           />
+          <Txt
+            size='text-[10px]'
+            color='text-red'
+            weight='font-[500]'
+            className='mt-2'
+          >
+            {error ? `*${error}` : ''}
+          </Txt>
         </div>
-
-        <Txt
-          size='text-[10px]'
-          color='text-red'
-          weight='font-[500]'
-          className='mt-2'
-        >
-          {error ? `*${error}` : ''}
-        </Txt>
 
         <Button type='submit'>로그인</Button>
         <Button className='bg-transparent' onClick={goToSignUp}>
