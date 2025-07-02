@@ -28,6 +28,7 @@ type Props = {
 export default function StoreComponent({ storeList, categoryId }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const [sortOptionList, setSortOptionList] = useState<PriceOption[]>([]);
   const [sortOption, setSortOption] = useState<PriceOption | null>(null);
   const [category, setCategory] = useState(categoryId || 1);
@@ -67,7 +68,9 @@ export default function StoreComponent({ storeList, categoryId }: Props) {
   useEffect(() => {
     updateSearchParam(['category', 'search'], [category.toString(), '']);
     setSortOptionList(getFilteringOptions(category));
-  }, [category, updateSearchParam]);
+    setSelectedRegions([]);
+    setSortOption(sortOptionList[0]);
+  }, [category, updateSearchParam, sortOptionList]);
 
   useEffect(() => {
     if (selectedRegions.length > 0) {

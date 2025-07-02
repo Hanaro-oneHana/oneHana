@@ -29,6 +29,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [sortOption, setSortOption] = useState<PriceOption | null>(null);
   const [sortOptionList, setSortOptionList] = useState<PriceOption[]>([]);
   const [items, setItems] = useState<Store[]>(storeList || []);
   const [category, setCategory] = useState(categoryId || 1);
@@ -60,7 +61,9 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
   useEffect(() => {
     updateSearchParam(['category', 'search'], [category.toString(), '']);
     setSortOptionList(getFilteringOptions(category));
-  }, [category, updateSearchParam]);
+    setSelectedRegions([]);
+    setSortOption(sortOptionList[0]);
+  }, [category, updateSearchParam, sortOptionList]);
 
   const handleSearch = useCallback(
     (query: string) => {
@@ -106,7 +109,7 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
             <DropdownMenuTrigger className='mt-[20px]'>
               <div className='m-0 flex items-center justify-center gap-[-2px] p-0 focus:outline-none'>
                 <Txt size='text-[12px]' color='text-textgray'>
-                  {sortOptionList.length > 0 ? sortOptionList[0].label : '전체'}
+                  {sortOption ? sortOption.label : '전체'}
                 </Txt>
                 <Image
                   src='/asset/icons/down-shevron.svg'
@@ -124,7 +127,9 @@ export default function EstimateMain({ storeList, categoryId }: Props) {
                     if (option.value === 0) {
                       setItems(storeList || []);
                       updateSearchParam(['search'], ['']);
+                      setSortOption(sortOptionList[0]);
                     } else {
+                      setSortOption(option);
                       handlePriceFilter(
                         option.value,
                         index === sortOptionList.length - 1
